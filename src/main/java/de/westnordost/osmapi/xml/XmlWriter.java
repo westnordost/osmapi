@@ -1,0 +1,77 @@
+package de.westnordost.osmapi.xml;
+
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+import org.xmlpull.v1.XmlSerializer;
+
+import de.westnordost.osmapi.ApiRequestWriter;
+
+/**
+ * A simple XML writer / serializer with convenience method and less generic
+ */
+public abstract class XmlWriter implements ApiRequestWriter
+{
+	private XmlSerializer xml;
+
+	@Override
+	public final String getContentType()
+	{
+		return "text/xml";
+	}
+
+	@Override
+	public final void write(OutputStream out) throws IOException
+	{
+		try
+		{
+			xml = XmlPullParserFactory.newInstance().newSerializer();
+			xml.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+		}
+		catch(XmlPullParserException e)
+		{
+			throw new RuntimeException("Cannot initialize serializer", e);
+		}
+		xml.setOutput(out, "UTF-8");
+		xml.startDocument("UTF-8", null);
+
+		write();
+
+		if(xml.getName() != null)
+		{
+			throw new IllegalStateException("Forgot to close a tag");
+		}
+
+		xml.endDocument();
+		xml.flush();
+	}
+
+	protected final void begin(String name) throws IOException
+	{
+		xml.startTag(null, name);
+	}
+
+	protected final void end() throws IOException
+	{
+		if(xml.getName() == null)
+		{
+			throw new IllegalStateException("Closed one tag to many");
+		}
+		xml.endTag(null, xml.getName());
+	}
+
+	protected final void attribute(String key, String value) throws IOException
+	{
+		xml.attribute(null, key, value);
+	}
+
+	protected final void text(String text) throws IOException
+	{
+		xml.text(text);
+	}
+
+	protected abstract void write() throws IOException;
+}
