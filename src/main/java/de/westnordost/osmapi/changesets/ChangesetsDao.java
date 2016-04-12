@@ -6,7 +6,7 @@ import java.net.URLEncoder;
 import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.SingleElementHandler;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmConflictException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.map.changes.MapDataChangesHandler;
@@ -73,7 +73,7 @@ public class ChangesetsDao
 	 * @param text text to add to the changeset. Must not be empty
 	 * @return the updated changeset
 	 *
-	 * @throws OsmAuthenticationException if this application is not authenticated to modify the map
+	 * @throws OsmAuthorizationException if this application is not authorized to modify the map
 	 *                                    (Permission.MODIFY_MAP)
 	 * @throws OsmConflictException if the changeset is not yet closed. (Only closed changesets can
 	 *                              be commented
@@ -110,7 +110,7 @@ public class ChangesetsDao
 	 * @param id id of the changeset
 	 * @return the changeset
 	 *
-	 * @throws OsmAuthenticationException if this application is not authenticated to modify the map
+	 * @throws OsmAuthorizationException if this application is not authorized to modify the map
 	 *                                    (Permission.MODIFY_MAP)
 	 * @throws OsmConflictException the changeset has not been closed yet
 	 * @throws OsmNotFoundException if the given changeset does not exist
@@ -141,7 +141,7 @@ public class ChangesetsDao
 	 * @param id id of the changeset
 	 * @return the changeset
 	 *
-	 * @throws OsmAuthenticationException if this application is not authenticated to modify the map
+	 * @throws OsmAuthorizationException if this application is not authorized to modify the map
 	 *                                    (Permission.MODIFY_MAP)
 	 * @throws OsmConflictException the changeset has not been closed yet
 	 * @throws OsmNotFoundException if the given changeset does not exist

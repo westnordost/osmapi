@@ -16,7 +16,7 @@ public class UserDao
 	}
 
 	/** @return the user info of the current user
-	 *  @throws OsmAuthenticationException if the user does not have the permission
+	 *  @throws OsmAuthorizationException if the user does not have the permission
 	 *                                     Permission.READ_PREFERENCES_AND_USER_DETAILS*/
 	public UserDetails getUserDetails()
 	{

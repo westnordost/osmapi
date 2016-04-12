@@ -7,7 +7,7 @@ import java.util.List;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmConflictException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
@@ -95,14 +95,14 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.createNote(POINT, TEXT, false);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 
 		try
 		{
 			unprivilegedDao.createNote(POINT, TEXT);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 
 	}
 
@@ -113,14 +113,14 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.commentNote(note.getId(), TEXT, false);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 
 		try
 		{
 			unprivilegedDao.commentNote(note.getId(), TEXT);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 	}
 
 	public void testReopenNoteInsufficientPrivileges()
@@ -130,7 +130,7 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.reopenNote(note.getId(), TEXT);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 	}
 
 	public void testCloseNoteInsufficientPrivileges()
@@ -140,7 +140,7 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.closeNote(note.getId(), TEXT);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 	}
 
 	public void testReopenNoteAsAnonymousFails()
@@ -150,7 +150,7 @@ public class NotesDaoTest extends TestCase
 			anonymousDao.reopenNote(note.getId(), TEXT);
 			fail();
 		}
-		catch(OsmAuthenticationException e)
+		catch(OsmAuthorizationException e)
 		{
 			assertTrue(e.getCause() instanceof OAuthExpectationFailedException);
 		}
@@ -163,7 +163,7 @@ public class NotesDaoTest extends TestCase
 			anonymousDao.closeNote(note.getId(), TEXT);
 			fail();
 		}
-		catch(OsmAuthenticationException e)
+		catch(OsmAuthorizationException e)
 		{
 			assertTrue(e.getCause() instanceof OAuthExpectationFailedException);
 		}

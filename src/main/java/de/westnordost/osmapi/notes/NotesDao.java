@@ -5,7 +5,7 @@ import java.net.URLEncoder;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmBadUserInputException;
 import de.westnordost.osmapi.errors.OsmConflictException;
 import de.westnordost.osmapi.OsmConnection;
@@ -32,7 +32,7 @@ public class NotesDao
 	 *
 	 * @param pos position of the note. Must not be null.
 	 * @param text text for the new note. Must not be empty nor null.
-	 * @throws OsmAuthenticationException if this application is not authenticated to write notes
+	 * @throws OsmAuthorizationException if this application is not authorized to write notes
 	 *                                    (Permission.WRITE_NOTES)
 	 * @return the new note
 	 */
@@ -49,7 +49,7 @@ public class NotesDao
 	 * @param text text for the new note. Must not be empty nor null.
 	 * @param asAnonymous whether to post this note as anonymous
 	 *
-	 * @throws OsmAuthenticationException if this application is not authenticated to write notes
+	 * @throws OsmAuthorizationException if this application is not authorized to write notes
 	 *                                    (Permission.WRITE_NOTES) - and posting as non anonymous
 	 *
 	 * @return the new note
@@ -87,7 +87,7 @@ public class NotesDao
 	 * @param asAnonymous whether to comment on this note as anonymous
 	 *
 	 * @throws OsmConflictException if the note has already been closed.
-	 * @throws OsmAuthenticationException if this application is not authenticated to write notes
+	 * @throws OsmAuthorizationException if this application is not authorized to write notes
 	 *                                    (Permission.WRITE_NOTES) - and posting as non anonymous
 	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore)
 	 *
@@ -119,7 +119,7 @@ public class NotesDao
 	 * Reopen the given note with the given reason. The reason is optional.
 	 *
 	 * @throws OsmConflictException if the note has already been reopened.
-	 * @throws OsmAuthenticationException if this application is not authenticated to write notes
+	 * @throws OsmAuthorizationException if this application is not authorized to write notes
 	 *                                    (Permission.WRITE_NOTES)
 	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore)
 	 *
@@ -139,7 +139,7 @@ public class NotesDao
 	 * @param reason comment to be added to the note as a reason for it being closed. Optional.
 	 *
 	 * @throws OsmConflictException if the note has already been closed.
-	 * @throws OsmAuthenticationException if this application is not authenticated to write notes
+	 * @throws OsmAuthorizationException if this application is not authorized to write notes
 	 *                                    (Permission.WRITE_NOTES)
 	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore)
 	 *

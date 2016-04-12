@@ -9,7 +9,7 @@ import java.util.List;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.MapDataDao;
@@ -112,21 +112,21 @@ public class ChangesetsDaoTest extends TestCase
 			infoDao.subscribeToChangeset(changesetId);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 
 		try
 		{
 			infoDao.unsubscribeFromChangeset(changesetId);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 
 		try
 		{
 			infoDao.commentChangeset(changesetId, "test comment");
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 	}
 
 	public void testAlreadySubscribedDoesNotFail()
@@ -161,21 +161,21 @@ public class ChangesetsDaoTest extends TestCase
 			infoDao.subscribeToChangeset(changesetId);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 
 		try
 		{
 			infoDao.unsubscribeFromChangeset(changesetId);
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 
 		try
 		{
 			infoDao.commentChangeset(changesetId, "test comment");
 			fail();
 		}
-		catch(OsmAuthenticationException e) {}
+		catch(OsmAuthorizationException e) {}
 	}
 
 	public void testGetChangesets()

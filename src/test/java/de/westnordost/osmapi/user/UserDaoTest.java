@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 
 public class UserDaoTest extends TestCase
 {
@@ -28,7 +28,7 @@ public class UserDaoTest extends TestCase
 			unprivilegedDao.getUserDetails();
 			fail();
 		}
-		catch(OsmAuthenticationException e)	{ }
+		catch(OsmAuthorizationException e)	{ }
 	}
 
 	public void testGetUserDetailsPrivileged()

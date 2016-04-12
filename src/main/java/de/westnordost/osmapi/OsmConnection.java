@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.Locale;
 
 import de.westnordost.osmapi.errors.OsmApiReadResponseException;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmConnectionException;
 import de.westnordost.osmapi.errors.RedirectedException;
 import oauth.signpost.OAuthConsumer;
@@ -63,7 +63,7 @@ public class OsmConnection
 	 * @param apiUrl the URL to the API
 	 * @param userAgent the user agent this application should identify as
 	 * @param oauth oauth consumer to use to authenticate this app. If this is null, any attempt to
-	 *              make an API call that requires authentication will throw an OsmAuthenticationException
+	 *              make an API call that requires authorization will throw an OsmAuthorizationException
 	 * @param timeout for the server connection
 	 */
 	public OsmConnection(String apiUrl, String userAgent, OAuthConsumer oauth, Integer timeout)
@@ -79,8 +79,7 @@ public class OsmConnection
 	 * @param apiUrl the URL to the API
 	 * @param userAgent the user agent this application should identify as
 	 * @param oauth oauth consumer to use to authenticate this app. If this is null, any attempt to
-	 *              make an API call that requires authentication will throw an
-	 *              OsmAuthenticationException
+	 *              make an API call that requires authorization will throw an OsmAuthorizationException
 	 */
 	public OsmConnection(String apiUrl, String userAgent, OAuthConsumer oauth)
 	{
@@ -153,7 +152,7 @@ public class OsmConnection
 		{
 			// because it was the user's fault that he did not supply an oauth consumer and the
 			// error is kinda related with the call he made
-			throw new OsmAuthenticationException(e);
+			throw new OsmAuthorizationException(e);
 		}
 		finally
 		{

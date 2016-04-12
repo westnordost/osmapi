@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 
 public class UserPreferencesDaoTest extends TestCase
 {
@@ -30,31 +30,31 @@ public class UserPreferencesDaoTest extends TestCase
 			unprivilegedDao.deleteUserPreference("A");
 			fail();
 		}
-		catch (OsmAuthenticationException e) { }
+		catch (OsmAuthorizationException e) { }
 
 		try {
 			unprivilegedDao.getUserPreference("A");
 			fail();
 		}
-		catch (OsmAuthenticationException e) { }
+		catch (OsmAuthorizationException e) { }
 
 		try {
 			unprivilegedDao.getUserPreferences();
 			fail();
 		}
-		catch (OsmAuthenticationException e) { }
+		catch (OsmAuthorizationException e) { }
 
 		try {
 			unprivilegedDao.setUserPreference("A","a");
 			fail();
 		}
-		catch (OsmAuthenticationException e) { }
+		catch (OsmAuthorizationException e) { }
 
 		try {
 			unprivilegedDao.setUserPreferences(new HashMap<String, String>());
 			fail();
 		}
-		catch (OsmAuthenticationException e) { }
+		catch (OsmAuthorizationException e) { }
 	}
 
 	public void testSetGetAndDeleteUserPreference()

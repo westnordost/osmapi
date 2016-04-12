@@ -3,7 +3,7 @@ package de.westnordost.osmapi;
 import java.net.HttpURLConnection;
 
 import de.westnordost.osmapi.errors.OsmApiException;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmBadUserInputException;
 import de.westnordost.osmapi.errors.OsmConflictException;
 import de.westnordost.osmapi.errors.OsmConnectionException;
@@ -28,7 +28,7 @@ public class OsmApiErrorFactory
 			case HttpURLConnection.HTTP_GONE:
 				return new OsmNotFoundException(error, response);
 			case HttpURLConnection.HTTP_FORBIDDEN:
-				return new OsmAuthenticationException(error, response);
+				return new OsmAuthorizationException(error, response);
 			case HttpURLConnection.HTTP_CONFLICT:
 				return new OsmConflictException(error, response);
 			case HttpURLConnection.HTTP_BAD_REQUEST:

@@ -10,7 +10,7 @@ import java.util.List;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.data.Bounds;
@@ -133,7 +133,7 @@ public class MapDataDaoTest extends TestCase
 			new MapDataDao(connection).updateMap("test", "test",
 					Collections.EMPTY_LIST, null);
 			fail();
-		} catch (OsmAuthenticationException e) {
+		} catch (OsmAuthorizationException e) {
 		}
 	}
 
@@ -142,7 +142,7 @@ public class MapDataDaoTest extends TestCase
 			new MapDataDao(unprivilegedConnection).updateMap("test", "test",
 					Collections.EMPTY_LIST, null);
 			fail();
-		} catch (OsmAuthenticationException e) {
+		} catch (OsmAuthorizationException e) {
 		}
 	}
 

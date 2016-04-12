@@ -13,7 +13,7 @@ import java.util.Map;
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.errors.OsmAuthenticationException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmBadUserInputException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
@@ -68,7 +68,7 @@ public class MapDataDao
 	 * @param elements elements to upload. No special order required
 	 * @param handler handler that processes the server's diffResult response.
 	 *
-	 * @throws OsmAuthenticationException if the application does not have permission to edit the
+	 * @throws OsmAuthorizationException if the application does not have permission to edit the
 	 * 	                                  map (Permission.MODIFY_MAP)
 	 *
 	 * @return id of the changeset that was created
