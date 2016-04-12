@@ -138,16 +138,16 @@ public class MapDataChangesWriter extends XmlWriter
 
 	private void writeElementAttributes(Element element) throws IOException
 	{
-		attribute("id", String.valueOf(element.getId()));
-		attribute("version", String.valueOf(element.getVersion()));
-		attribute("changeset", String.valueOf(changesetId));
+		attribute("id", element.getId());
+		attribute("version", element.getVersion());
+		attribute("changeset", changesetId);
 	}
 
 	private void writeNodeContents(Node node) throws IOException
 	{
 		LatLon position = node.getPosition();
-		attribute("lat", String.valueOf(position.getLatitude()));
-		attribute("lon", String.valueOf(position.getLongitude()));
+		attribute("lat", position.getLatitude());
+		attribute("lon", position.getLongitude());
 	}
 
 	private void writeWayContents(Way way) throws IOException
@@ -155,7 +155,7 @@ public class MapDataChangesWriter extends XmlWriter
 		for(Long node : way.getNodeIds())
 		{
 			begin("nd");
-			attribute("ref", String.valueOf(node));
+			attribute("ref", node);
 			end();
 		}
 	}
@@ -165,7 +165,7 @@ public class MapDataChangesWriter extends XmlWriter
 		for(RelationMember member : relation.getMembers())
 		{
 			begin("member");
-			attribute("ref", String.valueOf(member.getRef()));
+			attribute("ref", member.getRef());
 			attribute("type", toXmlName(member.getType()));
 			attribute("role", member.getRole());
 			end();

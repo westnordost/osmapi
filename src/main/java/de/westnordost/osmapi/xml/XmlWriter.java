@@ -68,6 +68,36 @@ public abstract class XmlWriter implements ApiRequestWriter
 		xml.attribute(null, key, value);
 	}
 
+	protected final void attribute(String key, float value) throws IOException
+	{
+		xml.attribute(null, key, String.valueOf(value));
+	}
+	
+	protected final void attribute(String key, double value) throws IOException
+	{
+		xml.attribute(null, key, String.valueOf(value));
+	}
+	
+	protected final void attribute(String key, int value) throws IOException
+	{
+		xml.attribute(null, key, String.valueOf(value));
+	}
+	
+	protected final void attribute(String key, long value) throws IOException
+	{
+		xml.attribute(null, key, String.valueOf(value));
+	}
+	
+	protected final void attribute(String key, byte value) throws IOException
+	{
+		xml.attribute(null, key, String.valueOf(value));
+	}
+	
+	protected final void attribute(String key, boolean value) throws IOException
+	{
+		xml.attribute(null, key, String.valueOf(value));
+	}
+	
 	protected final void text(String text) throws IOException
 	{
 		xml.text(text);
