@@ -1,17 +1,14 @@
 package de.westnordost.osmapi.map;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.Handler;
+import de.westnordost.osmapi.IdResponseReader;
 import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmBadUserInputException;
@@ -33,9 +30,6 @@ import de.westnordost.osmapi.xml.XmlWriter;
 /** Get and upload changes to map data */
 public class MapDataDao
 {
-	/** size of a stream buffer to accommodate any long value send as text/plain */
-	private static final int BUFFER_SIZE_LONG = String.valueOf(Long.MAX_VALUE).length();
-
 	private static final String NODE = "node";
 	private static final String WAY = "way";
 	private static final String RELATION = "relation";
@@ -130,18 +124,7 @@ public class MapDataDao
 			}
 		};
 
-		ApiResponseReader<Long> reader = new ApiResponseReader<Long>()
-		{
-			public Long parse(InputStream in) throws Exception
-			{
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(in, osm.getCharset()), BUFFER_SIZE_LONG
-				);
-				return Long.parseLong(reader.readLine());
-			}
-		};
-
-		return osm.makeAuthenticatedRequest("changeset/create", "PUT", writer, reader);
+		return osm.makeAuthenticatedRequest("changeset/create", "PUT", writer, new IdResponseReader());
 	}
 
 	private void closeChangeset(long changesetId)
