@@ -92,7 +92,7 @@ public class MapDataHistoryDao
 		}
 		catch(OsmApiException e)
 		{
-			/** if an element (or version?) has been redacted, the api will send back a 403
+			/** if a version of an element has been redacted, the api will send back a 403
 			 *  forbidden error instead of a 404. Since for the user, this is just a "it's not
 			 *  there" because he has no way to acquire redacted versions, it should just return
 			 *  null. The error code between "version does not exist" and "element does not exist"
