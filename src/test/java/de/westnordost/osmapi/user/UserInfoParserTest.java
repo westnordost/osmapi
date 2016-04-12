@@ -2,7 +2,6 @@ package de.westnordost.osmapi.user;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -12,13 +11,13 @@ import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class UserInfoParserTest extends TestCase
 {
-	public void testNoInput() throws UnsupportedEncodingException
+	public void testNoInput()
 	{
 		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(""));
 		assertNull(user);
 	}
 
-	public void testAttributes() throws UnsupportedEncodingException
+	public void testAttributes()
 	{
 		String xml =
 				"<user id=\"123\" display_name=\"mr_x\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -33,7 +32,7 @@ public class UserInfoParserTest extends TestCase
 		assertEquals(c.getTimeInMillis() / 1000, user.getCreatedDate().getTime() / 1000);
 	}
 
-	public void testOptionalElements() throws UnsupportedEncodingException
+	public void testOptionalElements()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -58,7 +57,7 @@ public class UserInfoParserTest extends TestCase
 		assertNull(user.getProfileImageUrl());
 	}
 
-	public void testPreferredLanguages()  throws UnsupportedEncodingException
+	public void testPreferredLanguages()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -78,7 +77,7 @@ public class UserInfoParserTest extends TestCase
 		assertEquals("en", langs.get(2));
 	}
 
-	public void testMessages() throws UnsupportedEncodingException
+	public void testMessages()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -97,7 +96,7 @@ public class UserInfoParserTest extends TestCase
 		assertEquals(29, (int) user.getSentMessagesCount());
 	}
 
-	public void testRoles() throws UnsupportedEncodingException
+	public void testRoles()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -116,7 +115,7 @@ public class UserInfoParserTest extends TestCase
 		assertFalse(user.hasRole("Stuntman"));
 	}
 
-	public void testBlocked() throws UnsupportedEncodingException
+	public void testBlocked()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -129,7 +128,7 @@ public class UserInfoParserTest extends TestCase
 		assertTrue(user.isBlocked());
 	}
 
-	public void testNotBlocked() throws UnsupportedEncodingException
+	public void testNotBlocked()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -142,7 +141,7 @@ public class UserInfoParserTest extends TestCase
 		assertFalse(user.isBlocked());
 	}
 
-	public void testBasicElements() throws UnsupportedEncodingException
+	public void testBasicElements()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +

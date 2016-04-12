@@ -2,14 +2,13 @@ package de.westnordost.osmapi.user;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class PermissionsParserTest extends TestCase
 {
-	public void testPermissionsParser() throws UnsupportedEncodingException
+	public void testPermissionsParser()
 	{
 		String xml =
 				"<permissions>" +

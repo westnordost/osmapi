@@ -2,13 +2,11 @@ package de.westnordost.osmapi.capabilities;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
-
 import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class CapabilitiesParserTest extends TestCase
 {
-	public void testBasicFields() throws UnsupportedEncodingException
+	public void testBasicFields()
 	{
 		String xml =
 				"<api>" +
@@ -31,7 +29,7 @@ public class CapabilitiesParserTest extends TestCase
 		assertEquals(300, capabilities.getTimeoutInSeconds());
 	}
 
-	public void testApiStatus() throws UnsupportedEncodingException
+	public void testApiStatus()
 	{
 		String xml =
 				"<api>" +
@@ -47,7 +45,7 @@ public class CapabilitiesParserTest extends TestCase
 		assertFalse(capabilities.isGpsTracesUploadable());
 	}
 
-	public void testPolicy()  throws UnsupportedEncodingException
+	public void testPolicy()
 	{
 		String xml =
 				"<policy>" +

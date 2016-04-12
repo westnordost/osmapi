@@ -2,14 +2,13 @@ package de.westnordost.osmapi.user;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class PreferencesParserTest extends TestCase
 {
-	public void testPreferencesParser() throws UnsupportedEncodingException
+	public void testPreferencesParser()
 	{
 		String xml =
 				"<preferences>" +

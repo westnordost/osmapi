@@ -2,11 +2,9 @@ package de.westnordost.osmapi.xml;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
-
 public class XmlParserTest extends TestCase
 {
-	public void testGetParentName() throws UnsupportedEncodingException
+	public void testGetParentName()
 	{
 		String xml = "<a><b><c></c></b><d></d></a>";
 		final String[] parents = {null, "a", "b", "b", "a", "a", "a", null };
@@ -16,13 +14,13 @@ public class XmlParserTest extends TestCase
 			private int counter = 0;
 
 			@Override
-			protected void onStartElement() throws Exception
+			protected void onStartElement()
 			{
 				assertEquals(parents[counter++],getParentName());
 			}
 
 			@Override
-			protected void onEndElement() throws Exception
+			protected void onEndElement()
 			{
 				assertEquals(parents[counter++],getParentName());
 			}
@@ -30,7 +28,7 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testGetText() throws UnsupportedEncodingException
+	public void testGetText()
 	{
 		String xml = "<a>hi</a><b>ha<c>ho</c><d/>he</b>";
 		// "ha" is ignored
@@ -41,13 +39,13 @@ public class XmlParserTest extends TestCase
 			private int textCounter = 0;
 
 			@Override
-			protected void onStartElement() throws Exception
+			protected void onStartElement()
 			{
 				assertEquals(null, getText());
 			}
 
 			@Override
-			protected void onEndElement() throws Exception
+			protected void onEndElement()
 			{
 				assertEquals(texts[textCounter++], getText());
 			}
@@ -55,7 +53,7 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testGetName() throws UnsupportedEncodingException
+	public void testGetName()
 	{
 		String xml = "<a><b><c></c></b><d></d></a>";
 		final String[] names = {"a","b","c","c","b","d","d","a"};
@@ -65,13 +63,13 @@ public class XmlParserTest extends TestCase
 			private int counter = 0;
 
 			@Override
-			protected void onStartElement() throws Exception
+			protected void onStartElement()
 			{
 				assertEquals(names[counter++],getName());
 			}
 
 			@Override
-			protected void onEndElement() throws Exception
+			protected void onEndElement()
 			{
 				assertEquals(names[counter++],getName());
 			}
@@ -79,20 +77,20 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testGetAttribute() throws UnsupportedEncodingException
+	public void testGetAttribute()
 	{
 		String xml = "<a x='hi' y='ho' /><b/>";
 
 		TestXmlParser parser = new TestXmlParser()
 		{
 			@Override
-			protected void onStartElement() throws Exception
+			protected void onStartElement()
 			{
 				checkDemAll();
 			}
 
 			@Override
-			protected void onEndElement() throws Exception
+			protected void onEndElement()
 			{
 
 			}
@@ -118,21 +116,21 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testException() throws UnsupportedEncodingException
+	public void testException()
 	{
 		String xml = "<a x='hi'/>";
 
 		TestXmlParser parser = new TestXmlParser()
 		{
 			@Override
-			protected void onStartElement() throws Exception
+			protected void onStartElement()
 			{
 				// should fail with an exception because x is a string, not a long
 				long x = Long.parseLong(getAttribute("x"));
 			}
 
 			@Override
-			protected void onEndElement() throws Exception
+			protected void onEndElement()
 			{
 
 			}
@@ -151,7 +149,7 @@ public class XmlParserTest extends TestCase
 
 	private abstract class TestXmlParser extends XmlParser
 	{
-		public void test(String xml) throws UnsupportedEncodingException
+		public void test(String xml)
 		{
 			doParse(XmlTestUtils.asInputStream(xml));
 		}

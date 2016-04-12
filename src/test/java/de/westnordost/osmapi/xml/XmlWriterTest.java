@@ -123,9 +123,10 @@ public class XmlWriterTest extends TestCase
 	{
 		public String test() throws IOException
 		{
+			
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			write(os);
-			String result = os.toString("UTF-8");
+			String result = XmlTestUtils.asString(os);
 			// not interested in indentation
 			result = result.replaceAll("(?m)^[\\s]*", "");
 			// not interested in tabs and newlines

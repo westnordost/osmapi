@@ -2,7 +2,6 @@ package de.westnordost.osmapi.notes;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -14,7 +13,7 @@ import de.westnordost.osmapi.xml.XmlTestUtils;
 public class NotesParserTest extends TestCase
 {
 
-	public void testParseNoteDate() throws UnsupportedEncodingException
+	public void testParseNoteDate()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -33,7 +32,7 @@ public class NotesParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testParseNoteStatus() throws UnsupportedEncodingException
+	public void testParseNoteStatus()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -60,7 +59,7 @@ public class NotesParserTest extends TestCase
 
 	}
 
-	public void testParseNoteOptionalDate() throws UnsupportedEncodingException
+	public void testParseNoteOptionalDate()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -85,7 +84,7 @@ public class NotesParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testParseBasicNoteFields() throws UnsupportedEncodingException
+	public void testParseBasicNoteFields()
 	{
 		String xml =
 				"<note lon=\"-0.1904556\" lat=\"51.5464626\">" +
@@ -104,7 +103,7 @@ public class NotesParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testParseCommentDateField() throws UnsupportedEncodingException
+	public void testParseCommentDateField()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -128,7 +127,7 @@ public class NotesParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testParseCommentStatusField() throws UnsupportedEncodingException
+	public void testParseCommentStatusField()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -163,7 +162,7 @@ public class NotesParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testParseCommentOptionalFields() throws UnsupportedEncodingException
+	public void testParseCommentOptionalFields()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -184,7 +183,7 @@ public class NotesParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testParseBasicCommentFields() throws UnsupportedEncodingException
+	public void testParseBasicCommentFields()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -214,7 +213,7 @@ public class NotesParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testReuseUserData() throws UnsupportedEncodingException
+	public void testReuseUserData()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +

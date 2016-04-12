@@ -2,20 +2,18 @@ package de.westnordost.osmapi.map.changes;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
-
 import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class MapDataChangesParserTest extends TestCase
 {
-	public void testEmptyChange() throws UnsupportedEncodingException
+	public void testEmptyChange()
 	{
 		MapDataChanges changes = parse("<osmChange></osmChange>");
 
 		assertTrue(changes.getAll().isEmpty());
 	}
 
-	public void testDeletions() throws UnsupportedEncodingException
+	public void testDeletions()
 	{
 		MapDataChanges changes =
 				parse("<osmChange><delete><node id='1' version='1' lat='1' lon='1'/></delete></osmChange>");
@@ -25,7 +23,7 @@ public class MapDataChangesParserTest extends TestCase
 		assertEquals(0, changes.getModifications().size());
 	}
 
-	public void testCreations() throws UnsupportedEncodingException
+	public void testCreations()
 	{
 		MapDataChanges changes =
 				parse("<osmChange><create><node id='1' version='1' lat='1' lon='1'/></create></osmChange>");
@@ -35,7 +33,7 @@ public class MapDataChangesParserTest extends TestCase
 		assertEquals(0, changes.getModifications().size());
 	}
 
-	public void testModifications() throws UnsupportedEncodingException
+	public void testModifications()
 	{
 		MapDataChanges changes =
 				parse("<osmChange><modify><node id='1' version='1' lat='1' lon='1'/></modify></osmChange>");
@@ -45,7 +43,7 @@ public class MapDataChangesParserTest extends TestCase
 		assertEquals(1, changes.getModifications().size());
 	}
 
-	private MapDataChanges parse(String xml) throws UnsupportedEncodingException
+	private MapDataChanges parse(String xml)
 	{
 		SimpleMapDataChangesHandler changeMapDataHandler = new SimpleMapDataChangesHandler();
 		new MapDataChangesParser(changeMapDataHandler).parse(XmlTestUtils.asInputStream(xml));

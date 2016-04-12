@@ -2,7 +2,6 @@ package de.westnordost.osmapi.changesets;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -13,7 +12,7 @@ import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class ChangesetParserTest extends TestCase
 {
-	public void testBasicElements() throws UnsupportedEncodingException
+	public void testBasicElements()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
@@ -48,7 +47,7 @@ public class ChangesetParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testOptionalElements() throws UnsupportedEncodingException
+	public void testOptionalElements()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
@@ -97,7 +96,7 @@ public class ChangesetParserTest extends TestCase
 	}
 
 
-	public void testMultipleElements() throws UnsupportedEncodingException
+	public void testMultipleElements()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
@@ -118,7 +117,7 @@ public class ChangesetParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testComments() throws UnsupportedEncodingException
+	public void testComments()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
@@ -161,7 +160,7 @@ public class ChangesetParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testReuseUser() throws UnsupportedEncodingException
+	public void testReuseUser()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +

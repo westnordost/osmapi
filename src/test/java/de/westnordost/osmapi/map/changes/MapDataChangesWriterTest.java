@@ -1,11 +1,7 @@
 package de.westnordost.osmapi.map.changes;
 
-import junit.framework.TestCase;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
 import de.westnordost.osmapi.map.MapDataParser;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
@@ -25,6 +22,7 @@ import de.westnordost.osmapi.map.data.OsmWay;
 import de.westnordost.osmapi.map.data.Relation;
 import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.data.Way;
+import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class MapDataChangesWriterTest extends TestCase
 {
@@ -130,12 +128,12 @@ public class MapDataChangesWriterTest extends TestCase
 		elements.add(createRelation(1));
 
 		MapDataChangesWriter writer = new MapDataChangesWriter(1, elements);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		assertFalse(writer.hasChanges());
 
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		writer.write(out);
-		String xml = new String( out.toByteArray(), "UTF-8" );
+		String xml = XmlTestUtils.asString(out);
 
 		assertTrue(parseXml(xml).getAll().isEmpty());
 	}
@@ -164,13 +162,12 @@ public class MapDataChangesWriterTest extends TestCase
 		return new String( out.toByteArray(), "UTF-8" );
 	}
 
-	private static MapDataChanges parseXml(String xml) throws UnsupportedEncodingException
+	private static MapDataChanges parseXml(String xml)
 	{
 		SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
 
 		MapDataParser parser = new MapDataChangesParser(handler);
-		ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-		parser.parse(stream);
+		parser.parse(XmlTestUtils.asInputStream(xml));
 
 		return handler;
 	}

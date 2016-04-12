@@ -2,7 +2,6 @@ package de.westnordost.osmapi.map;
 
 import junit.framework.TestCase;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -22,7 +21,7 @@ import de.westnordost.osmapi.xml.XmlTestUtils;
 public class MapDataParserTest extends TestCase
 {
 
-	public void testBounds() throws UnsupportedEncodingException
+	public void testBounds()
 	{
 		String xml =
 				" <bounds minlat=\"51.7400000\" minlon=\"0.2400000\" maxlat=\"51.7500000\" maxlon=\"0.2500000\"/>";
@@ -40,7 +39,7 @@ public class MapDataParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testNode() throws UnsupportedEncodingException
+	public void testNode()
 	{
 		String xml =
 				" <node id=\"246773347\" visible=\"true\" version=\"1\" changeset=\"80692\" " +
@@ -72,7 +71,7 @@ public class MapDataParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testWay() throws UnsupportedEncodingException
+	public void testWay()
 	{
 		String xml =
 				"  <way id=\"22918072\" visible=\"true\" version=\"1\" changeset=\"80692\"" +
@@ -110,7 +109,7 @@ public class MapDataParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testRelation() throws UnsupportedEncodingException
+	public void testRelation()
 	{
 		String xml =
 				" <relation id=\"3190476\" visible=\"true\" version=\"1\" changeset=\"17738772\" " +
@@ -160,7 +159,7 @@ public class MapDataParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testOrder() throws UnsupportedEncodingException
+	public void testOrder()
 	{
 		String xml =
 				"<bounds minlat=\"51.7400000\" minlon=\"0.2400000\" maxlat=\"51.7500000\" maxlon=\"0.2500000\"/> " +
@@ -204,7 +203,7 @@ public class MapDataParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testTags() throws UnsupportedEncodingException
+	public void testTags()
 	{
 		String xml =
 				" <relation id=\"3190476\" visible=\"true\" version=\"1\" changeset=\"17738772\" " +
@@ -234,7 +233,7 @@ public class MapDataParserTest extends TestCase
 		}).parse(XmlTestUtils.asInputStream(xml));
 	}
 
-	public void testReuseData() throws UnsupportedEncodingException
+	public void testReuseData()
 	{
 		String xml =
 				" <node id=\"246773352\" visible=\"true\" version=\"1\" changeset=\"80692\" " +
