@@ -51,8 +51,8 @@ public class MapDataDaoTest extends TestCase
 		try {
 			// this must surely be too big, regardless of the server preferences
 			// - it's the whole world!
-			new MapDataDao(connection).getMap(new Bounds(LatLon.MIN_VALUE,
-					LatLon.MAX_VALUE), new DefaultMapDataHandler());
+			new MapDataDao(connection).getMap(new Bounds(LatLons.MIN_VALUE,
+					LatLons.MAX_VALUE), new DefaultMapDataHandler());
 			fail();
 		} catch (OsmQueryTooBigException e) {
 		}
@@ -63,8 +63,7 @@ public class MapDataDaoTest extends TestCase
 			// using here the smallest possible query area, so it cannot be too
 			// big
 			new MapDataDao(connection).getMap(
-					new Bounds(OsmLatLon.parseLatLon("0", "180"), OsmLatLon
-							.parseLatLon("0.0000001", "-179.9999999")),
+					new Bounds(0, 180, 0.0000001, -179.9999999),
 					new DefaultMapDataHandler());
 			fail();
 		} catch (IllegalArgumentException e) {
@@ -72,8 +71,7 @@ public class MapDataDaoTest extends TestCase
 	}
 
 	public void testGetMapBounds() {
-		final Bounds verySmallBounds = new Bounds(OsmLatLon.parseLatLon("31",
-				"31"), OsmLatLon.parseLatLon("31.0000001", "31.0000001"));
+		final Bounds verySmallBounds = new Bounds(31,31, 31.0000001, 31.0000001);
 
 		new MapDataDao(connection).getMap(verySmallBounds,
 				new DefaultMapDataHandler() {
@@ -90,8 +88,7 @@ public class MapDataDaoTest extends TestCase
 		// querying something in the middle of Hamburg should at least make
 		// handle(X) be called for
 		// every type of element once
-		final Bounds hamburg = new Bounds(OsmLatLon.parseLatLon("53.579",
-				"9.939"), OsmLatLon.parseLatLon("53.580", "9.940"));
+		final Bounds hamburg = new Bounds(53.579,9.939,53.580, 9.940);
 
 		CountMapDataHandler counter = new CountMapDataHandler();
 		new MapDataDao(liveConnection).getMap(hamburg, counter);
@@ -104,8 +101,7 @@ public class MapDataDaoTest extends TestCase
 
 	public void testDownloadMapIsReallyStreamed() {
 		// should be >1MB of data
-		final Bounds bigHamburg = new Bounds(OsmLatLon.parseLatLon("53.585",
-				"9.945"), OsmLatLon.parseLatLon("53.59", "9.95"));
+		final Bounds bigHamburg = new Bounds(53.585, 9.945, 53.59, 9.95);
 
 		CheckFirstHandleCallHandler handler = new CheckFirstHandleCallHandler();
 

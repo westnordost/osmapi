@@ -1,12 +1,22 @@
 package de.westnordost.osmapi.map.data;
 
-import junit.framework.TestCase;
-
 import java.util.List;
+
+import junit.framework.TestCase;
 
 public class BoundsTest extends TestCase
 {
-	public void testValidation()
+	public void testValidation4Doubles()
+	{
+		try
+		{
+			new Bounds(0, 0, -1, 0);
+			fail();
+		}
+		catch (IllegalArgumentException e) {}
+	}
+
+	public void testValidationLatLon()
 	{
 		try
 		{
@@ -16,6 +26,7 @@ public class BoundsTest extends TestCase
 		catch (IllegalArgumentException e) {}
 	}
 
+	
 	public void testCross180thMeridian()
 	{
 		Bounds bounds = new Bounds(
@@ -29,10 +40,10 @@ public class BoundsTest extends TestCase
 
 		assertEquals(bounds.getMin(),bounds1.getMin());
 		assertEquals(bounds.getMax().getLatitude(), bounds1.getMax().getLatitude());
-		assertEquals(LatLon.MAX_VALUE.getLongitude(), bounds1.getMax().getLongitude());
+		assertEquals(LatLons.MAX_VALUE.getLongitude(), bounds1.getMax().getLongitude());
 
 		assertEquals(bounds.getMin().getLatitude(), bounds2.getMin().getLatitude());
-		assertEquals(LatLon.MIN_VALUE.getLongitude(), bounds2.getMin().getLongitude());
+		assertEquals(LatLons.MIN_VALUE.getLongitude(), bounds2.getMin().getLongitude());
 		assertEquals(bounds.getMax(),bounds2.getMax());
 	}
 
@@ -45,5 +56,25 @@ public class BoundsTest extends TestCase
 				OsmLatLon.parseLatLon("51.7400243", "0.2400123"),
 				OsmLatLon.parseLatLon("55.7410243", "0.2701123"));
 		assertEquals(bounds1, bounds2);
+	}
+	
+	public void testEqualsWithDifferentConstructors()
+	{
+		Bounds bounds1 = new Bounds(34.1234, 12.1234, 37.1237, 15.1254);
+		Bounds bounds2 = new Bounds(new OsmLatLon(34.1234, 12.1234), new OsmLatLon(37.1237, 15.1254));
+		
+		assertEquals(bounds1, bounds2);
+	}
+	
+	public void testEqualsNull()
+	{
+		Bounds bounds1 = new Bounds(34.1234, 12.1234, 37.1237, 15.1254);
+		assertFalse(bounds1.equals(null));
+	}
+	
+	public void testEqualsOtherObject()
+	{
+		Bounds bounds1 = new Bounds(34.1234, 12.1234, 37.1237, 15.1254);
+		assertFalse(bounds1.equals(new Object()));
 	}
 }

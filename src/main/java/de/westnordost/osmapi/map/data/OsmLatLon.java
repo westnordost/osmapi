@@ -12,9 +12,6 @@ public class OsmLatLon implements LatLon
 	private final int latitude;
 	private final int longitude;
 
-	private static final int LATITUDE_LIMIT = Fixed1E7.intToFixed(+90);
-	private static final int LONGITUDE_LIMIT = Fixed1E7.intToFixed(+180);
-
 	/** @throws IllegalArgumentException if the given latitude and longitude do not make up a valid
 	 *          position*/
 	public OsmLatLon(double latitude, double longitude)
@@ -22,11 +19,7 @@ public class OsmLatLon implements LatLon
 		this.latitude = Fixed1E7.doubleToFixed(latitude);
 		this.longitude = Fixed1E7.doubleToFixed(longitude);
 
-		if(!isValid())
-		{
-			throw new IllegalArgumentException("Latitude " + getLatitude() + ", Longitude " +
-					getLongitude() + " is not a valid position.");
-		}
+		LatLons.checkValidity(this);
 	}
 
 	public static OsmLatLon parseLatLon(String lat, String lon)
@@ -44,21 +37,6 @@ public class OsmLatLon implements LatLon
 	public double getLongitude()
 	{
 		return Fixed1E7.toDouble(longitude);
-	}
-
-	private boolean isLongitudeValid()
-	{
-		return longitude >= -LONGITUDE_LIMIT && longitude <= LONGITUDE_LIMIT;
-	}
-
-	private boolean isLatitudeValid()
-	{
-		return latitude >= -LATITUDE_LIMIT && latitude <= LATITUDE_LIMIT;
-	}
-
-	private boolean isValid()
-	{
-		return isLongitudeValid() && isLatitudeValid();
 	}
 
 	@Override

@@ -9,9 +9,21 @@ public class Bounds
 	private LatLon min;
 	private LatLon max;
 
-	public Bounds(double latMin, double lonMin, double latMax, double lonMax)
+	public Bounds(final double latMin, final double lonMin, final double latMax, final double lonMax)
 	{
-		this(new OsmLatLon(latMin, lonMin), new OsmLatLon(latMax, lonMax));
+		this(createLatLon(latMin, lonMin), createLatLon(latMax, lonMax));
+	}
+	
+	private static LatLon createLatLon(final double lat, final double lon)
+	{
+		// bake the parameters into anonymous LatLons so there is no dependency on any particular LatLon implementation
+		LatLon result = new LatLon()
+		{
+			public double getLatitude() { return lat; }
+			public double getLongitude() { return lon; }
+		};
+		LatLons.checkValidity(result);
+		return result;
 	}
 	
 	public Bounds(LatLon min, LatLon max)
@@ -79,8 +91,8 @@ public class Bounds
 		if(crosses180thMeridian())
 		{
 			return Arrays.asList(
-					new Bounds( min, new OsmLatLon(max.getLatitude(), LatLon.MAX_VALUE.getLongitude()) ),
-					new Bounds( new OsmLatLon(min.getLatitude(), LatLon.MIN_VALUE.getLongitude()), max )
+					new Bounds( min, createLatLon(max.getLatitude(), LatLons.MAX_VALUE.getLongitude()) ),
+					new Bounds( createLatLon(min.getLatitude(), LatLons.MIN_VALUE.getLongitude()), max )
 			);
 		}
 
@@ -92,7 +104,11 @@ public class Bounds
 	{
 		if(other == null || !(other instanceof Bounds)) return false;
 
+		// we do not rely on that every implementation of LatLon implements equals() properly
 		Bounds otherBounds = (Bounds) other;
-		return otherBounds.getMin().equals(getMin()) && otherBounds.getMax().equals(getMax());
+		return otherBounds.getMinLatitude() == getMinLatitude()
+			&& otherBounds.getMaxLatitude() == getMaxLatitude()
+			&& otherBounds.getMinLongitude() == getMinLongitude()
+			&& otherBounds.getMaxLongitude() == getMaxLongitude();
 	}
 }

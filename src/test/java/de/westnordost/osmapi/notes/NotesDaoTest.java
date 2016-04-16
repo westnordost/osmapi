@@ -1,10 +1,10 @@
 package de.westnordost.osmapi.notes;
 
-import junit.framework.TestCase;
-
 import java.util.Date;
 import java.util.List;
 
+import junit.framework.TestCase;
+import oauth.signpost.exception.OAuthExpectationFailedException;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.errors.OsmAuthorizationException;
@@ -13,8 +13,8 @@ import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.data.Bounds;
 import de.westnordost.osmapi.map.data.LatLon;
+import de.westnordost.osmapi.map.data.LatLons;
 import de.westnordost.osmapi.map.data.OsmLatLon;
-import oauth.signpost.exception.OAuthExpectationFailedException;
 
 public class NotesDaoTest extends TestCase
 {
@@ -39,8 +39,7 @@ public class NotesDaoTest extends TestCase
 
 	private static final String TEXT = "test case";
 
-	private static final Bounds WHOLE_WORLD = new Bounds(
-			LatLon.MIN_VALUE, LatLon.MAX_VALUE);
+	private static final Bounds WHOLE_WORLD = new Bounds(LatLons.MIN_VALUE, LatLons.MAX_VALUE);
 
 	// the area in which this test spawns all those notes
 	private static final Bounds MY_AREA = new Bounds(

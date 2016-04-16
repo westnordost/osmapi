@@ -4,25 +4,28 @@ import junit.framework.TestCase;
 
 public class OsmLatLonTest extends TestCase
 {
+	private static final double VALID_LAT = 51.7400243;
+	private static final double VALID_LON = 0.2400123;
+	
 	public void testFixedE7()
 	{
-		OsmLatLon pos = new OsmLatLon(51.7400243, 0.2400123);
-		assertEquals(51.7400243, pos.getLatitude());
-		assertEquals(0.2400123, pos.getLongitude());
+		OsmLatLon pos = new OsmLatLon(VALID_LAT, VALID_LON);
+		assertEquals(VALID_LAT, pos.getLatitude());
+		assertEquals(VALID_LON, pos.getLongitude());
 	}
 
 	public void testNegativeFixedE7()
 	{
-		OsmLatLon pos = new OsmLatLon(-51.7400243, -0.2400123);
-		assertEquals(-51.7400243, pos.getLatitude());
-		assertEquals(-0.2400123, pos.getLongitude());
+		OsmLatLon pos = new OsmLatLon(-VALID_LAT, -VALID_LON);
+		assertEquals(-VALID_LAT, pos.getLatitude());
+		assertEquals(-VALID_LON, pos.getLongitude());
 	}
 
 	public void testParse()
 	{
-		OsmLatLon pos = OsmLatLon.parseLatLon("51.7400243", "0.2400123");
-		assertEquals(51.7400243, pos.getLatitude());
-		assertEquals(0.2400123, pos.getLongitude());
+		OsmLatLon pos = OsmLatLon.parseLatLon(String.valueOf(VALID_LAT), String.valueOf(VALID_LON));
+		assertEquals(VALID_LAT, pos.getLatitude());
+		assertEquals(VALID_LON, pos.getLongitude());
 	}
 
 	public void testZeroSomething()
@@ -34,11 +37,34 @@ public class OsmLatLonTest extends TestCase
 
 	public void testEquals()
 	{
-		OsmLatLon pos1 = OsmLatLon.parseLatLon("51.7400243", "0.2400123");
-		OsmLatLon pos2 = OsmLatLon.parseLatLon("51.7400243", "0.2400123");
+		OsmLatLon pos1 = OsmLatLon.parseLatLon(String.valueOf(VALID_LAT), String.valueOf(VALID_LON));
+		OsmLatLon pos2 = new OsmLatLon(VALID_LAT, VALID_LON);
 		assertEquals(pos1, pos2);
 	}
-
+	
+	public void testEqualsWithNonOsmLatLon()
+	{
+		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
+		LatLon pos2 = new LatLon()
+		{
+			public double getLongitude() { return VALID_LON; }
+			public double getLatitude() { return VALID_LAT; }
+		};
+		assertEquals(pos1, pos2);
+	}
+	
+	public void testEqualsNull()
+	{
+		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
+		assertFalse(pos1.equals(null));
+	}
+	
+	public void testEqualsOtherObject()
+	{
+		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
+		assertFalse(pos1.equals(new Object()));
+	}
+	
 	public void testInvalidPositiveLatitude()
 	{
 		try
