@@ -82,23 +82,11 @@ public class QueryChangesetsFilters
 	 *  @throws IllegalArgumentException if the collection is empty  */
 	public QueryChangesetsFilters byChangesets( Collection<Long> changesetIds )
 	{
-		if(changesetIds.isEmpty())
-		{
-			throw new IllegalArgumentException("Must at least supply one changeset id");
-		}
-
-		StringBuilder cids = new StringBuilder();
-		boolean first = true;
-		for(Long id : changesetIds)
-		{
-			if(id == null) continue;
-
-			if(first) first = false;
-			else      cids.append(",");
-			cids.append(id);
-		}
-		params.put("changesets", cids.toString());
-		return this;
+		long[] changesetIdArray = new long[changesetIds.size()];
+		int i = 0;
+		for(Long id : changesetIds) changesetIdArray[i++] = id;
+		
+		return byChangesets(changesetIdArray);
 	}
 
 	/** @param changesetIds at least one changeset id to search for
@@ -123,17 +111,19 @@ public class QueryChangesetsFilters
 	/**
 	 * @param closedAfter limit search to changesets that have been closed after this date
 	 */
-	public QueryChangesetsFilters byTime(Date closedAfter)
+	public QueryChangesetsFilters byClosedAfter(Date closedAfter)
 	{
 		params.put("time", df.format(closedAfter));
 		return this;
 	}
 
 	/**
+	 * Filter by changesets that have at one time been open during the given time range
+	 * 
 	 * @param closedAfter limit search to changesets that have been closed after this date
 	 * @param createdBefore limit search to changesets that have been created before this date
 	 */
-	public QueryChangesetsFilters byTime(Date createdBefore, Date closedAfter)
+	public QueryChangesetsFilters byOpenSomeTimeBetween(Date createdBefore, Date closedAfter)
 	{
 		params.put("time", df.format(closedAfter) + "," + df.format(createdBefore));
 		return this;

@@ -88,16 +88,10 @@ public class XmlParserTest extends TestCase
 			{
 				checkDemAll();
 			}
-
-			@Override
-			protected void onEndElement()
-			{
-
-			}
-
+			
 			private void checkDemAll()
 			{
-				// exist anywhere for element a
+				// exist for element a
 				if(getName().equals("a"))
 				{
 					assertEquals("hi", getAttribute("x"));
@@ -116,6 +110,33 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
+	public void testConvenienceAttributeGetters()
+	{
+		String xml = "<a a_float='123.456' a_int='122' a_bool='true' />";
+		
+		TestXmlParser parser = new TestXmlParser()
+		{
+			@Override
+			protected void onStartElement()
+			{
+				assertEquals(123.456f, getFloatAttribute("a_float"));
+				assertEquals(123.456d, getDoubleAttribute("a_float"));
+				assertEquals(122L, (long) getLongAttribute("a_int"));
+				assertEquals(122, (int) getIntAttribute("a_int"));
+				assertEquals(122, (byte) getByteAttribute("a_int"));
+				assertEquals(true, (boolean) getBooleanAttribute("a_bool"));
+				
+				assertNull(getFloatAttribute("does_not_exist"));
+				assertNull(getDoubleAttribute("does_not_exist"));
+				assertNull(getLongAttribute("does_not_exist"));
+				assertNull(getIntAttribute("does_not_exist"));
+				assertNull(getByteAttribute("does_not_exist"));
+				assertNull(getBooleanAttribute("does_not_exist"));
+			}
+		};
+		parser.test(xml);
+	}
+	
 	public void testException()
 	{
 		String xml = "<a x='hi'/>";
@@ -127,12 +148,6 @@ public class XmlParserTest extends TestCase
 			{
 				// should fail with an exception because x is a string, not a long
 				long x = Long.parseLong(getAttribute("x"));
-			}
-
-			@Override
-			protected void onEndElement()
-			{
-
 			}
 		};
 
@@ -147,11 +162,23 @@ public class XmlParserTest extends TestCase
 		}
 	}
 
-	private abstract class TestXmlParser extends XmlParser
+	private class TestXmlParser extends XmlParser
 	{
 		public void test(String xml)
 		{
 			doParse(XmlTestUtils.asInputStream(xml));
+		}
+
+		@Override
+		protected void onStartElement()
+		{
+			// empty default implementation
+		}
+
+		@Override
+		protected void onEndElement()
+		{
+			// empty default implementation
 		}
 	}
 }

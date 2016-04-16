@@ -22,13 +22,9 @@ public class XmlWriterTest extends TestCase
 					begin("test");
 				}
 			}.test();
+			fail();
 		}
-		catch (IllegalStateException e)
-		{
-			assertTrue(true);
-			return;
-		}
-		assertFalse("Should have thrown an exception", true);
+		catch (IllegalStateException e) { }
 	}
 
 	public void testDidCloseOneTagTooMany() throws IOException
@@ -45,13 +41,9 @@ public class XmlWriterTest extends TestCase
 					end();
 				}
 			}.test();
+			fail();
 		}
-		catch (IllegalStateException e)
-		{
-			assertTrue(true);
-			return;
-		}
-		assertFalse("Should have thrown an exception", true);
+		catch (IllegalStateException e) {}
 	}
 
 	public void testSimple() throws IOException
@@ -123,7 +115,6 @@ public class XmlWriterTest extends TestCase
 	{
 		public String test() throws IOException
 		{
-			
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			write(os);
 			String result = XmlTestUtils.asString(os);

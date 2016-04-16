@@ -1,21 +1,21 @@
 package de.westnordost.osmapi.map;
 
-import junit.framework.TestCase;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
+import junit.framework.TestCase;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.OsmConnection;
+import de.westnordost.osmapi.SingleElementHandler;
 import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
+import de.westnordost.osmapi.map.changes.DiffElement;
 import de.westnordost.osmapi.map.data.Bounds;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
+import de.westnordost.osmapi.map.data.LatLons;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.map.data.OsmNode;
@@ -31,8 +31,6 @@ public class MapDataDaoTest extends TestCase
 	private OsmConnection unprivilegedConnection;
 	private OsmConnection connection;
 	private OsmConnection liveConnection;
-
-	private long changesetId;
 
 	@Override
 	protected void setUp() {
@@ -146,6 +144,38 @@ public class MapDataDaoTest extends TestCase
 		}
 	}
 
+	public void testReadDiff()
+	{
+		MapDataDao mapDataDao = new MapDataDao(privilegedConnection);
+
+		final LatLon POS = new OsmLatLon(55.42313, 50.13221);
+		final long PLACEHOLDER_ID = -33;
+		
+		Element node = new OsmNode(PLACEHOLDER_ID, 1, POS, null, null);
+		SingleElementHandler<DiffElement> handlerCreated = new SingleElementHandler<>();
+		mapDataDao.updateMap("test", "test", Arrays.asList(node), handlerCreated);
+		DiffElement diffCreated = handlerCreated.get();
+
+		// update id and delete again... (clean up before asserting)
+		Element deleteNode = new OsmNode(diffCreated.serverId, diffCreated.serverVersion, POS, null, null);
+		deleteNode.setDeleted(true);
+		SingleElementHandler<DiffElement> handlerDeleted = new SingleElementHandler<>();
+		mapDataDao.updateMap("clean up test", "test", Arrays.asList(deleteNode), handlerDeleted);
+		
+		DiffElement diffDeleted = handlerDeleted.get();
+
+		assertEquals(PLACEHOLDER_ID, diffCreated.clientId);
+		assertEquals(Element.Type.NODE, diffCreated.type);
+		assertNotNull(diffCreated.serverVersion);
+		assertEquals(1,(int) diffCreated.serverVersion);
+		
+		assertEquals((long)diffCreated.serverId, diffDeleted.clientId);
+		assertEquals(Element.Type.NODE, diffDeleted.type);
+		assertNull(diffDeleted.serverId);
+		assertNull(diffDeleted.serverVersion);
+	}
+	
+	
 	public void testNotFound() {
 		MapDataDao dao = new MapDataDao(connection);
 		MapDataHandler h = new DefaultMapDataHandler();
@@ -206,17 +236,20 @@ public class MapDataDaoTest extends TestCase
 		assertNull(new MapDataDao(connection).getNode(Long.MAX_VALUE));
 	}
 
-	public void testGetWay() {
+	public void testGetWay()
+	{
 		new MapDataDao(liveConnection).getWay(ElementShouldExist.WAY);
 		assertNull(new MapDataDao(connection).getWay(Long.MAX_VALUE));
 	}
 
-	public void testGetRelation() {
+	public void testGetRelation()
+	{
 		new MapDataDao(liveConnection).getRelation(ElementShouldExist.RELATION);
 		assertNull(new MapDataDao(connection).getRelation(Long.MAX_VALUE));
 	}
 
-	public void testGetNodes() {
+	public void testGetNodes()
+	{
 		// test if a non-existing element does "poison the well"
 		// this test will fail if both Yangon and New York place=city nodes do
 		// not exist anymore ;-)
@@ -231,8 +264,9 @@ public class MapDataDaoTest extends TestCase
 		List<Long> place = Arrays.asList(ElementShouldExist.NODE);
 		assertFalse(new MapDataDao(liveConnection).getNodes(place).isEmpty());
 	}
-
-	public void testGetRelations() {
+	
+	public void testGetRelations()
+	{
 		// test if a non-existing element does "poison the well"
 		// this test will fail if Germany type=boundary does not exist anymore
 		try {
@@ -248,7 +282,8 @@ public class MapDataDaoTest extends TestCase
 				.isEmpty());
 	}
 
-	public void testGetWays() {
+	public void testGetWays()
+	{
 		// test if a non-existing element does "poison the well"
 		// this test will fail if some harbor in Hamburg does not exist
 		// anymore...
@@ -264,7 +299,15 @@ public class MapDataDaoTest extends TestCase
 		List<Long> place = Arrays.asList(ElementShouldExist.WAY);
 		assertFalse(new MapDataDao(liveConnection).getWays(place).isEmpty());
 	}
-
+	
+	public void testGetElementsEmpty()
+	{
+		MapDataDao dao = new MapDataDao(connection);
+		assertTrue(dao.getWays(Collections.EMPTY_LIST).isEmpty());
+		assertTrue(dao.getNodes(Collections.EMPTY_LIST).isEmpty());
+		assertTrue(dao.getRelations(Collections.EMPTY_LIST).isEmpty());
+	}
+	
 	private class CountMapDataHandler implements MapDataHandler {
 		public int bounds;
 		public int nodes;

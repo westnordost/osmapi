@@ -64,7 +64,34 @@ public class UserPreferencesDaoTest extends TestCase
 		privilegedDao.deleteUserPreference("A");
 		assertNull(privilegedDao.getUserPreference("A"));
 	}
+	
+	public void testKeyTooLong()
+	{
+		try
+		{
+			privilegedDao.setUserPreference(tooLong(), "jo");
+			fail();
+		}
+		catch(IllegalArgumentException e) { }
+	}
 
+	public void testValueTooLong()
+	{
+		try
+		{
+			privilegedDao.setUserPreference("jo", tooLong());
+			fail();
+		}
+		catch(IllegalArgumentException e) { }
+	}
+	
+	private static String tooLong()
+	{
+		String result = "";
+		for(int i=0; i<=256; ++i) result += "x";
+		return result;
+	}
+	
 	public void testSetAndGetUserPreferences()
 	{
 		Map<String,String> preferences = new HashMap<>();

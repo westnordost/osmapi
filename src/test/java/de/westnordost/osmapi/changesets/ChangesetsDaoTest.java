@@ -32,6 +32,9 @@ public class ChangesetsDaoTest extends TestCase
 	   enough to let the test fail, imo */
 	private static final int TEN_MINUTES = 1000 * 60 * 10;
 
+	private static final int A_USER_WITH_CHANGESETS = 3630;
+	private static final int A_USER_WITHOUT_CHANGESETS = 3632;
+	
 	@Override
 	protected void setUp() throws Exception
 	{
@@ -188,12 +191,25 @@ public class ChangesetsDaoTest extends TestCase
 			{
 				// nothing...
 			}
-		}, new QueryChangesetsFilters().byUser(3630));
+		}, new QueryChangesetsFilters().byUser(A_USER_WITH_CHANGESETS));
 
 		// whether the result is consistent with the query parameters is not tested here
 		// this just should not throw an exception
 	}
 
+	public void testGetChangesetsEmptyDoesNotFail()
+	{
+		ChangesetsDao dao = new ChangesetsDao(connection);
+		dao.getChangesets(new Handler<ChangesetInfo>()
+		{
+			@Override
+			public void handle(ChangesetInfo tea)
+			{
+				// nothing...
+			}
+		}, new QueryChangesetsFilters().byUser(A_USER_WITHOUT_CHANGESETS));
+	}
+	
 	public void testGetChanges()
 	{
 		MapDataDao mapDataDao = new MapDataDao(userConnection);
