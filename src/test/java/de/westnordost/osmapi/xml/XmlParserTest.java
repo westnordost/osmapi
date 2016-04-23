@@ -148,7 +148,7 @@ public class XmlParserTest extends TestCase
 			protected void onStartElement()
 			{
 				// should fail with an exception because x is a string, not a long
-				long x = Long.parseLong(getAttribute("x"));
+				Long.parseLong(getAttribute("x"));
 			}
 		};
 

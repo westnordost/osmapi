@@ -2,14 +2,6 @@
 
 osmapi is a Java implementation of the [OSM API 0.6](http://wiki.openstreetmap.org/wiki/API_v0.6) for clients
 
-It is however not complete yet. What is missing:
-
-* everything with GPS traces (upload, download, updating, deleting etc.)
-* some tests
-* final deliberations if the interfaces are fine this way
-
-I will extend it as I need it; or you could contribute these things
-
 ## License
 
 This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html). If this does not satisfy your needs, talk to me. I am inclined to change it if an ISC/BSD based open source project wants to use this library.
@@ -29,9 +21,11 @@ It is more convenient however to use the appropriate DAO to do that for you and 
 * MapDataDao - download and upload map data, query single elements and their relations toward each other
 * NotesDao - open, comment and close notes
 * MapDataHistoryDao - query the history and specific versions of elements
+* GpsTracesDao - query gps traces, upload and download traces and trackpoints
 * ChangesetsDao - query changesets, take part in changeset discussions
 * CapabilitiesDao - query the server capabilities
-* UserDao - get user infos and permissions
+* UserDao - get user infos
+* PermissionsDao - get user permissions
 * UserPreferencesDao - query and edit user preferences
 
 For example...

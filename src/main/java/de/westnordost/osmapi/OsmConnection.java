@@ -287,6 +287,7 @@ public class OsmConnection
 	
 	private String getErrorDescription(InputStream inputStream) throws IOException
 	{
+		if(inputStream == null) return null;
 		ByteArrayOutputStream result = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int length;

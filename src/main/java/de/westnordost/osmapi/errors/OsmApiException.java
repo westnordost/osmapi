@@ -47,6 +47,6 @@ public class OsmApiException extends RuntimeException
 		if( getCause() != null ) return super.toString();
 
 		String name = getClass().getName();
-		return name + ": " + errorTitle + "("+errorCode+") - " + description;
+		return name + ": " + errorTitle + " ("+errorCode+") - " + description;
 	}
 }
