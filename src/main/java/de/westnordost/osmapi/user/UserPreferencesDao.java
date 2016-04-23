@@ -5,14 +5,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import de.westnordost.osmapi.ApiRequestWriter;
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.OsmConnection;
+import de.westnordost.osmapi.PlainTextWriter;
 import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.xml.XmlWriter;
@@ -36,7 +35,7 @@ public class UserPreferencesDao
 	 * @return	a key-value map of the user preferences
 	 * @throws OsmAuthorizationException if the application is not authenticated to read the
 	 *                                     user's preferences. (Permission.READ_PREFERENCES_AND_USER_DETAILS) */
-	public Map<String,String> getUserPreferences()
+	public Map<String,String> getAll()
 	{
 		return osm.makeAuthenticatedRequest(USERPREFS, "GET", new PreferencesParser());
 	}
@@ -47,14 +46,14 @@ public class UserPreferencesDao
 	 *
 	 * @throws	OsmAuthorizationException if the application is not authenticated to read the
 	 *                                     user's preferences. (Permission.READ_PREFERENCES_AND_USER_DETAILS) */
-	public String getUserPreference(String key)
+	public String get(String key)
 	{
 		String urlKey = urlEncode(key);
 		ApiResponseReader<String> reader = new ApiResponseReader<String>()
 		{
 			public String parse(InputStream in) throws Exception
 			{
-				InputStreamReader isr = new InputStreamReader(in, osm.getCharset());
+				InputStreamReader isr = new InputStreamReader(in, OsmConnection.CHARSET);
 				BufferedReader reader = new BufferedReader(isr, BUFFER_SIZE_PREFS);
 				return reader.readLine();
 			}
@@ -78,7 +77,7 @@ public class UserPreferencesDao
 	 * @throws OsmAuthorizationException if this application is not authorized to change the
 	 *                                    user's preferences. (Permission.CHANGE_PREFERENCES)
 	 */
-	public void setUserPreferences(Map<String, String> preferences)
+	public void setAll(Map<String, String> preferences)
 	{
 		// check it before sending it to the server in order to be able to raise a precise exception
 		for(Map.Entry<String,String> preference : preferences.entrySet())
@@ -120,13 +119,13 @@ public class UserPreferencesDao
 	 * @throws OsmAuthorizationException if this application is not authorized to change the
 	 *                                    user's preferences. (Permission.CHANGE_PREFERENCES)
 	 */
-	public void setUserPreference(String key, String value)
+	public void set(String key, String value)
 	{
 		String urlKey = urlEncode(key);
 		checkPreferenceKeyLength(urlKey);
 		checkPreferenceValueLength(value);
 
-		osm.makeAuthenticatedRequest(USERPREFS + urlKey, "PUT", new StringWriter(value));
+		osm.makeAuthenticatedRequest(USERPREFS + urlKey, "PUT", new PlainTextWriter(value));
 	}
 
 	/**
@@ -136,7 +135,7 @@ public class UserPreferencesDao
 	 * @throws OsmAuthorizationException if this application is not authorized to change the
 	 *                                    user's preferences. (Permission.CHANGE_PREFERENCES)
 	 */
-	public void deleteUserPreference(String key)
+	public void delete(String key)
 	{
 		String urlKey = urlEncode(key);
 		checkPreferenceKeyLength(urlKey);
@@ -160,32 +159,11 @@ public class UserPreferencesDao
 		}
 	}
 
-	private class StringWriter implements ApiRequestWriter
-	{
-		private String data;
-
-		public StringWriter(String data)
-		{
-			this.data = data;
-		}
-
-		@Override
-		public String getContentType()
-		{
-			return "text/plain";
-		}
-
-		public void write(OutputStream out) throws IOException
-		{
-			out.write( data.getBytes(osm.getCharset()) );
-		}
-	}
-
 	private String urlEncode(String text)
 	{
 		try
 		{
-			return URLEncoder.encode(text, osm.getCharset());
+			return URLEncoder.encode(text, OsmConnection.CHARSET);
 		}
 		catch (UnsupportedEncodingException e)
 		{

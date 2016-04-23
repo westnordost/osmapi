@@ -1,9 +1,7 @@
 package de.westnordost.osmapi.changesets;
 
-
 import java.io.InputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,31 +11,29 @@ import java.util.Map;
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.OsmXmlDateFormat;
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.OsmLatLon;
-import de.westnordost.osmapi.user.OsmUser;
 import de.westnordost.osmapi.user.User;
 import de.westnordost.osmapi.xml.XmlParser;
 
-/** Parses changeset infos. It parses the XML naively, i.e. it does not care where in the XML the
- *  notes nodes are. */
+/**
+ * Parses changeset infos. It parses the XML naively, i.e. it does not care
+ * where in the XML the notes nodes are.
+ */
 public class ChangesetParser extends XmlParser implements ApiResponseReader<Void>
 {
-	private static final SimpleDateFormat DATE_FORMAT = new OsmXmlDateFormat();
-
-	private static final String
-			TAG = "tag",
-			CHANGESET = "changeset",
-			COMMENT = "comment",
+	private static final String TAG = "tag", CHANGESET = "changeset", COMMENT = "comment",
 			TEXT = "text";
 
+	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
+	
 	private Map<Long, User> users;
 
 	private Handler<ChangesetInfo> handler;
 
-	private OsmChangesetInfo currentChangesetInfo;
-	private ChangesetComment currentComment;
-	private List<ChangesetComment> comments;
+	private ChangesetInfo currentChangesetInfo;
+	private ChangesetNote currentComment;
+	private List<ChangesetNote> comments;
 	private Map<String, String> tags;
 
 	public ChangesetParser(Handler<ChangesetInfo> handler)
@@ -77,54 +73,56 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 		}
 	}
 
-	private OsmChangesetInfo parseChangeset() throws ParseException
+	private ChangesetInfo parseChangeset() throws ParseException
 	{
-		Bounds bounds = null;
+		BoundingBox bounds = null;
 		if(getAttribute("min_lat") != null)
 		{
-			bounds = new Bounds(
-					OsmLatLon.parseLatLon(getAttribute("min_lat"), getAttribute("min_lon")),
-					OsmLatLon.parseLatLon(getAttribute("max_lat"), getAttribute("max_lon")));
+			bounds = new BoundingBox(OsmLatLon.parseLatLon(getAttribute("min_lat"),
+					getAttribute("min_lon")), OsmLatLon.parseLatLon(getAttribute("max_lat"),
+					getAttribute("max_lon")));
 		}
 
 		String closedAtStr = getAttribute("closed_at");
 		Date closedAt = null;
 		if(closedAtStr != null)
 		{
-			closedAt = DATE_FORMAT.parse(closedAtStr);
+			closedAt = dateFormat.parse(closedAtStr);
 		}
 
 		User user = parseUser();
 		// user must be defined for a changeset
-		if(user == null) throw new NullPointerException();
+		if(user == null)
+			throw new NullPointerException();
 
-		return new OsmChangesetInfo(
-				getLongAttribute("id"),
-				DATE_FORMAT.parse(getAttribute("created_at")),
-				closedAt,
-				user,
-				bounds,
-				getBooleanAttribute("open"),
-				getIntAttribute("comments_count")
-		);
+		ChangesetInfo result = new ChangesetInfo();
+		result.id = getLongAttribute("id");
+		result.date = result.dateCreated = dateFormat.parse(getAttribute("created_at"));
+		result.dateClosed = closedAt;
+		result.user = user;
+		result.boundingBox = bounds;
+		result.isOpen = getBooleanAttribute("open");
+		result.notesCount = getIntAttribute("comments_count");
+		return result;
 	}
 
-	private ChangesetComment parseChangesetComment() throws ParseException
+	private ChangesetNote parseChangesetComment() throws ParseException
 	{
-		return new ChangesetComment(
-				parseUser(),
-				DATE_FORMAT.parse(getAttribute("date"))
-		);
+		ChangesetNote comment = new ChangesetNote();
+		comment.user = parseUser();
+		comment.date = dateFormat.parse(getAttribute("date"));
+		return comment;
 	}
 
 	private User parseUser()
 	{
 		Long userId = getLongAttribute("uid");
-		if(userId == null) return null;
+		if(userId == null)
+			return null;
 
 		if(!users.containsKey(userId))
 		{
-			User user = new OsmUser(userId, getAttribute("user"));
+			User user = new User(userId, getAttribute("user"));
 			users.put(userId, user);
 			return user;
 		}
@@ -138,7 +136,7 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 
 		if(TEXT.equals(name))
 		{
-			currentComment.setText(getText());
+			currentComment.text = getText();
 		}
 		if(COMMENT.equals(name))
 		{
@@ -151,8 +149,8 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 		}
 		else if(CHANGESET.equals(name))
 		{
-			currentChangesetInfo.setTags(tags);
-			currentChangesetInfo.setComments(comments);
+			currentChangesetInfo.tags = tags;
+			currentChangesetInfo.discussion = comments;
 
 			handler.handle(currentChangesetInfo);
 			currentChangesetInfo = null;

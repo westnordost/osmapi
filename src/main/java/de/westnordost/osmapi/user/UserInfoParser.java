@@ -2,39 +2,41 @@ package de.westnordost.osmapi.user;
 
 import java.io.InputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.OsmXmlDateFormat;
-import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.xml.XmlParser;
 
 /** Parses information for a user (API 0.6, since 2012).
  *
  *  See https://github.com/openstreetmap/openstreetmap-website/blob/master/app/views/user/api_read.builder
  *  for what the user actually sends. */
-public class UserInfoParser extends XmlParser implements ApiResponseReader<UserDetails>
+public class UserInfoParser extends XmlParser implements ApiResponseReader<UserInfo>
 {
 	private static final String USER = "user",
-	                            LANGUAGES = "languages",
 	                            ROLES = "roles",
 	                            BLOCKS = "blocks";
 
-	private static final SimpleDateFormat DATE_FORMAT = new OsmXmlDateFormat();
-
-	private List<String> languages;
+	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
+	
 	private List<String> roles;
-	private OsmUserDetails user;
+	
+	protected UserInfo user;
 
 	@Override
-	public UserDetails parse(InputStream in)
+	public UserInfo parse(InputStream in)
 	{
 		doParse(in);
 		return user;
 	}
 
+	protected void createUser(long id, String name)
+	{
+		user = new UserInfo(id, name);
+	}
+	
 	@Override
 	protected void onStartElement() throws ParseException
 	{
@@ -43,53 +45,25 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<UserD
 
 		if(USER.equals(name))
 		{
-			user = new OsmUserDetails(
-					getLongAttribute("id"),
-					getAttribute("display_name"),
-					DATE_FORMAT.parse(getAttribute("account_created")));
+			createUser(getLongAttribute("id"),getAttribute("display_name"));
+			user.createdDate = dateFormat.parse(getAttribute("account_created"));
 		}
-		else if(LANGUAGES.equals(name))
-		{
-			languages = new ArrayList<>();
-		}
-
-		else if(USER.equals(parent))
+		
+		if(USER.equals(parent))
 		{
 			switch(name)
 			{
 				case "img":
-					user.setProfileImageUrl(getAttribute("href"));
+					user.profileImageUrl = getAttribute("href");
 					break;
 				case "changesets":
-					user.setChangesetsCount(getIntAttribute("count"));
+					user.changesetsCount = getIntAttribute("count");
 					break;
 				case "traces":
-					user.setGpsTracesCount(getIntAttribute("count"));
+					user.gpsTracesCount = getIntAttribute("count");
 					break;
 				case "contributor-terms":
-					user.setContributorTermsAgreed(getBooleanAttribute("agreed"));
-					// pd is optional
-					Boolean publicDomain = getBooleanAttribute("pd");
-					if(publicDomain != null)
-						user.setConsidersHisContributionsAsPublicDomain(publicDomain);
-					break;
-				case "home":
-					user.setHomeLocation(
-							OsmLatLon.parseLatLon(getAttribute("lat"), getAttribute("lon")));
-					user.setHomeZoom(getByteAttribute("zoom"));
-					break;
-			}
-		}
-		else if("messages".equals(parent))
-		{
-			switch(name)
-			{
-				case "received":
-					user.setInboxMessageCount(getIntAttribute("count"));
-					user.setUnreadMessagesCount(getIntAttribute("unread"));
-					break;
-				case "sent":
-					user.setSentMessagesCount(getIntAttribute("count"));
+					user.hasAgreedToContributorTerms = getBooleanAttribute("agreed");
 					break;
 			}
 		}
@@ -97,7 +71,7 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<UserD
 		{
 			if("received".equals(name))
 			{
-				user.setIsBlocked(getIntAttribute("active") != 0);
+				user.isBlocked = getIntAttribute("active") != 0;
 				/* There is more information that could be parsed here.
 				   But I really do not see any sense for the user of the API to know whether a user
 				   was once blocked but not anymore or the number of blocks that are active. Tell me
@@ -112,14 +86,9 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<UserD
 		String name = getName();
 		String parent = getParentName();
 
-		if(LANGUAGES.equals(name))
+		if(ROLES.equals(name))
 		{
-			user.setPreferredLanguages(languages);
-			languages = null;
-		}
-		else if(ROLES.equals(name))
-		{
-			user.setRoles(roles);
+			user.roles = roles;
 			roles = null;
 		}
 
@@ -127,7 +96,7 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<UserD
 		{
 			if("description".equals(name))
 			{
-				user.setProfileDescription(getText());
+				user.profileDescription = getText();
 			}
 		}
 		else if(ROLES.equals(parent))
@@ -141,14 +110,6 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<UserD
 					roles = new ArrayList<>(1);
 				}
 				roles.add(getText());
-			}
-		}
-		else if(LANGUAGES.equals(parent))
-		{
-			if("lang".equals(name))
-			{
-				assert languages != null;
-				languages.add(getText());
 			}
 		}
 	}

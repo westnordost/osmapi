@@ -27,15 +27,20 @@ public class OsmApiErrorFactoryTest extends TestCase
 			{
 				case HttpURLConnection.HTTP_UNAVAILABLE:
 					assertTrue(e instanceof OsmServiceUnavailableException);
+					break;
 				case HttpURLConnection.HTTP_NOT_FOUND:
 				case HttpURLConnection.HTTP_GONE:
 					assertTrue(e instanceof OsmNotFoundException);
+					break;
 				case HttpURLConnection.HTTP_FORBIDDEN:
 					assertTrue(e instanceof OsmAuthorizationException);
+					break;
 				case HttpURLConnection.HTTP_CONFLICT:
 					assertTrue(e instanceof OsmConflictException);
+					break;
 				case HttpURLConnection.HTTP_BAD_REQUEST:
 					assertTrue(e instanceof OsmBadUserInputException);
+					break;
 			}
 		}
 	}

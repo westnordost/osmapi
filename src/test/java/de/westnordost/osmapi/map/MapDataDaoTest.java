@@ -12,7 +12,7 @@ import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.changes.DiffElement;
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.LatLons;
@@ -51,7 +51,7 @@ public class MapDataDaoTest extends TestCase
 		try {
 			// this must surely be too big, regardless of the server preferences
 			// - it's the whole world!
-			new MapDataDao(connection).getMap(new Bounds(LatLons.MIN_VALUE,
+			new MapDataDao(connection).getMap(new BoundingBox(LatLons.MIN_VALUE,
 					LatLons.MAX_VALUE), new DefaultMapDataHandler());
 			fail();
 		} catch (OsmQueryTooBigException e) {
@@ -63,7 +63,7 @@ public class MapDataDaoTest extends TestCase
 			// using here the smallest possible query area, so it cannot be too
 			// big
 			new MapDataDao(connection).getMap(
-					new Bounds(0, 180, 0.0000001, -179.9999999),
+					new BoundingBox(0, 180, 0.0000001, -179.9999999),
 					new DefaultMapDataHandler());
 			fail();
 		} catch (IllegalArgumentException e) {
@@ -71,12 +71,12 @@ public class MapDataDaoTest extends TestCase
 	}
 
 	public void testGetMapBounds() {
-		final Bounds verySmallBounds = new Bounds(31,31, 31.0000001, 31.0000001);
+		final BoundingBox verySmallBounds = new BoundingBox(31,31, 31.0000001, 31.0000001);
 
 		new MapDataDao(connection).getMap(verySmallBounds,
 				new DefaultMapDataHandler() {
 					@Override
-					public void handle(Bounds bounds) {
+					public void handle(BoundingBox bounds) {
 						assertEquals(verySmallBounds, bounds);
 					}
 				});
@@ -88,7 +88,7 @@ public class MapDataDaoTest extends TestCase
 		// querying something in the middle of Hamburg should at least make
 		// handle(X) be called for
 		// every type of element once
-		final Bounds hamburg = new Bounds(53.579,9.939,53.580, 9.940);
+		final BoundingBox hamburg = new BoundingBox(53.579,9.939,53.580, 9.940);
 
 		CountMapDataHandler counter = new CountMapDataHandler();
 		new MapDataDao(liveConnection).getMap(hamburg, counter);
@@ -101,7 +101,7 @@ public class MapDataDaoTest extends TestCase
 
 	public void testDownloadMapIsReallyStreamed() {
 		// should be >1MB of data
-		final Bounds bigHamburg = new Bounds(53.585, 9.945, 53.59, 9.95);
+		final BoundingBox bigHamburg = new BoundingBox(53.585, 9.945, 53.59, 9.95);
 
 		CheckFirstHandleCallHandler handler = new CheckFirstHandleCallHandler();
 
@@ -125,7 +125,7 @@ public class MapDataDaoTest extends TestCase
 	public void testUploadAsAnonymousFails() {
 		try {
 			new MapDataDao(connection).updateMap("test", "test",
-					Collections.EMPTY_LIST, null);
+					Collections.<Element> emptyList(), null);
 			fail();
 		} catch (OsmAuthorizationException e) {
 		}
@@ -134,7 +134,7 @@ public class MapDataDaoTest extends TestCase
 	public void testUploadAsUnprivilegedUserFails() {
 		try {
 			new MapDataDao(unprivilegedConnection).updateMap("test", "test",
-					Collections.EMPTY_LIST, null);
+					Collections.<Element> emptyList(), null);
 			fail();
 		} catch (OsmAuthorizationException e) {
 		}
@@ -153,10 +153,10 @@ public class MapDataDaoTest extends TestCase
 		DiffElement diffCreated = handlerCreated.get();
 
 		// update id and delete again... (clean up before asserting)
-		Element deleteNode = new OsmNode(diffCreated.serverId, diffCreated.serverVersion, POS, null, null);
+		OsmNode deleteNode = new OsmNode(diffCreated.serverId, diffCreated.serverVersion, POS, null, null);
 		deleteNode.setDeleted(true);
 		SingleElementHandler<DiffElement> handlerDeleted = new SingleElementHandler<>();
-		mapDataDao.updateMap("clean up test", "test", Arrays.asList(deleteNode), handlerDeleted);
+		mapDataDao.updateMap("clean up test", "test", Arrays.asList((Element) deleteNode), handlerDeleted);
 		
 		DiffElement diffDeleted = handlerDeleted.get();
 
@@ -299,9 +299,9 @@ public class MapDataDaoTest extends TestCase
 	public void testGetElementsEmpty()
 	{
 		MapDataDao dao = new MapDataDao(connection);
-		assertTrue(dao.getWays(Collections.EMPTY_LIST).isEmpty());
-		assertTrue(dao.getNodes(Collections.EMPTY_LIST).isEmpty());
-		assertTrue(dao.getRelations(Collections.EMPTY_LIST).isEmpty());
+		assertTrue(dao.getWays(Collections.<Long> emptyList()).isEmpty());
+		assertTrue(dao.getNodes(Collections.<Long> emptyList()).isEmpty());
+		assertTrue(dao.getRelations(Collections.<Long> emptyList()).isEmpty());
 	}
 	
 	private class CountMapDataHandler implements MapDataHandler {
@@ -311,7 +311,7 @@ public class MapDataDaoTest extends TestCase
 		public int relations;
 
 		@Override
-		public void handle(Bounds bbox) {
+		public void handle(BoundingBox bbox) {
 			bounds++;
 		}
 

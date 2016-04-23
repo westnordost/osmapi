@@ -17,7 +17,7 @@ import de.westnordost.osmapi.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.changes.DiffElement;
 import de.westnordost.osmapi.map.changes.MapDataChangesWriter;
 import de.westnordost.osmapi.map.changes.MapDataDiffParser;
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;
@@ -142,7 +142,7 @@ public class MapDataDao
 	 * @throws OsmQueryTooBigException if the bounds are is too large
 	 * @throws IllegalArgumentException if the bounds cross the 180th meridian.
 	 */
-	public void getMap(Bounds bounds, MapDataHandler handler)
+	public void getMap(BoundingBox bounds, MapDataHandler handler)
 	{
 		if(bounds.crosses180thMeridian())
 		{

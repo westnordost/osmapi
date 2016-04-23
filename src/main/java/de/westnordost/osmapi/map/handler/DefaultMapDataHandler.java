@@ -1,6 +1,6 @@
 package de.westnordost.osmapi.map.handler;
 
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;
 import de.westnordost.osmapi.map.data.Way;
@@ -11,7 +11,7 @@ import de.westnordost.osmapi.map.data.Way;
 public class DefaultMapDataHandler implements MapDataHandler
 {
 	@Override
-	public void handle(Bounds bounds)	{}
+	public void handle(BoundingBox bounds)	{}
 
 	@Override
 	public void handle(Node node) {}

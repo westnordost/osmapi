@@ -2,7 +2,6 @@ package de.westnordost.osmapi.map;
 
 import java.io.InputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,7 +11,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -22,10 +22,7 @@ import de.westnordost.osmapi.map.data.OsmRelationMember;
 import de.westnordost.osmapi.map.data.OsmWay;
 import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
-import de.westnordost.osmapi.OsmXmlDateFormat;
 import de.westnordost.osmapi.changesets.Changeset;
-import de.westnordost.osmapi.changesets.OsmChangeset;
-import de.westnordost.osmapi.user.OsmUser;
 import de.westnordost.osmapi.user.User;
 import de.westnordost.osmapi.xml.XmlParser;
 
@@ -33,12 +30,12 @@ import de.westnordost.osmapi.xml.XmlParser;
  *  data is. */
 public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 {
-	private static final SimpleDateFormat DATE_FORMAT = new OsmXmlDateFormat();
-
 	private static final String NODE = "node",
 	                            WAY = "way",
 	                            RELATION = "relation";
 
+	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
+	
 	private MapDataHandler handler;
 
 	/* temporary maps so we do not parse and hold many times the same user and changeset */
@@ -107,7 +104,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		}
 		else if (name.equals("bounds"))
 		{
-			Bounds bounds = new Bounds(
+			BoundingBox bounds = new BoundingBox(
 					OsmLatLon.parseLatLon(getAttribute("minlat"), getAttribute("minlon")),
 					OsmLatLon.parseLatLon(getAttribute("maxlat"), getAttribute("maxlon")));
 			handler.handle(bounds);
@@ -117,10 +114,12 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 			changesetId = getLongAttribute("changeset");
 			if(changesetId != null && !changesets.containsKey(changesetId))
 			{
-				changesets.put( changesetId, new OsmChangeset(
-						changesetId,
-						parseDate(),
-						parseUser()));
+				Changeset changeset = new Changeset();
+				changeset.id = changesetId;
+				changeset.date = parseDate();
+				changeset.user = parseUser();
+				
+				changesets.put( changesetId, changeset);
 			}
 
 			id = getLongAttribute("id");
@@ -138,7 +137,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		String timestamp = getAttribute("timestamp");
 		if(timestamp == null) return null;
 
-		return DATE_FORMAT.parse(timestamp);
+		return dateFormat.parse(timestamp);
 	}
 
 	private User parseUser()
@@ -148,7 +147,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 
 		if(!users.containsKey(userId))
 		{
-			User user = new OsmUser(userId, getAttribute("user"));
+			User user = new User(userId, getAttribute("user"));
 			users.put(userId, user);
 			return user;
 		}

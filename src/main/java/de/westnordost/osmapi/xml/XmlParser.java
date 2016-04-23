@@ -13,6 +13,8 @@ import java.util.Stack;
  *  It is not very generic but generic enough for the purpose of this project */
 public abstract class XmlParser
 {
+	private static final String CHARSET = "UTF-8";
+	
 	private Stack<String> parentElements = new Stack<>();
 	private String text;
 	private XmlPullParser xpp;
@@ -25,7 +27,7 @@ public abstract class XmlParser
 			{
 				xpp = XmlPullParserFactory.newInstance().newPullParser();
 			}
-			xpp.setInput(in, "UTF-8");
+			xpp.setInput(in, CHARSET);
 			int eventType = xpp.getEventType();
 			while (eventType != XmlPullParser.END_DOCUMENT)
 			{

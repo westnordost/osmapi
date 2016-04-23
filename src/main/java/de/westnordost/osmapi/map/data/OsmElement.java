@@ -25,10 +25,10 @@ public abstract class OsmElement implements Element
 	}
 
 	@Override
-    public long getId()
-    {
-        return id;
-    }
+	public long getId()
+	{
+		return id;
+	}
 
 	@Override
 	public Changeset getChangeset()
@@ -37,18 +37,17 @@ public abstract class OsmElement implements Element
 	}
 
 	@Override
-    public int getVersion()
-    {
-        return version;
-    }
-
+	public int getVersion()
+	{
+		return version;
+	}
+	
 	@Override
 	public Map<String, String> getTags()
 	{
 		return tags;
 	}
 
-	@Override
 	public void setTags(Map<String, String> tags)
 	{
 		modified = true;
@@ -73,7 +72,6 @@ public abstract class OsmElement implements Element
 		return deleted;
 	}
 
-	@Override
 	public void setDeleted(boolean deleted)
 	{
 		this.deleted = deleted;

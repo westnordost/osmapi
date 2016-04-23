@@ -7,7 +7,7 @@ import de.westnordost.osmapi.changesets.Changeset;
 public class OsmNode extends OsmElement implements Node
 {
 	private boolean modified;
-    private LatLon pos;
+	private LatLon pos;
 
 	public OsmNode(long id, int version, LatLon pos,
 				   Map<String, String> tags, Changeset changeset)
@@ -22,7 +22,6 @@ public class OsmNode extends OsmElement implements Node
 		return pos;
 	}
 
-	@Override
 	public void setPosition(LatLon pos)
 	{
 		this.pos = pos;

@@ -22,7 +22,6 @@ public class OsmWay extends OsmElement implements Way
 		return nodes.isModified() || super.isModified();
 	}
 
-	@Override
 	public boolean isClosed()
 	{
 		return nodes.size() >= 3 && nodes.get(0).equals(nodes.get(nodes.size() - 1));

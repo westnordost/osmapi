@@ -27,31 +27,31 @@ public class UserPreferencesDaoTest extends TestCase
 		// the unprivileged DAO may do nothing here, so lets just do it in one test case...
 
 		try {
-			unprivilegedDao.deleteUserPreference("A");
+			unprivilegedDao.delete("A");
 			fail();
 		}
 		catch (OsmAuthorizationException e) { }
 
 		try {
-			unprivilegedDao.getUserPreference("A");
+			unprivilegedDao.get("A");
 			fail();
 		}
 		catch (OsmAuthorizationException e) { }
 
 		try {
-			unprivilegedDao.getUserPreferences();
+			unprivilegedDao.getAll();
 			fail();
 		}
 		catch (OsmAuthorizationException e) { }
 
 		try {
-			unprivilegedDao.setUserPreference("A","a");
+			unprivilegedDao.set("A","a");
 			fail();
 		}
 		catch (OsmAuthorizationException e) { }
 
 		try {
-			unprivilegedDao.setUserPreferences(new HashMap<String, String>());
+			unprivilegedDao.setAll(new HashMap<String, String>());
 			fail();
 		}
 		catch (OsmAuthorizationException e) { }
@@ -59,17 +59,17 @@ public class UserPreferencesDaoTest extends TestCase
 
 	public void testSetGetAndDeleteUserPreference()
 	{
-		privilegedDao.setUserPreference("A","a");
-		assertEquals("a",privilegedDao.getUserPreference("A"));
-		privilegedDao.deleteUserPreference("A");
-		assertNull(privilegedDao.getUserPreference("A"));
+		privilegedDao.set("A","a");
+		assertEquals("a",privilegedDao.get("A"));
+		privilegedDao.delete("A");
+		assertNull(privilegedDao.get("A"));
 	}
 	
 	public void testKeyTooLong()
 	{
 		try
 		{
-			privilegedDao.setUserPreference(tooLong(), "jo");
+			privilegedDao.set(tooLong(), "jo");
 			fail();
 		}
 		catch(IllegalArgumentException e) { }
@@ -79,7 +79,7 @@ public class UserPreferencesDaoTest extends TestCase
 	{
 		try
 		{
-			privilegedDao.setUserPreference("jo", tooLong());
+			privilegedDao.set("jo", tooLong());
 			fail();
 		}
 		catch(IllegalArgumentException e) { }
@@ -98,15 +98,15 @@ public class UserPreferencesDaoTest extends TestCase
 		preferences.put("D", "d");
 		preferences.put("E", "e");
 
-		privilegedDao.setUserPreferences(preferences);
-		Map<String,String> updatedPreferences = privilegedDao.getUserPreferences();
+		privilegedDao.setAll(preferences);
+		Map<String,String> updatedPreferences = privilegedDao.getAll();
 		assertEquals(preferences, updatedPreferences);
 
 		// deleting a previously set user preferences by omitting it
 		preferences.remove("D");
 
-		privilegedDao.setUserPreferences(preferences);
-		updatedPreferences = privilegedDao.getUserPreferences();
+		privilegedDao.setAll(preferences);
+		updatedPreferences = privilegedDao.getAll();
 		assertEquals(preferences, updatedPreferences);
 	}
 }

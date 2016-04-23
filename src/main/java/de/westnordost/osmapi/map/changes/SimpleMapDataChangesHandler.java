@@ -3,7 +3,7 @@ package de.westnordost.osmapi.map.changes;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;
@@ -46,7 +46,7 @@ public class SimpleMapDataChangesHandler implements MapDataChangesHandler, MapDa
 	}
 
 	@Override
-	public void handle(Bounds bounds)
+	public void handle(BoundingBox bounds)
 	{
 		// ignore, not interested in that...
 	}

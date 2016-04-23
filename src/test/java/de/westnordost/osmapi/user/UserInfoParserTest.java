@@ -3,17 +3,16 @@ package de.westnordost.osmapi.user;
 import junit.framework.TestCase;
 
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import de.westnordost.osmapi.xml.XmlTestUtils;
+import de.westnordost.osmapi.TestUtils;
 
 public class UserInfoParserTest extends TestCase
 {
 	public void testNoInput()
 	{
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(""));
+		UserInfo user = new UserInfoParser().parse(TestUtils.asInputStream(""));
 		assertNull(user);
 	}
 
@@ -23,77 +22,31 @@ public class UserInfoParserTest extends TestCase
 				"<user id=\"123\" display_name=\"mr_x\" account_created=\"2013-01-20T17:16:23Z\">" +
 				"</user>";
 
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
-		assertEquals(123, user.getId());
-		assertEquals("mr_x", user.getDisplayName());
+		UserInfo user = parse(xml);
+		assertEquals(123, user.id);
+		assertEquals("mr_x", user.displayName);
 
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
 		c.set(2013, Calendar.JANUARY, 20, 17, 16, 23);
-		assertEquals(c.getTimeInMillis() / 1000, user.getCreatedDate().getTime() / 1000);
+		assertEquals(c.getTimeInMillis() / 1000, user.createdDate.getTime() / 1000);
 	}
-
+	
 	public void testOptionalElements()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
 				"</user>";
 
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
-		assertNull(user.getProfileDescription());
-		assertFalse(user.getConsidersHisContributionsAsPublicDomain());
+		UserInfo user = parse(xml);
+		assertNull(user.profileDescription);
 		assertFalse(user.isAdministrator());
 		assertFalse(user.isModerator());
 		assertFalse(user.hasRole("stuntman"));
-		assertNull(user.getHomeLocation());
-		assertNull(user.getHomeZoom());
-		assertNull(user.getPreferredLanguages());
-		assertEquals(0,user.getInboxMessageCount());
-		assertEquals(0,user.getSentMessagesCount());
-		assertEquals(0,user.getUnreadMessagesCount());
-		assertEquals(0, user.getChangesetsCount());
-		assertEquals(0, user.getGpsTracesUploadedCount());
-		assertFalse(user.isBlocked());
-		assertFalse(user.hasAgreedToContributorTerms());
-		assertNull(user.getProfileImageUrl());
-	}
-
-	public void testPreferredLanguages()
-	{
-		String xml =
-				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
-						"	<languages>" +
-						"		<lang>de</lang>" +
-						"		<lang>en-US</lang>" +
-						"		<lang>en</lang>" +
-						"	</languages>" +
-						"</user>";
-
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
-		List<String> langs = user.getPreferredLanguages();
-		assertNotNull(langs);
-		assertEquals(3, langs.size());
-		assertEquals("de", langs.get(0));
-		assertEquals("en-US", langs.get(1));
-		assertEquals("en", langs.get(2));
-	}
-
-	public void testMessages()
-	{
-		String xml =
-				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
-						"	<messages>" +
-						"		<received count=\"24\" unread=\"1\"/>" +
-						"		<sent count=\"29\"/>" +
-						"	</messages>" +
-						"</user>";
-
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
-		assertNotNull(user.getInboxMessageCount());
-		assertEquals(24, (int) user.getInboxMessageCount());
-		assertNotNull(user.getUnreadMessagesCount());
-		assertEquals(1, (int) user.getUnreadMessagesCount());
-		assertNotNull(user.getSentMessagesCount());
-		assertEquals(29, (int) user.getSentMessagesCount());
+		assertEquals(0, user.changesetsCount);
+		assertEquals(0, user.gpsTracesCount);
+		assertFalse(user.isBlocked);
+		assertFalse(user.hasAgreedToContributorTerms);
+		assertNull(user.profileImageUrl);
 	}
 
 	public void testRoles()
@@ -107,7 +60,7 @@ public class UserInfoParserTest extends TestCase
 						"	</roles>" +
 						"</user>";
 
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
+		UserInfo user = parse(xml);
 
 		assertTrue(user.isAdministrator());
 		assertTrue(user.isModerator());
@@ -124,8 +77,8 @@ public class UserInfoParserTest extends TestCase
 						"	</blocks>" +
 						"</user>";
 
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
-		assertTrue(user.isBlocked());
+		UserInfo user = parse(xml);
+		assertTrue(user.isBlocked);
 	}
 
 	public void testNotBlocked()
@@ -137,8 +90,8 @@ public class UserInfoParserTest extends TestCase
 						"	</blocks>" +
 						"</user>";
 
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
-		assertFalse(user.isBlocked());
+		UserInfo user = parse(xml);
+		assertFalse(user.isBlocked);
 	}
 
 	public void testBasicElements()
@@ -153,18 +106,16 @@ public class UserInfoParserTest extends TestCase
 				"	<traces count=\"80\"/>" +
 				"</user>";
 
-		UserDetails user = new UserInfoParser().parse(XmlTestUtils.asInputStream(xml));
-		assertEquals("abc", user.getProfileDescription());
-		assertTrue(user.hasAgreedToContributorTerms());
-		assertNotNull(user.getConsidersHisContributionsAsPublicDomain());
-		assertFalse(user.getConsidersHisContributionsAsPublicDomain());
-		assertEquals("http://someurl.com/img.png", user.getProfileImageUrl());
-		assertEquals(2129, user.getChangesetsCount());
-		assertEquals(80, user.getGpsTracesUploadedCount());
-		assertNotNull(user.getHomeLocation());
-		assertEquals(16.8151000, user.getHomeLocation().getLatitude());
-		assertEquals(96.1860000, user.getHomeLocation().getLongitude());
-		assertNotNull(user.getHomeZoom());
-		assertEquals(3, (byte) user.getHomeZoom());
+		UserInfo user = parse(xml);
+		assertEquals("abc", user.profileDescription);
+		assertTrue(user.hasAgreedToContributorTerms);
+		assertEquals("http://someurl.com/img.png", user.profileImageUrl);
+		assertEquals(2129, user.changesetsCount);
+		assertEquals(80, user.gpsTracesCount);
+	}
+	
+	private UserInfo parse(String xml)
+	{
+		return new UserInfoParser().parse(TestUtils.asInputStream(xml));
 	}
 }

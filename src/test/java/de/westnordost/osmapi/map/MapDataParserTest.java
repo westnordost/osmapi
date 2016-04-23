@@ -1,22 +1,21 @@
 package de.westnordost.osmapi.map;
 
-import junit.framework.TestCase;
-
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import de.westnordost.osmapi.map.data.Bounds;
+import junit.framework.TestCase;
+import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;
 import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.data.Way;
-import de.westnordost.osmapi.map.handler.DefaultMapDataHandler;
+import de.westnordost.osmapi.map.handler.ListOsmElementHandler;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
-import de.westnordost.osmapi.changesets.Changeset;
-import de.westnordost.osmapi.user.User;
-import de.westnordost.osmapi.xml.XmlTestUtils;
+import de.westnordost.osmapi.map.handler.SingleOsmElementHandler;
 
 public class MapDataParserTest extends TestCase
 {
@@ -26,19 +25,14 @@ public class MapDataParserTest extends TestCase
 		String xml =
 				" <bounds minlat=\"51.7400000\" minlon=\"0.2400000\" maxlat=\"51.7500000\" maxlon=\"0.2500000\"/>";
 
-		new MapDataParser(new DefaultMapDataHandler()
-		{
-			@Override
-			public void handle(Bounds bounds)
-			{
-				assertEquals(51.7400000, bounds.getMinLatitude());
-				assertEquals(0.2400000, bounds.getMinLongitude());
-				assertEquals(51.7500000, bounds.getMaxLatitude());
-				assertEquals(0.2500000, bounds.getMaxLongitude());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		BoundingBox bounds = parseOne(xml, BoundingBox.class);
+		
+		assertEquals(51.7400000, bounds.getMinLatitude());
+		assertEquals(0.2400000, bounds.getMinLongitude());
+		assertEquals(51.7500000, bounds.getMaxLatitude());
+		assertEquals(0.2500000, bounds.getMaxLongitude());
 	}
-
+	
 	public void testNode()
 	{
 		String xml =
@@ -46,29 +40,24 @@ public class MapDataParserTest extends TestCase
 						"timestamp=\"2008-02-09T10:59:23Z\" user=\"Yeah\" uid=\"12503\" " +
 						"lat=\"51.7463194\" lon=\"0.2428181\"/>";
 
-		new MapDataParser(new DefaultMapDataHandler()
-		{
-			@Override
-			public void handle(Node node)
-			{
-				assertEquals(51.7463194, node.getPosition().getLatitude());
-				assertEquals(0.2428181, node.getPosition().getLongitude());
-				assertEquals(246773347, node.getId());
-				assertEquals(1, node.getVersion());
-				assertNotNull(node.getChangeset());
-				assertEquals(80692, node.getChangeset().getId());
+		Node node = parseOne(xml, Node.class);
+		
+		assertEquals(51.7463194, node.getPosition().getLatitude());
+		assertEquals(0.2428181, node.getPosition().getLongitude());
+		assertEquals(246773347, node.getId());
+		assertEquals(1, node.getVersion());
+		assertNotNull(node.getChangeset());
+		assertEquals(80692, node.getChangeset().id);
 
-				Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-				c.set(2008, Calendar.FEBRUARY, 9, 10, 59, 23);
-				assertEquals(c.getTimeInMillis() / 1000, node.getChangeset().getDate().getTime() / 1000);
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
+		c.set(2008, Calendar.FEBRUARY, 9, 10, 59, 23);
+		assertEquals(c.getTimeInMillis() / 1000, node.getChangeset().date.getTime() / 1000);
 
-				assertNotNull(node.getChangeset().getUser());
-				assertEquals("Yeah", node.getChangeset().getUser().getDisplayName());
-				assertEquals(12503, node.getChangeset().getUser().getId());
+		assertNotNull(node.getChangeset().user);
+		assertEquals("Yeah", node.getChangeset().user.displayName);
+		assertEquals(12503, node.getChangeset().user.id);
 
-				assertNull(node.getTags());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		assertNull(node.getTags());
 	}
 
 	public void testWay()
@@ -81,32 +70,25 @@ public class MapDataParserTest extends TestCase
 						"  <nd ref=\"246773327\"/>\n" +
 				" </way>";
 
-		new MapDataParser(new DefaultMapDataHandler()
-		{
-			@Override
-			public void handle(Way way)
-			{
-				assertEquals(22918072, way.getId());
-				assertEquals(1, way.getVersion());
-				assertNotNull(way.getChangeset());
-				assertEquals(80692, way.getChangeset().getId());
+		Way way = parseOne(xml, Way.class);
+		
+		assertEquals(22918072, way.getId());
+		assertEquals(1, way.getVersion());
+		assertNotNull(way.getChangeset());
+		assertEquals(80692, way.getChangeset().id);
 
-				Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-				c.set(2008, Calendar.FEBRUARY, 9, 10, 59, 2);
-				assertEquals(c.getTimeInMillis() / 1000, way.getChangeset().getDate().getTime() / 1000);
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
+		c.set(2008, Calendar.FEBRUARY, 9, 10, 59, 2);
+		assertEquals(c.getTimeInMillis() / 1000, way.getChangeset().date.getTime() / 1000);
 
-				assertNotNull(way.getChangeset().getUser());
-				assertEquals("Yeah", way.getChangeset().getUser().getDisplayName());
-				assertEquals(12503, way.getChangeset().getUser().getId());
+		assertNotNull(way.getChangeset().user);
+		assertEquals("Yeah", way.getChangeset().user.displayName);
+		assertEquals(12503, way.getChangeset().user.id);
 
-				assertEquals(3, way.getNodeIds().size());
-				assertEquals(246773324L, (long) way.getNodeIds().get(0));
-				assertEquals(246773326L, (long) way.getNodeIds().get(1));
-				assertEquals(246773327L, (long) way.getNodeIds().get(2));
-
-				assertNull(way.getTags());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		assertEquals(3, way.getNodeIds().size());
+		assertEquals(246773324L, (long) way.getNodeIds().get(0));
+		assertEquals(246773326L, (long) way.getNodeIds().get(1));
+		assertEquals(246773327L, (long) way.getNodeIds().get(2));
 	}
 
 	public void testRelation()
@@ -119,44 +101,39 @@ public class MapDataParserTest extends TestCase
 						"  <member type=\"relation\" ref=\"237143152\" role=\"\"/>\n" +
 				" </relation>";
 
-		new MapDataParser( new DefaultMapDataHandler()
-		{
-			@Override
-			public void handle(Relation relation)
-			{
-				assertEquals(3190476, relation.getId());
-				assertEquals(1, relation.getVersion());
-				assertNotNull(relation.getChangeset());
-				assertEquals(17738772, relation.getChangeset().getId());
+		Relation relation = parseOne(xml, Relation.class);
+		
+		assertEquals(3190476, relation.getId());
+		assertEquals(1, relation.getVersion());
+		assertNotNull(relation.getChangeset());
+		assertEquals(17738772, relation.getChangeset().id);
 
-				Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-				c.set(2013, Calendar.SEPTEMBER, 8, 19, 26, 52);
-				assertEquals(c.getTimeInMillis() / 1000, relation.getChangeset().getDate().getTime() / 1000);
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
+		c.set(2013, Calendar.SEPTEMBER, 8, 19, 26, 52);
+		assertEquals(c.getTimeInMillis() / 1000, relation.getChangeset().date.getTime() / 1000);
 
-				assertNotNull(relation.getChangeset().getUser());
-				assertEquals("Blub", relation.getChangeset().getUser().getDisplayName());
-				assertEquals(30525, relation.getChangeset().getUser().getId());
+		assertNotNull(relation.getChangeset().user);
+		assertEquals("Blub", relation.getChangeset().user.displayName);
+		assertEquals(30525, relation.getChangeset().user.id);
 
-				assertEquals(3, relation.getMembers().size());
-				RelationMember one = relation.getMembers().get(0);
-				RelationMember two = relation.getMembers().get(1);
-				RelationMember three = relation.getMembers().get(2);
+		assertEquals(3, relation.getMembers().size());
+		RelationMember one = relation.getMembers().get(0);
+		RelationMember two = relation.getMembers().get(1);
+		RelationMember three = relation.getMembers().get(2);
 
-				assertEquals(236852867, one.getRef());
-				assertEquals(Element.Type.WAY, one.getType());
-				assertEquals("outer", one.getRole());
+		assertEquals(236852867, one.getRef());
+		assertEquals(Element.Type.WAY, one.getType());
+		assertEquals("outer", one.getRole());
 
-				assertEquals(237143151, two.getRef());
-				assertEquals(Element.Type.NODE, two.getType());
-				assertEquals("inner", two.getRole());
+		assertEquals(237143151, two.getRef());
+		assertEquals(Element.Type.NODE, two.getType());
+		assertEquals("inner", two.getRole());
 
-				assertEquals(237143152, three.getRef());
-				assertEquals(Element.Type.RELATION, three.getType());
-				assertEquals("", three.getRole());
+		assertEquals(237143152, three.getRef());
+		assertEquals(Element.Type.RELATION, three.getType());
+		assertEquals("", three.getRole());
 
-				assertNull(relation.getTags());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		assertNull(relation.getTags());
 	}
 
 	public void testOrder()
@@ -177,7 +154,7 @@ public class MapDataParserTest extends TestCase
 			private int step = 0;
 
 			@Override
-			public void handle(Bounds bounds)
+			public void handle(BoundingBox bounds)
 			{
 				assertEquals(0, step++);
 			}
@@ -200,7 +177,7 @@ public class MapDataParserTest extends TestCase
 				assertEquals(3, step++);
 			}
 
-		}).parse(XmlTestUtils.asInputStream(xml));
+		}).parse(TestUtils.asInputStream(xml));
 	}
 
 	public void testTags()
@@ -214,23 +191,18 @@ public class MapDataParserTest extends TestCase
 							"<tag k=\"type\" v=\"route\"/>" +
 						" </relation>";
 
-		new MapDataParser( new DefaultMapDataHandler()
-		{
-			@Override
-			public void handle(Relation relation)
-			{
-				assertNotNull(relation.getTags());
-				assertEquals(4, relation.getTags().size());
+		Relation relation = parseOne(xml, Relation.class);
+		
+		assertNotNull(relation.getTags());
+		assertEquals(4, relation.getTags().size());
 
-				assertTrue(relation.getTags().containsKey("operator"));
-				assertTrue(relation.getTags().containsValue("Sustrans"));
-				assertEquals("Sustrans", relation.getTags().get("operator"));
+		assertTrue(relation.getTags().containsKey("operator"));
+		assertTrue(relation.getTags().containsValue("Sustrans"));
+		assertEquals("Sustrans", relation.getTags().get("operator"));
 
-				assertEquals("1", relation.getTags().get("ref"));
-				assertEquals("bicycle", relation.getTags().get("route"));
-				assertEquals("route", relation.getTags().get("type"));
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		assertEquals("1", relation.getTags().get("ref"));
+		assertEquals("bicycle", relation.getTags().get("route"));
+		assertEquals("route", relation.getTags().get("type"));
 	}
 
 	public void testReuseData()
@@ -243,26 +215,24 @@ public class MapDataParserTest extends TestCase
 						"timestamp=\"2008-02-09T10:59:23Z\" user=\"Paul Todd\" uid=\"12503\" " +
 						"lat=\"51.7454904\" lon=\"0.2441828\"/>";
 
-		new MapDataParser( new DefaultMapDataHandler()
-		{
-			private Changeset otherChangeset;
-			private User otherUser;
-
-			@Override
-			public void handle(Node node)
-			{
-				if(otherChangeset == null)
-				{
-					otherChangeset = node.getChangeset();
-					otherUser = node.getChangeset().getUser();
-				}
-				else
-				{
-					assertSame(otherChangeset, node.getChangeset());
-					assertSame(otherUser, node.getChangeset().getUser());
-				}
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		List<Element> elements = parseList(xml);
+		
+		assertEquals(2, elements.size());
+		assertSame(elements.get(0).getChangeset(), elements.get(1).getChangeset());
+		assertSame(elements.get(0).getChangeset().user, elements.get(1).getChangeset().user);
 	}
 
+	private List<Element> parseList(String xml)
+	{
+		ListOsmElementHandler<Element> handler = new ListOsmElementHandler<>(Element.class);
+		new MapDataParser(handler).parse(TestUtils.asInputStream(xml));
+		return handler.get();
+	}
+	
+	private <T> T parseOne(String xml, Class<T> tClass)
+	{
+		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
+		new MapDataParser(handler).parse(TestUtils.asInputStream(xml));
+		return handler.get();
+	}
 }

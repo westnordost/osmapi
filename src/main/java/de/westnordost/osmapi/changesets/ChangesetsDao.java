@@ -28,7 +28,7 @@ public class ChangesetsDao
 	 *
 	 * @param id changeset id
 	 * @return info for the given changeset. Null if it does not exist. */
-	public ChangesetInfo getChangeset(long id)
+	public ChangesetInfo get(long id)
 	{
 		SingleElementHandler<ChangesetInfo> handler = new SingleElementHandler<>();
 		String query = CHANGESET + "/" + id + "?include_discussion=true";
@@ -48,7 +48,7 @@ public class ChangesetsDao
 	 *  @param handler The handler which is fed the incoming changeset infos
 	 *  @param filters what to search for. I.e.
 	 *                 new QueryChangesetsFilters().byUser(123).onlyClosed() */
-	public void getChangesets(Handler<ChangesetInfo> handler, QueryChangesetsFilters filters)
+	public void find(Handler<ChangesetInfo> handler, QueryChangesetsFilters filters)
 	{
 		String query = filters != null ? "?" + filters.toParamString() : "";
 		try
@@ -64,13 +64,12 @@ public class ChangesetsDao
 	/**
 	 * Add a comment to the given changeset. The changeset must already be closed. Adding a comment
 	 * to a changeset automatically subscribes the user to it.
-	 * Note: as of February 2016, the OSM API 0.6 returns the updated changesetInfo, however
-	 * <b>without</b> the changeset discussion you were contributing to.
-	 * See https://github.com/openstreetmap/openstreetmap-website/issues/1165
-	 * TODO monitor/contribute to the issue
+	 * 
+	 * TODO monitor https://github.com/openstreetmap/openstreetmap-website/issues/1165
 	 *
 	 * @param id id of the changeset
 	 * @param text text to add to the changeset. Must not be empty
+	 * 
 	 * @return the updated changeset
 	 *
 	 * @throws OsmAuthorizationException if this application is not authorized to modify the map
@@ -78,7 +77,7 @@ public class ChangesetsDao
 	 * @throws OsmConflictException if the changeset is not yet closed. (Only closed changesets can
 	 *                              be commented
 	 */
-	public ChangesetInfo commentChangeset(long id, String text)
+	public ChangesetInfo comment(long id, String text)
 	{
 		if(text.isEmpty())
 		{
@@ -96,7 +95,7 @@ public class ChangesetsDao
 	{
 		try
 		{
-			return URLEncoder.encode(text, osm.getCharset());
+			return URLEncoder.encode(text, OsmConnection.CHARSET);
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -115,7 +114,7 @@ public class ChangesetsDao
 	 * @throws OsmConflictException the changeset has not been closed yet
 	 * @throws OsmNotFoundException if the given changeset does not exist
 	 */
-	public ChangesetInfo subscribeToChangeset(long id)
+	public ChangesetInfo subscribe(long id)
 	{
 		SingleElementHandler<ChangesetInfo> handler = new SingleElementHandler<>();
 		ChangesetInfo result;
@@ -129,8 +128,8 @@ public class ChangesetsDao
 		{
 			/* either this is because the changeset has not been closed yet or the user already
 			   subscribed to the changeset. We want to ignore the latter */
-			result = getChangeset(id);
-			if(result.isOpen()) throw e;
+			result = get(id);
+			if(result.isOpen) throw e;
 		}
 		return result;
 	}
@@ -147,8 +146,7 @@ public class ChangesetsDao
 	 * @throws OsmNotFoundException if the given changeset does not exist
 	 *
 	 */
-	// TODO or return void?
-	public ChangesetInfo unsubscribeFromChangeset(long id)
+	public ChangesetInfo unsubscribe(long id)
 	{
 		SingleElementHandler<ChangesetInfo> handler = new SingleElementHandler<>();
 		ChangesetInfo result;
@@ -165,10 +163,9 @@ public class ChangesetsDao
 		   if the changeset does not exist OR if the user did not subscribe to the changeset. We
 		   want to rethrow it only if the changeset really does not exist
 
-		   https://github.com/openstreetmap/openstreetmap-website/issues/1199
-		   TODO monitor this issue
+		   TODO monitor https://github.com/openstreetmap/openstreetmap-website/issues/1199
 		   */
-			result = getChangeset(id);
+			result = get(id);
 			if(result == null) throw e;
 		}
 
@@ -178,7 +175,7 @@ public class ChangesetsDao
 	/**
 	 * @throws OsmNotFoundException if changeset with the given id does not exist
 	 */
-	public void getChanges(long id, MapDataChangesHandler handler)
+	public void getData(long id, MapDataChangesHandler handler)
 	{
 		osm.makeRequest(CHANGESET + "/" + id + "/download", new MapDataChangesParser(handler));
 	}

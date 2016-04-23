@@ -11,7 +11,7 @@ import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmConflictException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.LatLons;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -39,14 +39,14 @@ public class NotesDaoTest extends TestCase
 
 	private static final String TEXT = "test case";
 
-	private static final Bounds WHOLE_WORLD = new Bounds(LatLons.MIN_VALUE, LatLons.MAX_VALUE);
+	private static final BoundingBox WHOLE_WORLD = new BoundingBox(LatLons.MIN_VALUE, LatLons.MAX_VALUE);
 
 	// the area in which this test spawns all those notes
-	private static final Bounds MY_AREA = new Bounds(
+	private static final BoundingBox MY_AREA = new BoundingBox(
 			OsmLatLon.parseLatLon("-21.00002", "94"),
 			OsmLatLon.parseLatLon("-21", "94.00002"));
 
-	private static final Bounds CROSS_180TH_MERIDIAN = new Bounds(
+	private static final BoundingBox CROSS_180TH_MERIDIAN = new BoundingBox(
 			OsmLatLon.parseLatLon("0", "180"),
 			OsmLatLon.parseLatLon("0.0000001", "-179.9999999"));
 
@@ -60,30 +60,30 @@ public class NotesDaoTest extends TestCase
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 
 		// create one note to work with...
-		note = privilegedDao.createNote(POINT, TEXT);
+		note = privilegedDao.create(POINT, TEXT);
 	}
 
 	@Override
 	protected void tearDown() throws Exception
 	{
-		privilegedDao.closeNote(note.getId());
+		privilegedDao.close(note.id);
 	}
 
 	public void testCreateNote()
 	{
 		// was already created it in setUp
 		assertTrue(note.isOpen());
-		assertEquals(POINT, note.getPosition());
-		assertEquals(Note.Status.OPEN, note.getStatus());
-		assertEquals(1, note.getComments().size());
+		assertEquals(POINT, note.position);
+		assertEquals(Note.Status.OPEN, note.status);
+		assertEquals(1, note.comments.size());
 
-		NoteComment firstComment = note.getComments().get(0);
-		assertEquals(TEXT, firstComment.getText());
-		assertEquals(NoteComment.Action.OPENED, firstComment.getAction());
+		NoteComment firstComment = note.comments.get(0);
+		assertEquals(TEXT, firstComment.text);
+		assertEquals(NoteComment.Action.OPENED, firstComment.action);
 		assertFalse(firstComment.isAnonymous());
 
 		long now = new Date().getTime();
-		long creationTime = note.getDateCreated().getTime();
+		long creationTime = note.dateCreated.getTime();
 		assertTrue(Math.abs(now - creationTime) < TEN_MINUTES);
 	}
 
@@ -91,14 +91,14 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			unprivilegedDao.createNote(POINT, TEXT, false);
+			unprivilegedDao.create(POINT, TEXT, false);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			unprivilegedDao.createNote(POINT, TEXT);
+			unprivilegedDao.create(POINT, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -109,14 +109,14 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			unprivilegedDao.commentNote(note.getId(), TEXT, false);
+			unprivilegedDao.comment(note.id, TEXT, false);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			unprivilegedDao.commentNote(note.getId(), TEXT);
+			unprivilegedDao.comment(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -126,7 +126,7 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			unprivilegedDao.reopenNote(note.getId(), TEXT);
+			unprivilegedDao.reopen(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -136,7 +136,7 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			unprivilegedDao.closeNote(note.getId(), TEXT);
+			unprivilegedDao.close(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -146,7 +146,7 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			anonymousDao.reopenNote(note.getId(), TEXT);
+			anonymousDao.reopen(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e)
@@ -159,7 +159,7 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			anonymousDao.closeNote(note.getId(), TEXT);
+			anonymousDao.close(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e)
@@ -172,14 +172,14 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			privilegedDao.createNote(POINT, "");
+			privilegedDao.create(POINT, "");
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
 
 		try
 		{
-			privilegedDao.createNote(POINT, "", false);
+			privilegedDao.create(POINT, "", false);
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
@@ -189,14 +189,14 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			privilegedDao.commentNote(note.getId(), "");
+			privilegedDao.comment(note.id, "");
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
 
 		try
 		{
-			privilegedDao.commentNote(note.getId(), "", false);
+			privilegedDao.comment(note.id, "", false);
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
@@ -206,14 +206,14 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			privilegedDao.commentNote(note.getId(), null);
+			privilegedDao.comment(note.id, null);
 			fail();
 		}
 		catch(NullPointerException e) {}
 
 		try
 		{
-			privilegedDao.commentNote(note.getId(), null, false);
+			privilegedDao.comment(note.id, null, false);
 			fail();
 		}
 		catch(NullPointerException e) {}
@@ -221,39 +221,39 @@ public class NotesDaoTest extends TestCase
 
 	public void testCloseAndReopenNoteWithoutTextDoesNotFail()
 	{
-		Note myNote = privilegedDao.createNote(POINT3, TEXT);
+		Note myNote = privilegedDao.create(POINT3, TEXT);
 
-		myNote = privilegedDao.closeNote(myNote.getId(), "");
-		assertEquals(2, myNote.getComments().size());
-		assertEquals(null, myNote.getComments().get(1).getText());
+		myNote = privilegedDao.close(myNote.id, "");
+		assertEquals(2, myNote.comments.size());
+		assertEquals(null, myNote.comments.get(1).text);
 
-		myNote = privilegedDao.reopenNote(myNote.getId(), "");
-		assertEquals(3, myNote.getComments().size());
-		assertEquals(null, myNote.getComments().get(2).getText());
+		myNote = privilegedDao.reopen(myNote.id, "");
+		assertEquals(3, myNote.comments.size());
+		assertEquals(null, myNote.comments.get(2).text);
 
-		myNote = privilegedDao.closeNote(myNote.getId());
-		assertEquals(4, myNote.getComments().size());
-		assertEquals(null, myNote.getComments().get(3).getText());
+		myNote = privilegedDao.close(myNote.id);
+		assertEquals(4, myNote.comments.size());
+		assertEquals(null, myNote.comments.get(3).text);
 
-		myNote = privilegedDao.reopenNote(myNote.getId());
-		assertEquals(5, myNote.getComments().size());
-		assertEquals(null, myNote.getComments().get(4).getText());
+		myNote = privilegedDao.reopen(myNote.id);
+		assertEquals(5, myNote.comments.size());
+		assertEquals(null, myNote.comments.get(4).text);
 
-		privilegedDao.closeNote(myNote.getId());
+		privilegedDao.close(myNote.id);
 	}
 
 	public void testCreateNoteAsAnonymousWorks()
 	{
-		Note myNote = anonymousDao.createNote(POINT2, TEXT);
+		Note myNote = anonymousDao.create(POINT2, TEXT);
 		assertTrue(myNote.isOpen());
-		assertEquals(POINT2, myNote.getPosition());
-		assertEquals(Note.Status.OPEN, myNote.getStatus());
-		assertEquals(1, myNote.getComments().size());
+		assertEquals(POINT2, myNote.position);
+		assertEquals(Note.Status.OPEN, myNote.status);
+		assertEquals(1, myNote.comments.size());
 
-		Note closedNote = privilegedDao.closeNote(myNote.getId());
+		Note closedNote = privilegedDao.close(myNote.id);
 		assertFalse(closedNote.isOpen());
-		assertEquals(POINT2, closedNote.getPosition());
-		assertEquals(Note.Status.CLOSED, closedNote.getStatus());
+		assertEquals(POINT2, closedNote.position);
+		assertEquals(Note.Status.CLOSED, closedNote.status);
 	}
 
 	public void testCommentNote()
@@ -261,97 +261,97 @@ public class NotesDaoTest extends TestCase
 		List<NoteComment> comments;
 		long now, commentTime;
 
-		Note myNote = anonymousDao.createNote(POINT4, TEXT);
+		Note myNote = anonymousDao.create(POINT4, TEXT);
 
-		comments = anonymousDao.commentNote(myNote.getId(), TEXT + 1).getComments();
+		comments = anonymousDao.comment(myNote.id, TEXT + 1).comments;
 		assertEquals(2, comments.size());
-		assertEquals(TEXT + 1, comments.get(1).getText());
-		assertEquals(NoteComment.Action.COMMENTED, comments.get(1).getAction());
-		assertNull(comments.get(1).getUser());
+		assertEquals(TEXT + 1, comments.get(1).text);
+		assertEquals(NoteComment.Action.COMMENTED, comments.get(1).action);
+		assertNull(comments.get(1).user);
 		assertTrue(comments.get(1).isAnonymous());
 
 		now = new Date().getTime();
-		commentTime = comments.get(1).getDate().getTime();
+		commentTime = comments.get(1).date.getTime();
 		assertTrue(Math.abs(now - commentTime) < TEN_MINUTES);
 
-		comments = privilegedDao.commentNote(myNote.getId(), TEXT + 2).getComments();
+		comments = privilegedDao.comment(myNote.id, TEXT + 2).comments;
 		assertEquals(3, comments.size());
-		assertEquals(TEXT + 2, comments.get(2).getText());
-		assertEquals(NoteComment.Action.COMMENTED, comments.get(2).getAction());
-		assertNotNull(comments.get(2).getUser());
+		assertEquals(TEXT + 2, comments.get(2).text);
+		assertEquals(NoteComment.Action.COMMENTED, comments.get(2).action);
+		assertNotNull(comments.get(2).user);
 		assertFalse(comments.get(2).isAnonymous());
 
 		now = new Date().getTime();
-		commentTime = comments.get(2).getDate().getTime();
+		commentTime = comments.get(2).date.getTime();
 		assertTrue(Math.abs(now - commentTime) < TEN_MINUTES);
 
-		privilegedDao.closeNote(myNote.getId());
+		privilegedDao.close(myNote.id);
 	}
 
 	public void testCloseAndReopenNote()
 	{
 		List<NoteComment> comments;
 
-		Note myNote = anonymousDao.createNote(POINT5, TEXT);
+		Note myNote = anonymousDao.create(POINT5, TEXT);
 
-		myNote = privilegedDao.closeNote(myNote.getId(), TEXT + 1);
+		myNote = privilegedDao.close(myNote.id, TEXT + 1);
 
-		assertNotNull(myNote.getDateClosed());
+		assertNotNull(myNote.dateClosed);
 		long now = new Date().getTime();
-		long closedDate = myNote.getDateClosed().getTime();
+		long closedDate = myNote.dateClosed.getTime();
 		assertTrue(Math.abs(now - closedDate) < TEN_MINUTES);
 
-		comments = myNote.getComments();
+		comments = myNote.comments;
 		assertEquals(2, comments.size());
-		assertEquals(TEXT + 1, comments.get(1).getText());
-		assertEquals(NoteComment.Action.CLOSED, comments.get(1).getAction());
-		assertNotNull(comments.get(1).getUser());
+		assertEquals(TEXT + 1, comments.get(1).text);
+		assertEquals(NoteComment.Action.CLOSED, comments.get(1).action);
+		assertNotNull(comments.get(1).user);
 		assertFalse(comments.get(1).isAnonymous());
 
-		myNote = privilegedDao.reopenNote(myNote.getId(), TEXT + 2);
+		myNote = privilegedDao.reopen(myNote.id, TEXT + 2);
 
-		assertNull(myNote.getDateClosed());
+		assertNull(myNote.dateClosed);
 
-		comments = myNote.getComments();
+		comments = myNote.comments;
 		assertEquals(3, comments.size());
-		assertEquals(TEXT + 2, comments.get(2).getText());
-		assertEquals(NoteComment.Action.REOPENED, comments.get(2).getAction());
-		assertNotNull(comments.get(2).getUser());
+		assertEquals(TEXT + 2, comments.get(2).text);
+		assertEquals(NoteComment.Action.REOPENED, comments.get(2).action);
+		assertNotNull(comments.get(2).user);
 		assertFalse(comments.get(2).isAnonymous());
 
-		privilegedDao.closeNote(myNote.getId());
+		privilegedDao.close(myNote.id);
 	}
 
 	public void testNoteNotFound()
 	{
-		try { privilegedDao.commentNote(0, TEXT); fail(); } catch(OsmNotFoundException e) {}
-		try { privilegedDao.reopenNote(0); fail(); } catch(OsmNotFoundException e) {}
-		try { privilegedDao.closeNote(0); fail(); } catch(OsmNotFoundException e) {}
+		try { privilegedDao.comment(0, TEXT); fail(); } catch(OsmNotFoundException e) {}
+		try { privilegedDao.reopen(0); fail(); } catch(OsmNotFoundException e) {}
+		try { privilegedDao.close(0); fail(); } catch(OsmNotFoundException e) {}
 	}
 
 	public void testConflict()
 	{
-		Note myNote = anonymousDao.createNote(POINT6, TEXT);
+		Note myNote = anonymousDao.create(POINT6, TEXT);
 
 		try
 		{
-			privilegedDao.reopenNote(myNote.getId());
+			privilegedDao.reopen(myNote.id);
 			fail();
 		}
 		catch(OsmConflictException e) {}
 
-		privilegedDao.closeNote(myNote.getId());
+		privilegedDao.close(myNote.id);
 
 		try
 		{
-			privilegedDao.closeNote(myNote.getId());
+			privilegedDao.close(myNote.id);
 			fail();
 		}
 		catch(OsmConflictException e) {}
 
 		try
 		{
-			privilegedDao.commentNote(myNote.getId(), TEXT);
+			privilegedDao.comment(myNote.id, TEXT);
 			fail();
 		}
 		catch(OsmConflictException e) {}
@@ -359,17 +359,17 @@ public class NotesDaoTest extends TestCase
 
 	public void testGetNote()
 	{
-		Note note2 = anonymousDao.getNote(note.getId());
-		assertEquals(note.getId(), note2.getId());
-		assertEquals(note.getStatus(), note2.getStatus());
-		assertEquals(note.getComments().size(), note2.getComments().size());
-		assertEquals(note.getDateCreated(), note2.getDateCreated());
-		assertEquals(note.getPosition(), note2.getPosition());
+		Note note2 = anonymousDao.get(note.id);
+		assertEquals(note.id, note2.id);
+		assertEquals(note.status, note2.status);
+		assertEquals(note.comments.size(), note2.comments.size());
+		assertEquals(note.dateCreated, note2.dateCreated);
+		assertEquals(note.position, note2.position);
 	}
 
 	public void testGetNoNote()
 	{
-		assertNull(anonymousDao.getNote(0));
+		assertNull(anonymousDao.get(0));
 	}
 
 	public void testQueryTooBig()
@@ -377,7 +377,7 @@ public class NotesDaoTest extends TestCase
 		try
 		{
 			// try to download the whole world...
-			anonymousDao.getNotes(new FailIfCalled(), WHOLE_WORLD, 10000, -1);
+			anonymousDao.getAll(WHOLE_WORLD, new FailIfCalled(), 10000, -1);
 			fail();
 		}
 		catch (OsmQueryTooBigException e) {}
@@ -387,14 +387,14 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			anonymousDao.getNotes(new FailIfCalled(), WHOLE_WORLD, 0, -1);
+			anonymousDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, -1);
 			fail();
 		}
 		catch (IllegalArgumentException e) {}
 
 		try
 		{
-			anonymousDao.getNotes(new FailIfCalled(), WHOLE_WORLD, 0, 10001);
+			anonymousDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, 10001);
 			fail();
 		}
 		catch (IllegalArgumentException e) {}
@@ -404,7 +404,7 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			anonymousDao.getNotes(new FailIfCalled(), CROSS_180TH_MERIDIAN, 10000, -1);
+			anonymousDao.getAll(CROSS_180TH_MERIDIAN, new FailIfCalled(), 10000, -1);
 			fail();
 		}
 		catch (IllegalArgumentException e) {}
@@ -413,14 +413,14 @@ public class NotesDaoTest extends TestCase
 	public void testGetNotes()
 	{
 		Counter counter = new Counter();
-		anonymousDao.getNotes(counter, MY_AREA, 100, -1);
+		anonymousDao.getAll(MY_AREA, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 
 	public void testSearchNotes()
 	{
 		Counter counter = new Counter();
-		anonymousDao.getNotes(counter, MY_AREA, TEXT, 100, -1);
+		anonymousDao.getAll(MY_AREA, TEXT, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 

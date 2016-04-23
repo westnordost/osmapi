@@ -1,8 +1,7 @@
 package de.westnordost.osmapi.capabilities;
 
 import junit.framework.TestCase;
-
-import de.westnordost.osmapi.xml.XmlTestUtils;
+import de.westnordost.osmapi.TestUtils;
 
 public class CapabilitiesParserTest extends TestCase
 {
@@ -19,14 +18,14 @@ public class CapabilitiesParserTest extends TestCase
 				"	<status database=\"online\" api=\"online\" gpx=\"online\"/>" +
 				"</api>";
 
-		Capabilities capabilities = new CapabilitiesParser().parse(XmlTestUtils.asInputStream(xml));
-		assertEquals(0.6f,capabilities.getMinSupportedApiVersion());
-		assertEquals(0.6f, capabilities.getMaxSupportedApiVersion());
-		assertEquals(0.25f, capabilities.getMaxMapQueryAreaInSquareDegrees());
-		assertEquals(5000, capabilities.getMaxPointsInGpsTracePerPage());
-		assertEquals(2000, capabilities.getMaxNodesInWay());
-		assertEquals(50000, capabilities.getMaxElementsPerChangeset());
-		assertEquals(300, capabilities.getTimeoutInSeconds());
+		Capabilities capabilities = new CapabilitiesParser().parse(TestUtils.asInputStream(xml));
+		assertEquals(0.6f,capabilities.minSupportedApiVersion);
+		assertEquals(0.6f, capabilities.maxSupportedApiVersion);
+		assertEquals(0.25f, capabilities.maxMapQueryAreaInSquareDegrees);
+		assertEquals(5000, capabilities.maxPointsInGpsTracePerPage);
+		assertEquals(2000, capabilities.maxNodesInWay);
+		assertEquals(50000, capabilities.maxElementsPerChangeset);
+		assertEquals(300, capabilities.timeoutInSeconds);
 	}
 
 	public void testApiStatus()
@@ -36,7 +35,7 @@ public class CapabilitiesParserTest extends TestCase
 				"	<status database=\"online\" api=\"offline\" gpx=\"readonly\"/>" +
 				"</api>";
 
-		Capabilities capabilities = new CapabilitiesParser().parse(XmlTestUtils.asInputStream(xml));
+		Capabilities capabilities = new CapabilitiesParser().parse(TestUtils.asInputStream(xml));
 		assertTrue(capabilities.isDatabaseReadable());
 		assertTrue(capabilities.isDatabaseWritable());
 		assertFalse(capabilities.isMapDataModifiable());
@@ -56,10 +55,10 @@ public class CapabilitiesParserTest extends TestCase
 				"	</imagery>" +
 				"</policy>";
 
-		Capabilities capabilities = new CapabilitiesParser().parse(XmlTestUtils.asInputStream(xml));
-		assertEquals(".*\\.googleapis\\.com/.*", capabilities.getImageryBlacklistRegExes().get(0));
-		assertEquals(".*\\.google\\.com/.*", capabilities.getImageryBlacklistRegExes().get(1));
-		assertEquals(".*\\.google\\.ru/.*", capabilities.getImageryBlacklistRegExes().get(2));
+		Capabilities capabilities = new CapabilitiesParser().parse(TestUtils.asInputStream(xml));
+		assertEquals(".*\\.googleapis\\.com/.*", capabilities.imageryBlacklistRegExes.get(0));
+		assertEquals(".*\\.google\\.com/.*", capabilities.imageryBlacklistRegExes.get(1));
+		assertEquals(".*\\.google\\.ru/.*", capabilities.imageryBlacklistRegExes.get(2));
 	}
 
 }

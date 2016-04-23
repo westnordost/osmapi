@@ -17,8 +17,6 @@ public interface Element
 
 	boolean isDeleted();
 
-	void setDeleted(boolean deleted);
-
 	long getId();
 
 	int getVersion();
@@ -26,8 +24,6 @@ public interface Element
 	Changeset getChangeset();
 
 	Map<String, String> getTags();
-
-	void setTags(Map<String, String> tags);
 
 	Type getType();
 }

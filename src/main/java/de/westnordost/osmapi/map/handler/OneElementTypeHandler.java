@@ -1,6 +1,6 @@
 package de.westnordost.osmapi.map.handler;
 
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;
 import de.westnordost.osmapi.map.data.Way;
@@ -15,24 +15,28 @@ public abstract class OneElementTypeHandler<T> implements MapDataHandler
 		this.tClass = tClass;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void handle(Bounds bounds)
+	public void handle(BoundingBox bounds)
 	{
 		if(tClass.isAssignableFrom(bounds.getClass())) handleElement((T) bounds);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void handle(Node node)
 	{
 		if(tClass.isAssignableFrom(node.getClass())) handleElement((T) node);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void handle(Way way)
 	{
 		if(tClass.isAssignableFrom(way.getClass())) handleElement((T) way);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void handle(Relation relation)
 	{

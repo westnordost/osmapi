@@ -15,6 +15,8 @@ import de.westnordost.osmapi.ApiRequestWriter;
  */
 public abstract class XmlWriter implements ApiRequestWriter
 {
+	private static final String CHARSET = "UTF-8";
+	
 	private XmlSerializer xml;
 
 	@Override
@@ -35,8 +37,8 @@ public abstract class XmlWriter implements ApiRequestWriter
 		{
 			throw new RuntimeException("Cannot initialize serializer", e);
 		}
-		xml.setOutput(out, "UTF-8");
-		xml.startDocument("UTF-8", null);
+		xml.setOutput(out, CHARSET);
+		xml.startDocument(CHARSET, null);
 
 		write();
 

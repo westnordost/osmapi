@@ -56,28 +56,28 @@ public class CapabilitiesParser extends XmlParser implements ApiResponseReader<C
 		switch (name)
 		{
 			case "version":
-				capabilities.setMinSupportedApiVersion(getFloatAttribute("minimum"));
-				capabilities.setMaxSupportedApiVersion(getFloatAttribute("maximum"));
+				capabilities.minSupportedApiVersion = getFloatAttribute("minimum");
+				capabilities.maxSupportedApiVersion = getFloatAttribute("maximum");
 				break;
 			case "area":
-				capabilities.setMaxMapQueryArea(getFloatAttribute("maximum"));
+				capabilities.maxMapQueryAreaInSquareDegrees = getFloatAttribute("maximum");
 				break;
 			case "tracepoints":
-				capabilities.setMaxPointsInGpsTracePerPage(getIntAttribute("per_page"));
+				capabilities.maxPointsInGpsTracePerPage = getIntAttribute("per_page");
 				break;
 			case "waynodes":
-				capabilities.setMaxNodesInWay(getIntAttribute("maximum"));
+				capabilities.maxNodesInWay = getIntAttribute("maximum");
 				break;
 			case "changesets":
-				capabilities.setMaxElementsPerChangeset(getIntAttribute("maximum_elements"));
+				capabilities.maxElementsPerChangeset = getIntAttribute("maximum_elements");
 				break;
 			case "timeout":
-				capabilities.setTimeoutInSeconds(getIntAttribute("seconds"));
+				capabilities.timeoutInSeconds = getIntAttribute("seconds");
 				break;
 			case "status":
-				capabilities.setDatabaseStatus(Capabilities.parseApiStatus(getAttribute("database")));
-				capabilities.setMapDataStatus(Capabilities.parseApiStatus(getAttribute("api")));
-				capabilities.setGpsTracesStatus(Capabilities.parseApiStatus(getAttribute("gpx")));
+				capabilities.databaseStatus = Capabilities.parseApiStatus(getAttribute("database"));
+				capabilities.mapDataStatus = Capabilities.parseApiStatus(getAttribute("api"));
+				capabilities.gpsTracesStatus = Capabilities.parseApiStatus(getAttribute("gpx"));
 				break;
 		}
 	}
@@ -87,7 +87,7 @@ public class CapabilitiesParser extends XmlParser implements ApiResponseReader<C
 	{
 		if(POLICY.equals(getParentName()) && IMAGERY.equals(getName()))
 		{
-			capabilities.setImageryBlacklistRegExes(imageBlacklistRegexes);
+			capabilities.imageryBlacklistRegExes = imageBlacklistRegexes;
 			imageBlacklistRegexes = null;
 		}
 	}

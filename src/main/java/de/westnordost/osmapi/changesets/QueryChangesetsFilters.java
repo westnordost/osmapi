@@ -2,21 +2,20 @@ package de.westnordost.osmapi.changesets;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.map.data.BoundingBox;
 
 public class QueryChangesetsFilters
 {
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.UK);
-
 	private static final String CHARSET = "UTF-8";
 
+	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
+	
 	private Map<String, String> params = new HashMap<>();
 
 	/**
@@ -55,7 +54,7 @@ public class QueryChangesetsFilters
 	 * @param bounds limit search by these bounds
 	 * @throws IllegalArgumentException if the bounds do cross the 180th meridian
 	 */
-	public QueryChangesetsFilters byBounds(Bounds bounds)
+	public QueryChangesetsFilters byBounds(BoundingBox bounds)
 	{
 		if(bounds.crosses180thMeridian())
 		{
@@ -113,7 +112,7 @@ public class QueryChangesetsFilters
 	 */
 	public QueryChangesetsFilters byClosedAfter(Date closedAfter)
 	{
-		params.put("time", df.format(closedAfter));
+		params.put("time", dateFormat.format(closedAfter));
 		return this;
 	}
 
@@ -125,7 +124,7 @@ public class QueryChangesetsFilters
 	 */
 	public QueryChangesetsFilters byOpenSomeTimeBetween(Date createdBefore, Date closedAfter)
 	{
-		params.put("time", df.format(closedAfter) + "," + df.format(createdBefore));
+		params.put("time", dateFormat.format(closedAfter) + "," + dateFormat.format(createdBefore));
 		return this;
 	}
 

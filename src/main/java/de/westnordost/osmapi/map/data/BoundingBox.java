@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /** A rectangle in latitude longitude coordinates. Bounds are immutable. */
-public class Bounds
+public class BoundingBox
 {
 	private LatLon min;
 	private LatLon max;
 
-	public Bounds(final double latMin, final double lonMin, final double latMax, final double lonMax)
+	public BoundingBox(final double latMin, final double lonMin, final double latMax, final double lonMax)
 	{
 		this(createLatLon(latMin, lonMin), createLatLon(latMax, lonMax));
 	}
@@ -26,7 +26,7 @@ public class Bounds
 		return result;
 	}
 	
-	public Bounds(LatLon min, LatLon max)
+	public BoundingBox(LatLon min, LatLon max)
 	{
 		this.min = min;
 		this.max = max;
@@ -86,13 +86,13 @@ public class Bounds
 
 	/** @return two new bounds split alongside the 180th meridian or, if these bounds do not cross
 	 *          the 180th meridian, just this object in a list */
-	public List<Bounds> splitAt180thMeridian()
+	public List<BoundingBox> splitAt180thMeridian()
 	{
 		if(crosses180thMeridian())
 		{
 			return Arrays.asList(
-					new Bounds( min, createLatLon(max.getLatitude(), LatLons.MAX_VALUE.getLongitude()) ),
-					new Bounds( createLatLon(min.getLatitude(), LatLons.MIN_VALUE.getLongitude()), max )
+					new BoundingBox( min, createLatLon(max.getLatitude(), LatLons.MAX_VALUE.getLongitude()) ),
+					new BoundingBox( createLatLon(min.getLatitude(), LatLons.MIN_VALUE.getLongitude()), max )
 			);
 		}
 
@@ -102,10 +102,10 @@ public class Bounds
 	@Override
 	public boolean equals(Object other)
 	{
-		if(other == null || !(other instanceof Bounds)) return false;
+		if(other == null || !(other instanceof BoundingBox)) return false;
 
 		// we do not rely on that every implementation of LatLon implements equals() properly
-		Bounds otherBounds = (Bounds) other;
+		BoundingBox otherBounds = (BoundingBox) other;
 		return otherBounds.getMinLatitude() == getMinLatitude()
 			&& otherBounds.getMaxLatitude() == getMaxLatitude()
 			&& otherBounds.getMinLongitude() == getMinLongitude()

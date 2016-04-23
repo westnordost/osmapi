@@ -1,17 +1,19 @@
-package de.westnordost.osmapi.xml;
+package de.westnordost.osmapi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-public class XmlTestUtils
+public class TestUtils
 {
-	public static InputStream asInputStream(String xml)
+	private static final String CHARSET = "UTF-8";
+	
+	public static InputStream asInputStream(String str)
 	{
 		try
 		{
-			return new ByteArrayInputStream(xml.getBytes("UTF-8"));
+			return new ByteArrayInputStream(str.getBytes(CHARSET));
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -25,7 +27,7 @@ public class XmlTestUtils
 	{
 		try
 		{
-			return new String(out.toByteArray(), "UTF-8");
+			return new String(out.toByteArray(), CHARSET);
 		}
 		catch (UnsupportedEncodingException e)
 		{

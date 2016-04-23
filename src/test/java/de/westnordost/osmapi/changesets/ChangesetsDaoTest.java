@@ -51,9 +51,9 @@ public class ChangesetsDaoTest extends TestCase
 	{
 		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
 
-		ChangesetInfo info = infoDao.subscribeToChangeset(changesetId);
-		infoDao.unsubscribeFromChangeset(changesetId);
-		assertEquals(changesetId, info.getId());
+		ChangesetInfo info = infoDao.subscribe(changesetId);
+		infoDao.unsubscribe(changesetId);
+		assertEquals(changesetId, info.id);
 	}
 
 	public void testRead()
@@ -61,21 +61,21 @@ public class ChangesetsDaoTest extends TestCase
 		List<Element> elements = new ArrayList<>();
 		long myChangesetId = new MapDataDao(userConnection).updateMap("unit test", "", elements, null);
 
-		ChangesetInfo infos = new ChangesetsDao(connection).getChangeset(myChangesetId);
-		assertEquals(myChangesetId, infos.getId());
+		ChangesetInfo infos = new ChangesetsDao(connection).get(myChangesetId);
+		assertEquals(myChangesetId, infos.id);
 		assertEquals(ConnectionTestFactory.USER_AGENT, infos.getGenerator());
 		assertEquals("unit test",infos.getChangesetComment());
-		assertNull(infos.getBounds());
-		assertFalse(infos.isOpen());
-		assertEquals(infos.getDate(), infos.getDateCreated());
-		assertNotNull(infos.getDateClosed());
-		assertTrue(Math.abs(new Date().getTime() - infos.getDateClosed().getTime()) < TEN_MINUTES);
-		assertTrue(Math.abs(new Date().getTime() - infos.getDateCreated().getTime()) < TEN_MINUTES);
+		assertNull(infos.boundingBox);
+		assertFalse(infos.isOpen);
+		assertEquals(infos.date, infos.dateCreated);
+		assertNotNull(infos.dateClosed);
+		assertTrue(Math.abs(new Date().getTime() - infos.dateClosed.getTime()) < TEN_MINUTES);
+		assertTrue(Math.abs(new Date().getTime() - infos.dateCreated.getTime()) < TEN_MINUTES);
 	}
 
 	public void testReadInvalidReturnsNull()
 	{
-		assertNull(new ChangesetsDao(connection).getChangeset(0));
+		assertNull(new ChangesetsDao(connection).get(0));
 	}
 
 	public void testComment()
@@ -85,13 +85,13 @@ public class ChangesetsDaoTest extends TestCase
 
 		ChangesetsDao dao = new ChangesetsDao(userConnection);
 
-		ChangesetInfo infos = dao.commentChangeset(myChangesetId, "test comment");
-		assertEquals(1, infos.getCommentsCount());
+		ChangesetInfo infos = dao.comment(myChangesetId, "test comment");
+		assertEquals(1, infos.notesCount);
 
-		List<ChangesetComment> comments = dao.getChangeset(myChangesetId).getDiscussion();
+		List<ChangesetNote> comments = dao.get(myChangesetId).discussion;
 		assertNotNull(comments);
-		assertTrue(Math.abs(new Date().getTime() - comments.get(0).getDate().getTime()) < TEN_MINUTES);
-		assertEquals("test comment", comments.get(0).getText());
+		assertTrue(Math.abs(new Date().getTime() - comments.get(0).date.getTime()) < TEN_MINUTES);
+		assertEquals("test comment", comments.get(0).text);
 	}
 
 	public void testEmptyComment()
@@ -100,7 +100,7 @@ public class ChangesetsDaoTest extends TestCase
 
 		try
 		{
-			dao.commentChangeset(changesetId, "");
+			dao.comment(changesetId, "");
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
@@ -112,21 +112,21 @@ public class ChangesetsDaoTest extends TestCase
 
 		try
 		{
-			infoDao.subscribeToChangeset(changesetId);
+			infoDao.subscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.unsubscribeFromChangeset(changesetId);
+			infoDao.unsubscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.commentChangeset(changesetId, "test comment");
+			infoDao.comment(changesetId, "test comment");
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -137,22 +137,22 @@ public class ChangesetsDaoTest extends TestCase
 		// ...which is different from the "raw" API response
 
 		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
-		assertNotNull(infoDao.subscribeToChangeset(changesetId));
-		assertNotNull(infoDao.subscribeToChangeset(changesetId));
+		assertNotNull(infoDao.subscribe(changesetId));
+		assertNotNull(infoDao.subscribe(changesetId));
 	}
 
 	public void testNotSubscribedDoesNotFail()
 	{
 		// ...which is different from the "raw" API response
 		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
-		assertNotNull(infoDao.unsubscribeFromChangeset(changesetId));
+		assertNotNull(infoDao.unsubscribe(changesetId));
 	}
 
 	public void testSubscribeNonExistingChangesetFails()
 	{
 		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
-		try { infoDao.subscribeToChangeset(0); fail(); } catch(OsmNotFoundException e) {}
-		try { infoDao.unsubscribeFromChangeset(0); fail(); } catch(OsmNotFoundException e) {}
+		try { infoDao.subscribe(0); fail(); } catch(OsmNotFoundException e) {}
+		try { infoDao.unsubscribe(0); fail(); } catch(OsmNotFoundException e) {}
 	}
 
 	public void testAnonymousFail()
@@ -161,21 +161,21 @@ public class ChangesetsDaoTest extends TestCase
 
 		try
 		{
-			infoDao.subscribeToChangeset(changesetId);
+			infoDao.subscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.unsubscribeFromChangeset(changesetId);
+			infoDao.unsubscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.commentChangeset(changesetId, "test comment");
+			infoDao.comment(changesetId, "test comment");
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -184,7 +184,7 @@ public class ChangesetsDaoTest extends TestCase
 	public void testGetChangesets()
 	{
 		ChangesetsDao dao = new ChangesetsDao(connection);
-		dao.getChangesets(new Handler<ChangesetInfo>()
+		dao.find(new Handler<ChangesetInfo>()
 		{
 			@Override
 			public void handle(ChangesetInfo tea)
@@ -200,7 +200,7 @@ public class ChangesetsDaoTest extends TestCase
 	public void testGetChangesetsEmptyDoesNotFail()
 	{
 		ChangesetsDao dao = new ChangesetsDao(connection);
-		dao.getChangesets(new Handler<ChangesetInfo>()
+		dao.find(new Handler<ChangesetInfo>()
 		{
 			@Override
 			public void handle(ChangesetInfo tea)
@@ -221,13 +221,13 @@ public class ChangesetsDaoTest extends TestCase
 
 		ChangesetsDao changesetsDao = new ChangesetsDao(userConnection);
 		SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
-		changesetsDao.getChanges(changesetId, handler);
+		changesetsDao.getData(changesetId, handler);
 
 		List<Element> createdElements = handler.getCreations();
 
 		assertEquals(1, createdElements.size());
 
-		Node createdNode = (Node) createdElements.get(0);
+		OsmNode createdNode = (OsmNode) createdElements.get(0);
 
 		// delete again... (clean up before asserting)
 		createdNode.setDeleted(true);
@@ -236,6 +236,6 @@ public class ChangesetsDaoTest extends TestCase
 		assertNotSame(node.getId(), createdNode.getId());
 		assertEquals(node.getVersion(), createdNode.getVersion());
 		assertEquals(node.getPosition(), createdNode.getPosition());
-		assertEquals(changesetId, createdNode.getChangeset().getId());
+		assertEquals(changesetId, createdNode.getChangeset().id);
 	}
 }

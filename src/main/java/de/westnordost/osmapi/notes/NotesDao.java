@@ -12,7 +12,7 @@ import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.SingleElementHandler;
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.LatLon;
 
 /** Creates, comments, closes, reopens and search for notes */
@@ -36,10 +36,10 @@ public class NotesDao
 	 *                                    (Permission.WRITE_NOTES)
 	 * @return the new note
 	 */
-	public Note createNote(LatLon pos, String text)
+	public Note create(LatLon pos, String text)
 	{
 		boolean asAnonymous = osm.getOAuth() == null;
-		return createNote(pos, text, asAnonymous);
+		return create(pos, text, asAnonymous);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class NotesDao
 	 *
 	 * @return the new note
 	 */
-	public Note createNote(LatLon pos, String text, boolean asAnonymous)
+	public Note create(LatLon pos, String text, boolean asAnonymous)
 	{
 		if(text.isEmpty())
 		{
@@ -73,12 +73,12 @@ public class NotesDao
 	/**
 	 * Comment the note with the given id as the current user or anonymous if not logged in.
 	 *
-	 * @see #commentNote(long, String, boolean)
+	 * @see #comment(long, String, boolean)
 	 */
-	public Note commentNote(long id, String text)
+	public Note comment(long id, String text)
 	{
 		boolean asAnonymous = osm.getOAuth() == null;
-		return commentNote(id, text, asAnonymous);
+		return comment(id, text, asAnonymous);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class NotesDao
 	 *
 	 * @return the updated commented note
 	 */
-	public Note commentNote(long id, String text, boolean asAnonymous)
+	public Note comment(long id, String text, boolean asAnonymous)
 	{
 		if(text.isEmpty())
 		{
@@ -108,11 +108,11 @@ public class NotesDao
 	/**
 	 * Reopens the given note without providing a reason.
 	 *
-	 * @see #reopenNote(long, String)
+	 * @see #reopen(long, String)
 	 */
-	public Note reopenNote(long id)
+	public Note reopen(long id)
 	{
-		return reopenNote(id, null);
+		return reopen(id, null);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class NotesDao
 	 *
 	 * @return the updated reopened note
 	 */
-	public Note reopenNote(long id, String reason)
+	public Note reopen(long id, String reason)
 	{
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
 		makeSingleNoteRequest(id, "reopen", true, reason, new NotesParser(noteHandler));
@@ -145,7 +145,7 @@ public class NotesDao
 	 *
 	 * @return the closed note
 	 */
-	public Note closeNote(long id, String reason)
+	public Note close(long id, String reason)
 	{
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
 		makeSingleNoteRequest(id, "close", true, reason, new NotesParser(noteHandler));
@@ -155,18 +155,18 @@ public class NotesDao
 	/**
 	 * Close aka resolve the note with the given id without providing a reason.
 	 *
-	 * @see #closeNote(long, String)
+	 * @see #close(long, String)
 	 */
-	public Note closeNote(long id)
+	public Note close(long id)
 	{
-		return closeNote(id, null);
+		return close(id, null);
 	}
 
 	/**
 	 * @param id id of the note
 	 * @return the note with the given id. null if the note with that id does not exist (anymore).
 	 */
-	public Note getNote(long id)
+	public Note get(long id)
 	{
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
 		try
@@ -183,11 +183,11 @@ public class NotesDao
 	/**
 	 * Retrieve all notes in the given area and feed them to the given handler.
 	 *
-	 * @see #getNotes(Handler, Bounds, String, int, int)
+	 * @see #getNotes(Handler, BoundingBox, String, int, int)
 	 */
-	public void getNotes(Handler<Note> handler, Bounds bounds, int limit, int hideClosedNoteAfter)
+	public void getAll(BoundingBox bounds, Handler<Note> handler, int limit, int hideClosedNoteAfter)
 	{
-		getNotes(handler, bounds, null, limit, hideClosedNoteAfter);
+		getAll(bounds, null, handler, limit, hideClosedNoteAfter);
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class NotesDao
 	 * @throws OsmQueryTooBigException if the bounds area is too large
 	 * @throws IllegalArgumentException if the bounds cross the 180th meridian
 	 */
-	public void getNotes(Handler<Note> handler, Bounds bounds, String search, int limit,
+	public void getAll(BoundingBox bounds, String search, Handler<Note> handler, int limit,
 						 int hideClosedNoteAfter)
 	{
 		if(limit <= 0 || limit > 10000)
@@ -223,7 +223,7 @@ public class NotesDao
 			searchQuery = "&q=" + urlEncode(search);
 		}
 
-		String call = NOTES + "?bbox=" + bounds.getAsLeftBottomRightTopString() +
+		final String call = NOTES + "?bbox=" + bounds.getAsLeftBottomRightTopString() +
 				searchQuery + "&limit=" + limit + "&closed=" + hideClosedNoteAfter;
 
 		try
@@ -236,7 +236,7 @@ public class NotesDao
 			throw new OsmQueryTooBigException(e.getResponseCode(), e.getResponseBody());
 		}
 	}
-
+	
 	private <T> T makeSingleNoteRequest(long id, String call, boolean authenticate,	String text,
 										ApiResponseReader<T> reader)
 	{
@@ -253,7 +253,7 @@ public class NotesDao
 	{
 		try
 		{
-			return URLEncoder.encode(text, osm.getCharset());
+			return URLEncoder.encode(text, OsmConnection.CHARSET);
 		}
 		catch (UnsupportedEncodingException e)
 		{

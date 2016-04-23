@@ -10,7 +10,7 @@ public class CapabilitiesDaoTest extends TestCase
 	public void testCapabilities()
 	{
 		OsmConnection c = ConnectionTestFactory.createConnection(null);
-		new CapabilitiesDao(c).getServerCapabilities();
+		new CapabilitiesDao(c).get();
 		// as the response may vary, it should just not throw an exception
 	}
 }

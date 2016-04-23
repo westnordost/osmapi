@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.xml;
 
+import de.westnordost.osmapi.TestUtils;
 import junit.framework.TestCase;
 
 public class XmlParserTest extends TestCase
@@ -166,7 +167,7 @@ public class XmlParserTest extends TestCase
 	{
 		public void test(String xml)
 		{
-			doParse(XmlTestUtils.asInputStream(xml));
+			doParse(TestUtils.asInputStream(xml));
 		}
 
 		@Override

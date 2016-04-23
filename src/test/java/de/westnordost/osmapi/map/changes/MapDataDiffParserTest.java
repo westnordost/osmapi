@@ -1,10 +1,9 @@
 package de.westnordost.osmapi.map.changes;
 
 import junit.framework.TestCase;
-
 import de.westnordost.osmapi.SingleElementHandler;
+import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.map.data.Element;
-import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class MapDataDiffParserTest extends TestCase
 {
@@ -54,7 +53,7 @@ public class MapDataDiffParserTest extends TestCase
 	private DiffElement parseOne(String xml)
 	{
 		SingleElementHandler<DiffElement> handler = new SingleElementHandler<>();
-		new MapDataDiffParser(handler).parse(XmlTestUtils.asInputStream(xml));
+		new MapDataDiffParser(handler).parse(TestUtils.asInputStream(xml));
 		return handler.get();
 	}
 }

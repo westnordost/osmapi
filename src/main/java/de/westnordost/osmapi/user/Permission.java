@@ -9,8 +9,8 @@ public final class Permission
 		CHANGE_PREFERENCES = "allow_write_prefs",
 		WRITE_DIARY = "allow_write_diary",
 		MODIFY_MAP = "allow_write_api",
-		READ_PRIVATE_GPS_TRACES = "allow_read_gpx",
-		UPLOAD_GPS_TRACES = "allow_write_gpx",
+		READ_GPS_TRACES = "allow_read_gpx",
+		WRITE_GPS_TRACES = "allow_write_gpx",
 		WRITE_NOTES = "allow_write_notes";
 
 	private Permission()

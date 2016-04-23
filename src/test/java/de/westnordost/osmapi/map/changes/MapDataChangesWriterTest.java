@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
+import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.map.MapDataParser;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
-import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.map.data.OsmNode;
 import de.westnordost.osmapi.map.data.OsmRelation;
@@ -22,13 +22,12 @@ import de.westnordost.osmapi.map.data.OsmWay;
 import de.westnordost.osmapi.map.data.Relation;
 import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.data.Way;
-import de.westnordost.osmapi.xml.XmlTestUtils;
 
 public class MapDataChangesWriterTest extends TestCase
 {
 	public void testWriteElement() throws IOException
 	{
-		Element originalElement = createNode(-1);
+		OsmNode originalElement = createNode(-1);
 		originalElement.setTags(tags);
 
 		String xml = writeXml(123, originalElement);
@@ -36,22 +35,22 @@ public class MapDataChangesWriterTest extends TestCase
 
 		assertEquals(1, xmlElements.size());
 
-		Element node = xmlElements.get(0);
+		OsmNode node = (OsmNode) xmlElements.get(0);
 
 		assertEquals(originalElement.getId(), node.getId());
-		assertEquals(123, node.getChangeset().getId());
+		assertEquals(123, node.getChangeset().id);
 		assertEquals(originalElement.getVersion(), node.getVersion());
 		assertEquals(originalElement.getTags(), node.getTags());
 	}
 
 	public void testWriteNode() throws IOException
 	{
-		Node originalNode = createNode(-1);
+		OsmNode originalNode = createNode(-1);
 
 		String xml = writeXml(0, originalNode);
 		List<Element> xmlElements = parseXml(xml).getAll();
 
-		Node node = (Node) xmlElements.get(0);
+		OsmNode node = (OsmNode) xmlElements.get(0);
 		assertEquals(originalNode.getPosition(), node.getPosition());
 		assertEquals(originalNode.getTags(), node.getTags());
 	}
@@ -88,7 +87,7 @@ public class MapDataChangesWriterTest extends TestCase
 
 	public void testModified() throws IOException
 	{
-		Element originalElement = createNode(1);
+		OsmNode originalElement = createNode(1);
 		originalElement.setTags(tags);
 		String xml = writeXml(0, originalElement);
 
@@ -97,7 +96,7 @@ public class MapDataChangesWriterTest extends TestCase
 
 	public void testDelete() throws IOException
 	{
-		Element originalElement = createNode(1);
+		OsmNode originalElement = createNode(1);
 		originalElement.setDeleted(true);
 		String xml = writeXml(0, originalElement);
 
@@ -133,17 +132,17 @@ public class MapDataChangesWriterTest extends TestCase
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		writer.write(out);
-		String xml = XmlTestUtils.asString(out);
+		String xml = TestUtils.asString(out);
 
 		assertTrue(parseXml(xml).getAll().isEmpty());
 	}
 
 	public void testIgnoreDeletedCreation()
 	{
-		Element element = createNode(-1);
+		OsmNode element = createNode(-1);
 		element.setDeleted(true);
 
-		MapDataChangesWriter writer = new MapDataChangesWriter(1, Arrays.asList(element));
+		MapDataChangesWriter writer = new MapDataChangesWriter(1, Arrays.asList((Element) element));
 		assertFalse(writer.hasChanges());
 	}
 
@@ -167,7 +166,7 @@ public class MapDataChangesWriterTest extends TestCase
 		SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
 
 		MapDataParser parser = new MapDataChangesParser(handler);
-		parser.parse(XmlTestUtils.asInputStream(xml));
+		parser.parse(TestUtils.asInputStream(xml));
 
 		return handler;
 	}
@@ -202,22 +201,22 @@ public class MapDataChangesWriterTest extends TestCase
 	{
 		ArrayList<Element> elements = new ArrayList<>();
 
-		Node newNode = createNode(-3);
-		Node modifiedNode = createNode(6);
+		OsmNode newNode = createNode(-3);
+		OsmNode modifiedNode = createNode(6);
 		modifiedNode.setTags(tags);
-		Node deleteNode = createNode(9);
+		OsmNode deleteNode = createNode(9);
 		deleteNode.setDeleted(true);
 
-		Way newWay = createWay(-2);
-		Way modifiedWay = createWay(5);
+		OsmWay newWay = createWay(-2);
+		OsmWay modifiedWay = createWay(5);
 		modifiedWay.setTags(tags);
-		Way deleteWay = createWay(8);
+		OsmWay deleteWay = createWay(8);
 		deleteWay.setDeleted(true);
 
-		Relation newRelation = createRelation(-1);
-		Relation modifiedRelation = createRelation(4);
+		OsmRelation newRelation = createRelation(-1);
+		OsmRelation modifiedRelation = createRelation(4);
 		modifiedRelation.setTags(tags);
-		Relation deleteRelation = createRelation(7);
+		OsmRelation deleteRelation = createRelation(7);
 		deleteRelation.setDeleted(true);
 
 		elements.add(newNode);
@@ -233,17 +232,17 @@ public class MapDataChangesWriterTest extends TestCase
 		return elements;
 	}
 
-	private static Node createNode(long id)
+	private static OsmNode createNode(long id)
 	{
 		return new OsmNode(id, 1, pos, null, null);
 	}
 
-	private static Way createWay(long id)
+	private static OsmWay createWay(long id)
 	{
 		return new OsmWay(id, 1, nodes, null, null);
 	}
 
-	private static Relation createRelation(long id)
+	private static OsmRelation createRelation(long id)
 	{
 		return new OsmRelation(id, 1, relationMembers, null, null);
 	}

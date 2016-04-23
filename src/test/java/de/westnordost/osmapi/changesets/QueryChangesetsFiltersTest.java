@@ -3,23 +3,23 @@ package de.westnordost.osmapi.changesets;
 import junit.framework.TestCase;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import de.westnordost.osmapi.map.data.Bounds;
+import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.map.data.BoundingBox;
 
 public class QueryChangesetsFiltersTest extends TestCase
 {
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.UK);
 	private static final String VALID_DATE = "2222-11-22T22:11:00+0100";
+	
+	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
 	
 	public void testByBounds()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		filters.byBounds(new Bounds(0, 5, 10, 15));
+		filters.byBounds(new BoundingBox(0, 5, 10, 15));
 		
 		assertEquals("5.0,0.0,15.0,10.0", getParam(filters.toParamString(), "bbox"));
 	}
@@ -59,7 +59,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 	public void testByClosedAfter() throws ParseException
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		filters.byClosedAfter(df.parse(VALID_DATE));
+		filters.byClosedAfter(dateFormat.parse(VALID_DATE));
 		
 		assertEquals(VALID_DATE, getParam(filters.toParamString(), "time"));
 	}
@@ -102,7 +102,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 	{
 		try
 		{
-			new QueryChangesetsFilters().byBounds(new Bounds(0, 15, 10, 5));
+			new QueryChangesetsFilters().byBounds(new BoundingBox(0, 15, 10, 5));
 			fail();
 		}
 		catch(IllegalArgumentException e) {}

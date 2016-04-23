@@ -1,7 +1,5 @@
 package de.westnordost.osmapi.user;
 
-import java.util.List;
-
 import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 
@@ -18,13 +16,13 @@ public class UserDao
 	/** @return the user info of the current user
 	 *  @throws OsmAuthorizationException if the user does not have the permission
 	 *                                     Permission.READ_PREFERENCES_AND_USER_DETAILS*/
-	public UserDetails getUserDetails()
+	public UserDetails getMine()
 	{
-		return osm.makeAuthenticatedRequest("user/details", "GET", new UserInfoParser());
+		return (UserDetails) osm.makeAuthenticatedRequest("user/details", "GET", new UserDetailsParser());
 	}
 
 	/** @return the user info of the given user. Null if the user does not exist. */
-	public UserInfo getUserInfo(long userId)
+	public UserInfo get(long userId)
 	{
 		try
 		{
@@ -34,12 +32,5 @@ public class UserDao
 		{
 			return null;
 		}
-	}
-
-	/** @return a list of permissions the user has on this server (=are granted though OAuth). Use
-	 *          the constants defined in the Permission, i.e Permission.CHANGE_PREFERENCES */
-	public List<String> getUserPermissions()
-	{
-		return osm.makeAuthenticatedRequest("permissions", "GET", new PermissionsParser());
 	}
 }

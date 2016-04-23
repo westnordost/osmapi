@@ -2,6 +2,7 @@ package de.westnordost.osmapi.map.changes;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -31,10 +32,12 @@ public class MapDataChangesWriter extends XmlWriter
 		deletions = new ArrayList<>();
 		for(Element element : elements)
 		{
-			// new and deleted elements are ignored
-			if(element.isNew() && !element.isDeleted())
+			// new deleted elements are ignored
+			if(element.isNew() && element.isDeleted())
+				continue;
+			else if(element.isNew())
 				creations.add(element);
-			else if(element.isDeleted() && !element.isNew())
+			else if(element.isDeleted())
 				deletions.add(element);
 			else if(element.isModified())
 				modifications.add(element);

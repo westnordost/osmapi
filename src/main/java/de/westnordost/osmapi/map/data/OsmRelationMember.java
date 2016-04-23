@@ -7,7 +7,7 @@ public class OsmRelationMember implements RelationMember
 	private final long ref;
 	private Element.Type type;
 
-    private String role;
+	private String role;
 
 	public OsmRelationMember(long ref, String role, Element.Type type)
 	{
@@ -21,10 +21,10 @@ public class OsmRelationMember implements RelationMember
 		return ref;
 	}
 
-    public String getRole()
-    {
-        return role;
-    }
+	public String getRole()
+	{
+		return role;
+	}
 
 	public Element.Type getType()
 	{

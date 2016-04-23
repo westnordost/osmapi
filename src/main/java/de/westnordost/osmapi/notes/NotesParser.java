@@ -2,7 +2,6 @@ package de.westnordost.osmapi.notes;
 
 import java.io.InputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.Map;
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.map.data.OsmLatLon;
-import de.westnordost.osmapi.user.OsmUser;
 import de.westnordost.osmapi.user.User;
 import de.westnordost.osmapi.xml.XmlParser;
 
@@ -18,13 +16,12 @@ import de.westnordost.osmapi.xml.XmlParser;
  *  does not care where in the XML the notes nodes are. */
 public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 {
-	private static final SimpleDateFormat DATE_FORMAT =
-			new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.UK);
-
 	private static final String
 			NOTE = "note",
 			COMMENT = "comment";
 
+	private NotesDateFormat dateFormat = new NotesDateFormat();
+	
 	/* temporary map so we do not parse and hold many times the same user */
 	private Map<Long, User> users;
 
@@ -56,7 +53,8 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 
 		if (name.equals(NOTE))
 		{
-			currentNote = new Note(	OsmLatLon.parseLatLon(getAttribute("lat"), getAttribute("lon")) );
+			currentNote = new Note();
+			currentNote.position = OsmLatLon.parseLatLon(getAttribute("lat"), getAttribute("lon"));
 		}
 		else if(name.equals(COMMENT))
 		{
@@ -82,15 +80,15 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 			{
 				if(!users.containsKey(userId))
 				{
-					users.put(userId, new OsmUser(userId, userName));
+					users.put(userId, new User(userId, userName));
 				}
 
-				currentComment.setUser(users.get(userId));
+				currentComment.user = users.get(userId);
 
 				userId = -1;
 				userName = null;
 			}
-			currentNote.addComment(currentComment);
+			currentNote.comments.add(currentComment);
 			currentComment = null;
 		}
 		else if(NOTE.equals(parentName))
@@ -110,16 +108,16 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 		switch (name)
 		{
 			case "id":
-				currentNote.setId(Long.parseLong(txt));
+				currentNote.id = Long.parseLong(txt);
 				break;
 			case "status":
-				currentNote.setStatus(Note.Status.valueOf(txt.toUpperCase(Locale.UK)));
+				currentNote.status = Note.Status.valueOf(txt.toUpperCase(Locale.UK));
 				break;
 			case "date_created":
-				currentNote.setDateCreated(DATE_FORMAT.parse(txt));
+				currentNote.dateCreated = dateFormat.parse(txt);
 				break;
 			case "date_closed":
-				currentNote.setDateClosed(DATE_FORMAT.parse(txt));
+				currentNote.dateClosed = dateFormat.parse(txt);
 				break;
 		}
 	}
@@ -131,7 +129,7 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 		switch (name)
 		{
 			case "date":
-				currentComment.setDate(DATE_FORMAT.parse(txt));
+				currentComment.date = dateFormat.parse(txt);
 				break;
 			case "user":
 				userName = txt;
@@ -140,10 +138,10 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 				userId = Long.parseLong(txt);
 				break;
 			case "text":
-				currentComment.setText(txt);
+				currentComment.text = txt;
 				break;
 			case "action":
-				currentComment.setAction(NoteComment.Action.valueOf(txt.toUpperCase(Locale.UK)));
+				currentComment.action = NoteComment.Action.valueOf(txt.toUpperCase(Locale.UK));
 				break;
 		}
 	}

@@ -6,6 +6,8 @@ import junit.framework.TestCase;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import de.westnordost.osmapi.TestUtils;
+
 public class XmlWriterTest extends TestCase
 {
 	private static final String xmlBlob = "<?xml version='1.0' encoding='UTF-8' ?>";
@@ -117,7 +119,7 @@ public class XmlWriterTest extends TestCase
 		{
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			write(os);
-			String result = XmlTestUtils.asString(os);
+			String result = TestUtils.asString(os);
 			// not interested in indentation
 			result = result.replaceAll("(?m)^[\\s]*", "");
 			// not interested in tabs and newlines

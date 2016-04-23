@@ -101,11 +101,6 @@ public class OsmConnection
 		return oauth;
 	}
 
-	public String getCharset()
-	{
-		return CHARSET;
-	}
-
 	public <T> T makeRequest(String call, ApiResponseReader<T> reader)
 	{
 		return makeRequest(call, null, false, null, reader);

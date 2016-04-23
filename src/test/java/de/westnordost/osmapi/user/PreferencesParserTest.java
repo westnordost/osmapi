@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import java.util.Map;
 
-import de.westnordost.osmapi.xml.XmlTestUtils;
+import de.westnordost.osmapi.TestUtils;
 
 public class PreferencesParserTest extends TestCase
 {
@@ -16,7 +16,7 @@ public class PreferencesParserTest extends TestCase
 				"	<preference k=\"something.else\" v=\"true\"/>" +
 				"</preferences>";
 
-		Map<String,String> preferences = new PreferencesParser().parse(XmlTestUtils.asInputStream(xml));
+		Map<String,String> preferences = new PreferencesParser().parse(TestUtils.asInputStream(xml));
 		assertEquals("identifiable", preferences.get("gps.trace.visibility"));
 		assertEquals("true",preferences.get("something.else"));
 	}

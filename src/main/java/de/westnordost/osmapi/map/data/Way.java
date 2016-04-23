@@ -5,6 +5,4 @@ import java.util.List;
 public interface Way extends Element
 {
 	List<Long> getNodeIds();
-
-	boolean isClosed();
 }

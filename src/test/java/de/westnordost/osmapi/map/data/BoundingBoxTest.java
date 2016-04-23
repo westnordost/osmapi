@@ -4,13 +4,13 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-public class BoundsTest extends TestCase
+public class BoundingBoxTest extends TestCase
 {
 	public void testValidation4Doubles()
 	{
 		try
 		{
-			new Bounds(0, 0, -1, 0);
+			new BoundingBox(0, 0, -1, 0);
 			fail();
 		}
 		catch (IllegalArgumentException e) {}
@@ -20,7 +20,7 @@ public class BoundsTest extends TestCase
 	{
 		try
 		{
-			new Bounds(new OsmLatLon(0, 0), new OsmLatLon(-1, 0));
+			new BoundingBox(new OsmLatLon(0, 0), new OsmLatLon(-1, 0));
 			fail();
 		}
 		catch (IllegalArgumentException e) {}
@@ -29,14 +29,14 @@ public class BoundsTest extends TestCase
 	
 	public void testCross180thMeridian()
 	{
-		Bounds bounds = new Bounds(
+		BoundingBox bounds = new BoundingBox(
 				new OsmLatLon(0, 90),
 				new OsmLatLon(1, -90));
 		assertTrue(bounds.crosses180thMeridian());
 
-		List<Bounds> boundses = bounds.splitAt180thMeridian();
-		Bounds bounds1 = boundses.get(0);
-		Bounds bounds2 = boundses.get(1);
+		List<BoundingBox> boundses = bounds.splitAt180thMeridian();
+		BoundingBox bounds1 = boundses.get(0);
+		BoundingBox bounds2 = boundses.get(1);
 
 		assertEquals(bounds.getMin(),bounds1.getMin());
 		assertEquals(bounds.getMax().getLatitude(), bounds1.getMax().getLatitude());
@@ -49,10 +49,10 @@ public class BoundsTest extends TestCase
 
 	public void testEquals()
 	{
-		Bounds bounds1 = new Bounds(
+		BoundingBox bounds1 = new BoundingBox(
 				OsmLatLon.parseLatLon("51.7400243", "0.2400123"),
 				OsmLatLon.parseLatLon("55.7410243", "0.2701123"));
-		Bounds bounds2 = new Bounds(
+		BoundingBox bounds2 = new BoundingBox(
 				OsmLatLon.parseLatLon("51.7400243", "0.2400123"),
 				OsmLatLon.parseLatLon("55.7410243", "0.2701123"));
 		assertEquals(bounds1, bounds2);
@@ -60,21 +60,21 @@ public class BoundsTest extends TestCase
 	
 	public void testEqualsWithDifferentConstructors()
 	{
-		Bounds bounds1 = new Bounds(34.1234, 12.1234, 37.1237, 15.1254);
-		Bounds bounds2 = new Bounds(new OsmLatLon(34.1234, 12.1234), new OsmLatLon(37.1237, 15.1254));
+		BoundingBox bounds1 = new BoundingBox(34.1234, 12.1234, 37.1237, 15.1254);
+		BoundingBox bounds2 = new BoundingBox(new OsmLatLon(34.1234, 12.1234), new OsmLatLon(37.1237, 15.1254));
 		
 		assertEquals(bounds1, bounds2);
 	}
 	
 	public void testEqualsNull()
 	{
-		Bounds bounds1 = new Bounds(34.1234, 12.1234, 37.1237, 15.1254);
+		BoundingBox bounds1 = new BoundingBox(34.1234, 12.1234, 37.1237, 15.1254);
 		assertFalse(bounds1.equals(null));
 	}
 	
 	public void testEqualsOtherObject()
 	{
-		Bounds bounds1 = new Bounds(34.1234, 12.1234, 37.1237, 15.1254);
+		BoundingBox bounds1 = new BoundingBox(34.1234, 12.1234, 37.1237, 15.1254);
 		assertFalse(bounds1.equals(new Object()));
 	}
 }

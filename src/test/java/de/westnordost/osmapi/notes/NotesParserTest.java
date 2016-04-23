@@ -8,7 +8,9 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.xml.XmlTestUtils;
+import de.westnordost.osmapi.ListHandler;
+import de.westnordost.osmapi.SingleElementHandler;
+import de.westnordost.osmapi.TestUtils;
 
 public class NotesParserTest extends TestCase
 {
@@ -20,16 +22,11 @@ public class NotesParserTest extends TestCase
 				"	<date_created>2015-12-20 22:52:30 UTC</date_created>" +
 				"</note>";
 
-		new NotesParser( new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-				c.set(2015, Calendar.DECEMBER, 20, 22, 52, 30);
-				assertEquals(c.getTimeInMillis() / 1000, note.getDateCreated().getTime() / 1000);
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		Note note = parseOne(xml);
+
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
+		c.set(2015, Calendar.DECEMBER, 20, 22, 52, 30);
+		assertEquals(c.getTimeInMillis() / 1000, note.dateCreated.getTime() / 1000);
 	}
 
 	public void testParseNoteStatus()
@@ -42,21 +39,10 @@ public class NotesParserTest extends TestCase
 				"	<status>closed</status>" +
 				"</note>";
 
-		new NotesParser( new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				assertEquals(Note.Status.OPEN, note.getStatus());
-			}
-
-			@Override
-			protected void onSecondNote(Note note)
-			{
-				assertEquals(Note.Status.CLOSED, note.getStatus());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
-
+		List<Note> notes = parseList(xml);
+		
+		assertEquals(Note.Status.OPEN, notes.get(0).status);
+		assertEquals(Note.Status.CLOSED, notes.get(1).status);
 	}
 
 	public void testParseNoteOptionalDate()
@@ -68,20 +54,10 @@ public class NotesParserTest extends TestCase
 				"<note lon=\"0\" lat=\"0\">" +
 				"</note>";
 
-		new NotesParser(new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				assertNotNull(note.getDateClosed());
-			}
-
-			@Override
-			protected void onSecondNote(Note note)
-			{
-				assertNull(note.getDateClosed());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		List<Note> notes = parseList(xml);
+		
+		assertNotNull(notes.get(0).dateClosed);
+		assertNull(notes.get(1).dateClosed);
 	}
 
 	public void testParseBasicNoteFields()
@@ -91,16 +67,11 @@ public class NotesParserTest extends TestCase
 				"	<id>123456</id>" +
 				"</note>";
 
-		new NotesParser(new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				assertEquals(123456, note.getId());
-				assertEquals(-0.1904556, note.getPosition().getLongitude());
-				assertEquals(51.5464626, note.getPosition().getLatitude());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		Note note = parseOne(xml);
+		
+		assertEquals(123456, note.id);
+		assertEquals(-0.1904556, note.position.getLongitude());
+		assertEquals(51.5464626, note.position.getLatitude());
 	}
 
 	public void testParseCommentDateField()
@@ -114,17 +85,12 @@ public class NotesParserTest extends TestCase
 				"	</comments>" +
 				"</note>";
 
-		new NotesParser(new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				NoteComment comment = note.getComments().get(0);
-				Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-				c.set(2015, Calendar.DECEMBER, 22, 22, 52, 40);
-				assertEquals(c.getTimeInMillis() / 1000, comment.getDate().getTime() / 1000);
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		Note note = parseOne(xml);
+		
+		NoteComment comment = note.comments.get(0);
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
+		c.set(2015, Calendar.DECEMBER, 22, 22, 52, 40);
+		assertEquals(c.getTimeInMillis() / 1000, comment.date.getTime() / 1000);
 	}
 
 	public void testParseCommentStatusField()
@@ -147,19 +113,14 @@ public class NotesParserTest extends TestCase
 				"	</comments>" +
 				"</note>";
 
-		new NotesParser(new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				List<NoteComment> comments = note.getComments();
-				assertEquals(4, comments.size());
-				assertEquals(NoteComment.Action.OPENED, comments.get(0).getAction());
-				assertEquals(NoteComment.Action.CLOSED, comments.get(1).getAction());
-				assertEquals(NoteComment.Action.COMMENTED, comments.get(2).getAction());
-				assertEquals(NoteComment.Action.REOPENED, comments.get(3).getAction());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		Note note = parseOne(xml);
+		
+		List<NoteComment> comments = note.comments;
+		assertEquals(4, comments.size());
+		assertEquals(NoteComment.Action.OPENED, comments.get(0).action);
+		assertEquals(NoteComment.Action.CLOSED, comments.get(1).action);
+		assertEquals(NoteComment.Action.COMMENTED, comments.get(2).action);
+		assertEquals(NoteComment.Action.REOPENED, comments.get(3).action);
 	}
 
 	public void testParseCommentOptionalFields()
@@ -172,15 +133,10 @@ public class NotesParserTest extends TestCase
 				"	</comments>" +
 				"</note>";
 
-		new NotesParser(new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				NoteComment comment = note.getComments().get(0);
-				assertNull(comment.getUser());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		Note note = parseOne(xml);
+
+		NoteComment comment = note.comments.get(0);
+		assertNull(comment.user);
 	}
 
 	public void testParseBasicCommentFields()
@@ -199,18 +155,13 @@ public class NotesParserTest extends TestCase
 				"	</comments>" +
 				"</note>";
 
-		new NotesParser(new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				NoteComment comment = note.getComments().get(0);
-				assertNotNull(comment.getUser());
-				assertEquals(123, (long) comment.getUser().getId());
-				assertEquals("mr_x", comment.getUser().getDisplayName());
-				assertEquals("Last sighted here", comment.getText());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		Note note = parseOne(xml);
+
+		NoteComment comment = note.comments.get(0);
+		assertNotNull(comment.user);
+		assertEquals(123, (long) comment.user.id);
+		assertEquals("mr_x", comment.user.displayName);
+		assertEquals("Last sighted here", comment.text);
 	}
 
 	public void testReuseUserData()
@@ -237,31 +188,28 @@ public class NotesParserTest extends TestCase
 						"	</comments>" +
 						"</note>";
 
-		new NotesParser(new TestNoteHandler()
-		{
-			@Override
-			protected void onFirstNote(Note note)
-			{
-				List<NoteComment> comments = note.getComments();
-				assertSame(comments.get(0).getUser(), comments.get(2).getUser());
-			}
-		}).parse(XmlTestUtils.asInputStream(xml));
+		Note note = parseOne(xml);
+		
+		List<NoteComment> comments = note.comments;
+		assertSame(comments.get(0).user, comments.get(2).user);
 	}
-
-	private class TestNoteHandler implements Handler<Note>
+	
+	private List<Note> parseList(String xml)
 	{
-
-		private int counter = 0;
-
-		@Override
-		public void handle(Note note)
-		{
-			if(counter == 0) onFirstNote(note);
-			if(counter == 1) onSecondNote(note);
-			counter++;
-		}
-
-		protected void onFirstNote(Note note) {}
-		protected void onSecondNote(Note note) {}
+		ListHandler<Note> handler = new ListHandler<>();
+		parse(xml, handler);
+		return handler.get();
+	}
+	
+	private Note parseOne(String xml)
+	{
+		SingleElementHandler<Note> handler = new SingleElementHandler<>();
+		parse(xml, handler);
+		return handler.get();
+	}
+	
+	private void parse(String xml, Handler<Note> handler)
+	{
+		new NotesParser(handler).parse(TestUtils.asInputStream(xml));
 	}
 }

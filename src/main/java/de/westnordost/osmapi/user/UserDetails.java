@@ -6,23 +6,25 @@ import de.westnordost.osmapi.map.data.LatLon;
 
 /** OSM user details. The OSM api does not reveal personal information of other users, so this
  *  information is only available to the current user. */
-public interface UserDetails extends UserInfo
+public class UserDetails extends UserInfo
 {
-	int getInboxMessageCount();
+	public UserDetails(long id, String displayName)
+	{
+		super(id, displayName);
+	}
+	
+	public boolean considersHisContributionsAsPublicDomain;
 
-	int getSentMessagesCount();
-
-	int getUnreadMessagesCount();
-
-	boolean getConsidersHisContributionsAsPublicDomain();
+	/** user's self-chosen home zoom level is something between 0-19. Null if not set. */
+	public Byte homeZoom;
+	/** user's self-chosen home location. Null if not set. */
+	public LatLon homeLocation;
 
 	/** @return the language and country codes of the user's preferred languages, sorted by
 	 *  preferedness. The format is i.e. "en-US" or "en" (according to ISO 639-1 and ISO 3166) */
-	List<String> getPreferredLanguages();
+	public List<String> preferredLanguages;
 
-	/** @return the user's home location. Null if not set. */
-	LatLon getHomeLocation();
-
-	/** @return the user's home zoom. Null if not set. */
-	Byte getHomeZoom();
+	public int inboxMessageCount;
+	public int unreadMessagesCount;
+	public int sentMessagesCount;
 }
