@@ -4,8 +4,8 @@ package de.westnordost.osmapi.errors;
  *  available (i.e. database offline)*/
 public class OsmServiceUnavailableException extends OsmConnectionException
 {
-	public OsmServiceUnavailableException(int responseCode, String responseBody)
+	public OsmServiceUnavailableException(int errorCode, String errorTitle, String description)
 	{
-		super(responseCode, responseBody);
+		super(errorCode, errorTitle, description);
 	}
 }

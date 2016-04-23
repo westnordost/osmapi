@@ -18,7 +18,7 @@ public class OsmApiErrorFactoryTest extends TestCase
 	{
 		for(int i = 0; i < 600; ++i)
 		{
-			RuntimeException e = OsmApiErrorFactory.createError(i, "test");
+			RuntimeException e = OsmApiErrorFactory.createError(i, "test", "description");
 			
 			if(i >= 400 && i < 500) assertTrue(e instanceof OsmApiException);
 			else assertTrue(e instanceof OsmConnectionException);

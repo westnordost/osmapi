@@ -2,6 +2,7 @@ package de.westnordost.osmapi;
 
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,14 +10,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
 
-import de.westnordost.osmapi.errors.OsmApiReadResponseException;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmConnectionException;
-import de.westnordost.osmapi.errors.RedirectedException;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.exception.OAuthException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
+import de.westnordost.osmapi.errors.OsmApiReadResponseException;
+import de.westnordost.osmapi.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.errors.OsmConnectionException;
+import de.westnordost.osmapi.errors.RedirectedException;
 
 /** Talks with the <a href="http://wiki.openstreetmap.org/wiki/API_v0.6">OpenStreetMap API 0.6</a>,
  * acts as a basis for data access objects for openstreetmap data accessible through the API.
@@ -278,7 +279,21 @@ public class OsmConnection
 		if(httpResponseCode != HttpURLConnection.HTTP_OK)
 		{
 			String responseMessage = connection.getResponseMessage();
-			throw OsmApiErrorFactory.createError(httpResponseCode, responseMessage);
+			String errorDescription = getErrorDescription(connection.getErrorStream());
+			
+			throw OsmApiErrorFactory.createError(httpResponseCode, responseMessage, errorDescription);
 		}
+	}
+	
+	private String getErrorDescription(InputStream inputStream) throws IOException
+	{
+		ByteArrayOutputStream result = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int length;
+		while ((length = inputStream.read(buffer)) != -1)
+		{
+			result.write(buffer, 0, length);
+		}
+		return result.toString(CHARSET);
 	}
 }

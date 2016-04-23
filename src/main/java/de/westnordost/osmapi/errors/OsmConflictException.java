@@ -6,8 +6,8 @@ package de.westnordost.osmapi.errors;
  */
 public class OsmConflictException extends OsmApiException
 {
-	public OsmConflictException(int errorCode, String response)
+	public OsmConflictException(int errorCode, String errorTitle, String description)
 	{
-		super(errorCode, response);
+		super(errorCode, errorTitle, description);
 	}
 }

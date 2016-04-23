@@ -97,7 +97,7 @@ public class MapDataHistoryDao
 			 *  there" because he has no way to acquire redacted versions, it should just return
 			 *  null. The error code between "version does not exist" and "element does not exist"
 			 *  does not differ, so we cannot make a distinction here */
-			switch(e.getResponseCode())
+			switch(e.getErrorCode())
 			{
 				case HttpURLConnection.HTTP_NOT_FOUND:
 				case HttpURLConnection.HTTP_GONE:

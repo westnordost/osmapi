@@ -159,7 +159,7 @@ public class MapDataDao
 		{
 			/* we can be more specific here because we checked the validity of all the other
 			   parameters already */
-			throw new OsmQueryTooBigException(e.getResponseCode(), e.getResponseBody());
+			throw new OsmQueryTooBigException(e);
 		}
 	}
 

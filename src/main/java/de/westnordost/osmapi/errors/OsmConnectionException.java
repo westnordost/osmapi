@@ -13,29 +13,42 @@ package de.westnordost.osmapi.errors;
  *   */
 public class OsmConnectionException extends RuntimeException
 {
-	private int responseCode;
-	private String responseBody;
-
-	public OsmConnectionException(int responseCode, String responseBody)
-	{
-		this.responseCode = responseCode;
-		this.responseBody = responseBody;
-	}
-
-	public OsmConnectionException()
-	{
-		super();
-	}
+	private int errorCode;
+	private String errorTitle;
+	private String description;
 
 	public OsmConnectionException(Throwable cause)
 	{
 		super(cause);
 	}
-
-	@Override
-	public String toString()
+	
+	public OsmConnectionException(int errorCode, String errorTitle, String description)
 	{
+		this.errorCode = errorCode;
+		this.errorTitle = errorTitle;
+		this.description = description;
+	}
+
+	public int getErrorCode()
+	{
+		return errorCode;
+	}
+
+	public String getErrorTitle()
+	{
+		return errorTitle;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+	
+	@Override
+	public String toString() {
+		if( getCause() != null ) return super.toString();
+
 		String name = getClass().getName();
-		return name + ": Error " + responseCode + " - " + responseBody;
+		return name + ": " + errorTitle + "("+errorCode+") - " + description;
 	}
 }

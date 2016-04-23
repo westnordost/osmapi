@@ -11,35 +11,42 @@ package de.westnordost.osmapi.errors;
  */
 public class OsmApiException extends RuntimeException
 {
-	private int responseCode;
-	private String responseBody;
+	private int errorCode;
+	private String errorTitle;
+	private String description;
 
 	public OsmApiException(Throwable cause)
 	{
 		super(cause);
 	}
 
-	public OsmApiException(int responseCode, String responseBody)
+	public OsmApiException(int errorCode, String errorTitle, String description)
 	{
-		this.responseCode = responseCode;
-		this.responseBody = responseBody;
+		this.errorCode = errorCode;
+		this.errorTitle = errorTitle;
+		this.description = description;
 	}
 
-	public int getResponseCode()
+	public int getErrorCode()
 	{
-		return responseCode;
+		return errorCode;
 	}
 
-	public String getResponseBody()
+	public String getErrorTitle()
 	{
-		return responseBody;
+		return errorTitle;
 	}
 
+	public String getDescription()
+	{
+		return description;
+	}
+	
 	@Override
 	public String toString() {
 		if( getCause() != null ) return super.toString();
 
 		String name = getClass().getName();
-		return name + ": Error " + responseCode + " - " + responseBody;
+		return name + ": " + errorTitle + "("+errorCode+") - " + description;
 	}
 }

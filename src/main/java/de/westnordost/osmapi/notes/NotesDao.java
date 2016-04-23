@@ -233,7 +233,7 @@ public class NotesDao
 		catch(OsmBadUserInputException e)
 		{
 			// we can be more specific here
-			throw new OsmQueryTooBigException(e.getResponseCode(), e.getResponseBody());
+			throw new OsmQueryTooBigException(e);
 		}
 	}
 	

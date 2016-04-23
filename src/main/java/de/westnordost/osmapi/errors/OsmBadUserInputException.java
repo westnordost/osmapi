@@ -2,8 +2,8 @@ package de.westnordost.osmapi.errors;
 
 public class OsmBadUserInputException extends OsmApiException
 {
-	public OsmBadUserInputException(int responseCode, String responseBody)
+	public OsmBadUserInputException(int errorCode, String errorTitle, String description)
 	{
-		super(responseCode, responseBody);
+		super(errorCode, errorTitle, description);
 	}
 }

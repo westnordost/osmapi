@@ -9,8 +9,8 @@ public class OsmAuthorizationException extends OsmApiException
 		super(cause);
 	}
 
-	public OsmAuthorizationException(int errorCode, String response)
+	public OsmAuthorizationException(int errorCode, String errorTitle, String description)
 	{
-		super(errorCode, response);
+		super(errorCode, errorTitle, description);
 	}
 }
