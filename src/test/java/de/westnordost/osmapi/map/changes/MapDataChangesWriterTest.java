@@ -12,6 +12,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.map.MapDataParser;
+import de.westnordost.osmapi.map.OsmMapDataFactory;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -165,7 +166,7 @@ public class MapDataChangesWriterTest extends TestCase
 	{
 		SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
 
-		MapDataParser parser = new MapDataChangesParser(handler);
+		MapDataParser parser = new MapDataChangesParser(handler, new OsmMapDataFactory());
 		parser.parse(TestUtils.asInputStream(xml));
 
 		return handler;

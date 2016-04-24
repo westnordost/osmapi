@@ -9,6 +9,13 @@ public class OsmNode extends OsmElement implements Node
 	private boolean modified;
 	private LatLon pos;
 
+	public OsmNode(long id, int version, double lat, double lon,
+			   Map<String, String> tags, Changeset changeset)
+{
+	super(id, version, tags, changeset);
+	this.pos = new OsmLatLon(lat,lon);
+}
+	
 	public OsmNode(long id, int version, LatLon pos,
 				   Map<String, String> tags, Changeset changeset)
 	{

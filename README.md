@@ -62,3 +62,6 @@ myMapDataHandler implements MapDataHandler whose methods are called as the eleme
 			void handle(Way way);
 			void handle(Relation relation);
 		}
+
+## Combine with data processing library
+[Read this](https://github.com/westnordost/osmapi/wiki/Combine-With-Data-Processing-Libraries) if you want to use this library in conjunction with a data processing library like Osmosis, osm4j or have your own map data structures already.

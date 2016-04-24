@@ -13,12 +13,6 @@ import java.util.Map;
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
-import de.westnordost.osmapi.map.data.LatLon;
-import de.westnordost.osmapi.map.data.OsmLatLon;
-import de.westnordost.osmapi.map.data.OsmNode;
-import de.westnordost.osmapi.map.data.OsmRelation;
-import de.westnordost.osmapi.map.data.OsmRelationMember;
-import de.westnordost.osmapi.map.data.OsmWay;
 import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
 import de.westnordost.osmapi.changesets.Changeset;
@@ -37,6 +31,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
 	
 	private MapDataHandler handler;
+	private MapDataFactory factory;
 
 	/* temporary maps so we do not parse and hold many times the same user and changeset */
 	private Map<Long, User> users;
@@ -46,16 +41,18 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	private int version = 0;
 	Long changesetId;
 
-	private LatLon pos;
+	private double lat;
+	private double lon;
 	private Map<String, String> tags;
 	private List<RelationMember> members;
 	private List<Long> nodes;
 
-	public MapDataParser( MapDataHandler handler )
+	public MapDataParser( MapDataHandler handler, MapDataFactory factory )
 	{
 		this.handler = handler;
+		this.factory = factory;
 	}
-
+	
 	@Override
 	public Void parse(InputStream in)
 	{
@@ -96,7 +93,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 			{
 				members = new ArrayList<>();
 			}
-			members.add( new OsmRelationMember(
+			members.add( factory.createRelationMember(
 					getLongAttribute("ref"),
 					getAttribute("role"),
 					Element.Type.valueOf(getAttribute("type").toUpperCase(Locale.UK))
@@ -105,8 +102,8 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		else if (name.equals("bounds"))
 		{
 			BoundingBox bounds = new BoundingBox(
-					OsmLatLon.parseLatLon(getAttribute("minlat"), getAttribute("minlon")),
-					OsmLatLon.parseLatLon(getAttribute("maxlat"), getAttribute("maxlon")));
+					getDoubleAttribute("minlat"), getDoubleAttribute("minlon"),
+					getDoubleAttribute("maxlat"), getDoubleAttribute("maxlon"));
 			handler.handle(bounds);
 		}
 		else if (name.equals(NODE) || name.equals(WAY) || name.equals(RELATION))
@@ -127,7 +124,8 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 
 			if(name.equals(NODE))
 			{
-				pos = OsmLatLon.parseLatLon(getAttribute("lat"), getAttribute("lon"));
+				lat = getDoubleAttribute("lat");
+				lon = getDoubleAttribute("lon");
 			}
 		}
 	}
@@ -162,23 +160,19 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		if(name.equals(NODE))
 		{
 			handler.handle(
-					new OsmNode(id, version, pos, tags, changesets.get(changesetId))
-			);
-
-			pos = null;
+					factory.createNode(id, version, lat, lon, tags, changesets.get(changesetId)));
 		}
 		else if(name.equals(WAY))
 		{
 			handler.handle(
-					new OsmWay(id, version, nodes, tags, changesets.get(changesetId))
-			);
+					factory.createWay(id, version, nodes, tags,changesets.get(changesetId)));
+			
 			nodes = null;
 		}
 		else if(name.equals(RELATION))
 		{
 			handler.handle(
-					new OsmRelation(id, version, members, tags, changesets.get(changesetId))
-			);
+					factory.createRelation(id, version, members, tags, changesets.get(changesetId)));
 			members = null;
 		}
 

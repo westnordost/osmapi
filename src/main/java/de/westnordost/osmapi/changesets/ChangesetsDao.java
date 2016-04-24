@@ -9,6 +9,8 @@ import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmConflictException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.map.MapDataFactory;
+import de.westnordost.osmapi.map.OsmMapDataFactory;
 import de.westnordost.osmapi.map.changes.MapDataChangesHandler;
 import de.westnordost.osmapi.map.changes.MapDataChangesParser;
 
@@ -173,11 +175,24 @@ public class ChangesetsDao
 	}
 
 	/**
-	 * @throws OsmNotFoundException if changeset with the given id does not exist
+	 * Get map data changes associated with the given changeset, using the default OsmMapDataFactory
+	 * 
+	 * @see #getData(long, MapDataChangesHandler, MapDataFactory)
 	 */
 	public void getData(long id, MapDataChangesHandler handler)
 	{
-		osm.makeRequest(CHANGESET + "/" + id + "/download", new MapDataChangesParser(handler));
+		getData(id, handler, new OsmMapDataFactory());
+	}
+	
+	/**
+	 * Get map data changes associated with the given changeset. 
+	 * 
+	 * @throws OsmNotFoundException if changeset with the given id does not exist
+	 */
+	public void getData(long id, MapDataChangesHandler handler, MapDataFactory factory)
+	{
+		osm.makeRequest(CHANGESET + "/" + id + "/download",
+				new MapDataChangesParser(handler, factory));
 	}
 
 }

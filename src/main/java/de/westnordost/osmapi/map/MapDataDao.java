@@ -37,10 +37,17 @@ public class MapDataDao
 	private static final String FULL = "full";
 
 	private final OsmConnection osm;
+	private final MapDataFactory factory;
 
-	public MapDataDao(OsmConnection osm)
+	public MapDataDao(OsmConnection osm, MapDataFactory factory)
 	{
 		this.osm = osm;
+		this.factory = factory;
+	}
+	
+	public MapDataDao(OsmConnection osm)
+	{
+		this(osm, new OsmMapDataFactory());
 	}
 
 	/** @see #updateMap(Map, Iterable, Handler)
@@ -153,7 +160,7 @@ public class MapDataDao
 
 		try
 		{
-			osm.makeRequest(request, new MapDataParser(handler));
+			osm.makeRequest(request, new MapDataParser(handler, factory));
 		}
 		catch(OsmBadUserInputException e)
 		{
@@ -170,7 +177,7 @@ public class MapDataDao
 	 *  @throws OsmNotFoundException if the way with the given id does not exist */
 	public void getWayComplete(long id, MapDataHandler handler)
 	{
-		osm.makeRequest(WAY + "/" + id + "/" + FULL, new MapDataParser(handler));
+		osm.makeRequest(WAY + "/" + id + "/" + FULL, new MapDataParser(handler, factory));
 	}
 
 	/** Queries the relation with the given id plus all it's members and all nodes of ways that are
@@ -182,7 +189,7 @@ public class MapDataDao
 	 *  @throws OsmNotFoundException if the relation with the given id does not exist*/
 	public void getRelationComplete(long id, MapDataHandler handler)
 	{
-		osm.makeRequest(RELATION + "/" + id + "/" + FULL, new MapDataParser(handler));
+		osm.makeRequest(RELATION + "/" + id + "/" + FULL, new MapDataParser(handler, factory));
 	}
 
 	/** @return the node with the given id or null if it does not exist */
@@ -208,7 +215,7 @@ public class MapDataDao
 		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
 		try
 		{
-			osm.makeRequest(call, new MapDataParser(handler));
+			osm.makeRequest(call, new MapDataParser(handler, factory));
 		}
 		catch(OsmNotFoundException e)
 		{
@@ -286,7 +293,7 @@ public class MapDataDao
 	private <T extends Element> List<T> getSomeElements(String call, Class<T> tClass)
 	{
 		ListOsmElementHandler<T> handler = new ListOsmElementHandler<>(tClass);
-		osm.makeRequest(call, new MapDataParser(handler));
+		osm.makeRequest(call, new MapDataParser(handler, factory));
 		return handler.get();
 	}
 }

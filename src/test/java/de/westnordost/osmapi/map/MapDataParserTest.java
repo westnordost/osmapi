@@ -177,7 +177,7 @@ public class MapDataParserTest extends TestCase
 				assertEquals(3, step++);
 			}
 
-		}).parse(TestUtils.asInputStream(xml));
+		}, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
 	}
 
 	public void testTags()
@@ -225,14 +225,14 @@ public class MapDataParserTest extends TestCase
 	private List<Element> parseList(String xml)
 	{
 		ListOsmElementHandler<Element> handler = new ListOsmElementHandler<>(Element.class);
-		new MapDataParser(handler).parse(TestUtils.asInputStream(xml));
+		new MapDataParser(handler, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
 		return handler.get();
 	}
 	
 	private <T> T parseOne(String xml, Class<T> tClass)
 	{
 		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
-		new MapDataParser(handler).parse(TestUtils.asInputStream(xml));
+		new MapDataParser(handler, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
 		return handler.get();
 	}
 }

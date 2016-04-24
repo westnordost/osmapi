@@ -26,10 +26,17 @@ public class MapDataHistoryDao
 	private static final String HISTORY = "history";
 
 	private final OsmConnection osm;
-
-	public MapDataHistoryDao(OsmConnection osm)
+	private final MapDataFactory factory;
+	
+	public MapDataHistoryDao(OsmConnection osm, MapDataFactory factory)
 	{
 		this.osm = osm;
+		this.factory = factory;
+	}
+	
+	public MapDataHistoryDao(OsmConnection osm)
+	{
+		this(osm, new OsmMapDataFactory());
 	}
 
 	/** Feeds all versions of the given node to the handler. The elements are sorted by version,
@@ -39,7 +46,8 @@ public class MapDataHistoryDao
 	public void getNodeHistory(long id, Handler<Node> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Node.class, handler);
-		osm.makeRequest(NODE + "/" + id + "/" + HISTORY, new MapDataParser(mapDataHandler));
+		osm.makeRequest(NODE + "/" + id + "/" + HISTORY,
+				new MapDataParser(mapDataHandler, factory));
 	}
 
 	/** Feeds all versions of the given way to the handler. The elements are sorted by version,
@@ -49,7 +57,8 @@ public class MapDataHistoryDao
 	public void getWayHistory(long id, Handler<Way> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Way.class, handler);
-		osm.makeRequest(WAY + "/" + id + "/" + HISTORY, new MapDataParser(mapDataHandler));
+		osm.makeRequest(WAY + "/" + id + "/" + HISTORY,
+				new MapDataParser(mapDataHandler, factory));
 	}
 
 	/** Feeds all versions of the given relation to the handler. The elements are sorted by version,
@@ -59,7 +68,8 @@ public class MapDataHistoryDao
 	public void getRelationHistory(long id, Handler<Relation> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Relation.class, handler);
-		osm.makeRequest(RELATION + "/" + id + "/" + HISTORY, new MapDataParser(mapDataHandler));
+		osm.makeRequest(RELATION + "/" + id + "/" + HISTORY,
+				new MapDataParser(mapDataHandler, factory));
 	}
 
 	/** @return the given version of the given element or null if either the node or given the version
@@ -88,7 +98,7 @@ public class MapDataHistoryDao
 		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
 		try
 		{
-			osm.makeRequest(call, new MapDataParser(handler));
+			osm.makeRequest(call, new MapDataParser(handler, factory));
 		}
 		catch(OsmApiException e)
 		{
