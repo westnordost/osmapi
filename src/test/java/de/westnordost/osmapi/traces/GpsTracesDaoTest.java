@@ -19,7 +19,7 @@ public class GpsTracesDaoTest extends TestCase
 	private static final int TEN_MINUTES = 1000 * 60 * 10;
 	
 	private static final int NONEXISTING_TRACE = 0;
-// TODO blocked by https://github.com/openstreetmap/openstreetmap-website/issues/1209
+// TODO blocked by https://github.com/openstreetmap/chef/pull/31
 //	private static final int PRIVATE_TRACE_OF_OTHER_USER = 0; // TODO upload test traces!
 //	private static final int TRACE_OF_UNPRIVILEGED_USER = 0;// TODO upload test traces!
 //	private static final int TRACE_OF_PRIVILEGED_USER = 0;// TODO upload test traces!

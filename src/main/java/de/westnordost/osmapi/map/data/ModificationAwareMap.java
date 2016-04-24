@@ -80,7 +80,7 @@ public class ModificationAwareMap<K,V> implements Map<K,V>
 	public V put(K key, V value)
 	{
 		V result =  map.put(key, value);
-		onModification();
+		if(result != value) onModification();
 		return result;
 	}
 
@@ -88,14 +88,14 @@ public class ModificationAwareMap<K,V> implements Map<K,V>
 	public void putAll(Map<? extends K, ? extends V> map)
 	{
 		this.map.putAll(map);
-		onModification();
+		if(!map.isEmpty()) onModification();
 	}
 
 	@Override
 	public V remove(Object key)
 	{
 		V result = map.remove(key);
-		onModification();
+		if(result != null) onModification();
 		return result;
 	}
 
@@ -117,6 +117,12 @@ public class ModificationAwareMap<K,V> implements Map<K,V>
 		return new ValuesWrapper(map.values());
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return map.hashCode();
+	}
+	
 	private class SetWrapper<E> extends AbstractSet<E>
 	{
 		private Set<E> set;
@@ -129,7 +135,7 @@ public class ModificationAwareMap<K,V> implements Map<K,V>
 		public boolean remove(Object o)
 		{
 			boolean result = set.remove(o);
-			onModification();
+			if(result) onModification();
 			return result;
 		}
 	}

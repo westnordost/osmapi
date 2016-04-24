@@ -24,7 +24,7 @@ public class ModificationAwareList<T> implements List<T>
 		return modified;
 	}
 
-	private void onModification()
+	protected void onModification()
 	{
 		modified = true;
 	}
@@ -172,8 +172,7 @@ public class ModificationAwareList<T> implements List<T>
 	@Override
 	public List<T> subList(int start, int end)
 	{
-		/* no need to wrap this because the sublist is documented as just a view of the main list */
-		return list.subList(start, end);
+		return new ModificationAwareSubList(list.subList(start, end), this);
 	}
 
 	@Override
@@ -182,6 +181,7 @@ public class ModificationAwareList<T> implements List<T>
 		return list.toArray();
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public <T> T[] toArray(T[] array)
 	{
@@ -194,6 +194,29 @@ public class ModificationAwareList<T> implements List<T>
 		return list.equals(other);
 	}
 
+	private class ModificationAwareSubList extends ModificationAwareList<T>
+	{
+		ModificationAwareList<T> master;
+		
+		public ModificationAwareSubList(List<T> list, ModificationAwareList<T> master)
+		{
+			super(list);
+			this.master = master;
+		}
+		
+		@Override
+		protected void onModification()
+		{
+			master.onModification();
+		}
+		
+		@Override
+		public List<T> subList(int start, int end)
+		{
+			return new ModificationAwareSubList(list.subList(start, end), master);
+		}
+	}
+	
 	private class IteratorWrapper implements Iterator<T>
 	{
 		private Iterator<T> it;
