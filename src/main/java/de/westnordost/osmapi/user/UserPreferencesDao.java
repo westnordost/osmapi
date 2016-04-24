@@ -11,10 +11,10 @@ import java.util.Map;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.PlainTextWriter;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
-import de.westnordost.osmapi.xml.XmlWriter;
+import de.westnordost.osmapi.common.PlainTextWriter;
+import de.westnordost.osmapi.common.XmlWriter;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 
 /** Get and set the user's custom preferences */
 public class UserPreferencesDao

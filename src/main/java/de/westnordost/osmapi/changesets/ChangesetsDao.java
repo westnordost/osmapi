@@ -3,12 +3,12 @@ package de.westnordost.osmapi.changesets;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.SingleElementHandler;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmConflictException;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.SingleElementHandler;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmConflictException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.map.changes.MapDataChangesHandler;
 import de.westnordost.osmapi.map.changes.MapDataChangesParser;
 

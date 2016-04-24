@@ -1,4 +1,4 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
 
 public interface Handler<T>
 {

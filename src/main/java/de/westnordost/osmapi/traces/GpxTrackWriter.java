@@ -2,7 +2,7 @@ package de.westnordost.osmapi.traces;
 
 import java.io.IOException;
 
-import de.westnordost.osmapi.xml.XmlWriter;
+import de.westnordost.osmapi.common.XmlWriter;
 
 public class GpxTrackWriter extends XmlWriter
 {	

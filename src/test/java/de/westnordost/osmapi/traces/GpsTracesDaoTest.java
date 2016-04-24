@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.traces.GpsTraceDetails.Visibility;
 import junit.framework.TestCase;
 

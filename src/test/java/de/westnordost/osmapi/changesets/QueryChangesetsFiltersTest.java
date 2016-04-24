@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.map.data.BoundingBox;
 
 public class QueryChangesetsFiltersTest extends TestCase

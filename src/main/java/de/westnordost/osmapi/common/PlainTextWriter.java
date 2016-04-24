@@ -1,7 +1,9 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
+import de.westnordost.osmapi.ApiRequestWriter;
 
 public class PlainTextWriter implements ApiRequestWriter
 {

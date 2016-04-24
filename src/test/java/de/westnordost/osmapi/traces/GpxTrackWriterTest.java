@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
-import de.westnordost.osmapi.ListHandler;
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.ListHandler;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 
 public class GpxTrackWriterTest extends TestCase

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 
 public class UserPreferencesDaoTest extends TestCase
 {

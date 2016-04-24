@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.errors;
+package de.westnordost.osmapi.common.errors;
 
 /** (A proper) connection to the server cannot be established for some reason. This error usually
  * wraps an IOException when trying to reach the server but also includes any error that inhibits

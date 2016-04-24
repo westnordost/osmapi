@@ -1,8 +1,10 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import de.westnordost.osmapi.ApiResponseReader;
 
 /** Parses an id response sent via plain text by the server */
 public class IdResponseReader implements ApiResponseReader<Long>

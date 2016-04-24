@@ -1,6 +1,6 @@
 package de.westnordost.osmapi.map.handler;
 
-import de.westnordost.osmapi.Handler;
+import de.westnordost.osmapi.common.Handler;
 
 /** Wraps a Handler in a MapDataHandler */
 public class WrapperOsmElementHandler<T> extends OneElementTypeHandler<T>

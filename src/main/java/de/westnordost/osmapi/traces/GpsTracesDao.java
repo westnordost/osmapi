@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.util.List;
 
 import de.westnordost.osmapi.ApiRequestWriter;
-import de.westnordost.osmapi.FormDataWriter;
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.IdResponseReader;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.SingleElementHandler;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmBadUserInputException;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
-import de.westnordost.osmapi.errors.OsmQueryTooBigException;
+import de.westnordost.osmapi.common.FormDataWriter;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.IdResponseReader;
+import de.westnordost.osmapi.common.SingleElementHandler;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.data.BoundingBox;
 
 /** Create, get, edit and delete gpx traces */

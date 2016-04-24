@@ -1,4 +1,4 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
 
 import java.util.ArrayList;
 import java.util.List;

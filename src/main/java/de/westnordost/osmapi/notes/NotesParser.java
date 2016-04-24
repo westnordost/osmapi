@@ -7,10 +7,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.Handler;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.user.User;
-import de.westnordost.osmapi.xml.XmlParser;
 
 /** Parses a list of openstreetmap notes from OSM Notes API 0.6. It parses the XML naively, i.e. it
  *  does not care where in the XML the notes nodes are. */

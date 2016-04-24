@@ -1,6 +1,8 @@
-package de.westnordost.osmapi.xml;
+package de.westnordost.osmapi.common;
 
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.XmlParser;
+import de.westnordost.osmapi.common.errors.XmlParserException;
 import junit.framework.TestCase;
 
 public class XmlParserTest extends TestCase

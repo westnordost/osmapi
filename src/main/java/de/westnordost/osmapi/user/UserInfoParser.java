@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.OsmXmlDateFormat;
-import de.westnordost.osmapi.xml.XmlParser;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.XmlParser;
 
 /** Parses information for a user (API 0.6, since 2012).
  *

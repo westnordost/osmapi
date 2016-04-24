@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.errors;
+package de.westnordost.osmapi.common.errors;
 
 /** Thrown when trying to request an area that is either too big or contains too much data.  */
 public class OsmQueryTooBigException extends OsmBadUserInputException

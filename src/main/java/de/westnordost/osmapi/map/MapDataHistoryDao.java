@@ -2,10 +2,10 @@ package de.westnordost.osmapi.map;
 
 import java.net.HttpURLConnection;
 
-import de.westnordost.osmapi.Handler;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.errors.OsmApiException;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.errors.OsmApiException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;

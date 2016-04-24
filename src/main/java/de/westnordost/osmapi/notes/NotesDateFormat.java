@@ -3,7 +3,7 @@ package de.westnordost.osmapi.notes;
 import java.text.ParseException;
 import java.util.Date;
 
-import de.westnordost.osmapi.Iso8601CompatibleDateFormat;
+import de.westnordost.osmapi.common.Iso8601CompatibleDateFormat;
 
 /** The date format for the notes API is a little different: The 'T' literal is missing between 
  *  time and date */

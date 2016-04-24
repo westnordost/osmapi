@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.xml;
+package de.westnordost.osmapi.common.errors;
 
 /** Wraps any exception that occurs during parsing with the XmlParser */
 public class XmlParserException extends RuntimeException

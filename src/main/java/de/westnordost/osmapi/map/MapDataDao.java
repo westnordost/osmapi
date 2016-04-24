@@ -7,13 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.IdResponseReader;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmBadUserInputException;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
-import de.westnordost.osmapi.errors.OsmQueryTooBigException;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.IdResponseReader;
+import de.westnordost.osmapi.common.XmlWriter;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.changes.DiffElement;
 import de.westnordost.osmapi.map.changes.MapDataChangesWriter;
 import de.westnordost.osmapi.map.changes.MapDataDiffParser;
@@ -25,7 +26,6 @@ import de.westnordost.osmapi.map.data.Way;
 import de.westnordost.osmapi.map.handler.ListOsmElementHandler;
 import de.westnordost.osmapi.map.handler.SingleOsmElementHandler;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
-import de.westnordost.osmapi.xml.XmlWriter;
 
 /** Get and upload changes to map data */
 public class MapDataDao

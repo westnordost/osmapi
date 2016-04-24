@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.xml.XmlParser;
+import de.westnordost.osmapi.common.XmlParser;
 
 /** Parses the permissions this osm user has on this server (API 0.6). */
 public class PermissionsParser extends XmlParser implements ApiResponseReader<List<String>>

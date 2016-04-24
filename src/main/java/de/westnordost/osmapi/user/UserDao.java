@@ -1,7 +1,7 @@
 package de.westnordost.osmapi.user;
 
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 
 /** Get user infos and details */
 public class UserDao

@@ -5,10 +5,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.OsmLatLon;
-import de.westnordost.osmapi.xml.XmlParser;
 
 /** Parses the GPS traces response of the osm api (API 0.6). */
 public class GpsTracesParser extends XmlParser implements ApiResponseReader<Void>

@@ -2,13 +2,13 @@ package de.westnordost.osmapi;
 
 import java.net.HttpURLConnection;
 
-import de.westnordost.osmapi.errors.OsmApiException;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmBadUserInputException;
-import de.westnordost.osmapi.errors.OsmConflictException;
-import de.westnordost.osmapi.errors.OsmConnectionException;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
-import de.westnordost.osmapi.errors.OsmServiceUnavailableException;
+import de.westnordost.osmapi.common.errors.OsmApiException;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
+import de.westnordost.osmapi.common.errors.OsmConflictException;
+import de.westnordost.osmapi.common.errors.OsmConnectionException;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.errors.OsmServiceUnavailableException;
 
 /** Static factory that creates the OsmApiExceptions from the HTTP response code and message */
 public class OsmApiErrorFactory

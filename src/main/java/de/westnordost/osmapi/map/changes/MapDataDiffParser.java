@@ -4,9 +4,9 @@ import java.io.InputStream;
 import java.text.ParseException;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.Handler;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.Element;
-import de.westnordost.osmapi.xml.XmlParser;
 
 /** Parses a &lt;diffResult&gt; sent by the server when uploading a changeset */
 public class MapDataDiffParser extends XmlParser implements ApiResponseReader<Void>

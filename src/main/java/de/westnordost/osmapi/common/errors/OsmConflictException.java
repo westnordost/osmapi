@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.errors;
+package de.westnordost.osmapi.common.errors;
 
 /** Thrown when an action fails because the precondition changed on server side. I.e. trying to
  *  close a note that has already been closed, change an element whose version number already

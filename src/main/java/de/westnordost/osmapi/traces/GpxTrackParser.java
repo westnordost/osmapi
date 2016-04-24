@@ -4,9 +4,9 @@ import java.io.InputStream;
 import java.text.ParseException;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.Handler;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.OsmLatLon;
-import de.westnordost.osmapi.xml.XmlParser;
 
 /** Parses the trackpoints from response of the osm api (API 0.6). the osm api response is in the 
  *  form of a GPX, but we do not parse the whole GPX here but only the information that is necessary

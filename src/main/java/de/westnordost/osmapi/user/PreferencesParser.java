@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.xml.XmlParser;
+import de.westnordost.osmapi.common.XmlParser;
 
 /** Parses the preferences of this osm user on this server (API 0.6). */
 public class PreferencesParser extends XmlParser implements ApiResponseReader<Map<String, String>>

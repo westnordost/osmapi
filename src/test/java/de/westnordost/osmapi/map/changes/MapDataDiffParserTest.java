@@ -1,8 +1,8 @@
 package de.westnordost.osmapi.map.changes;
 
 import junit.framework.TestCase;
-import de.westnordost.osmapi.SingleElementHandler;
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.map.data.Element;
 
 public class MapDataDiffParserTest extends TestCase

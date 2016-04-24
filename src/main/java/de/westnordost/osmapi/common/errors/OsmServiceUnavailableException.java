@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.errors;
+package de.westnordost.osmapi.common.errors;
 
 /** Thrown when an API request failed because the server responded that the service is not
  *  available (i.e. database offline)*/

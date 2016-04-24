@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.errors;
+package de.westnordost.osmapi.common.errors;
 
 public class OsmBadUserInputException extends OsmApiException
 {

@@ -1,4 +1,5 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
+
 
 /** Handler that expects just a single element. It can be queried via get().  */
 public class SingleElementHandler<T> implements Handler<T>

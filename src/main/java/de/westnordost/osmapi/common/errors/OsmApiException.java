@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.errors;
+package de.westnordost.osmapi.common.errors;
 
 /**
  * Thrown when the OSM Api returns a HTTP error. As opposed to the OsmConnectionException, the type

@@ -4,9 +4,9 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.SingleElementHandler;
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.traces.GpsTraceDetails;
 import de.westnordost.osmapi.traces.GpsTracesParser;
 import junit.framework.TestCase;

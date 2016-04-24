@@ -1,4 +1,4 @@
-package de.westnordost.osmapi.xml;
+package de.westnordost.osmapi.common;
 
 
 import java.io.IOException;

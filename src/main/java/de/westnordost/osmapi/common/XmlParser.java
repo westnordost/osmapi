@@ -1,7 +1,9 @@
-package de.westnordost.osmapi.xml;
+package de.westnordost.osmapi.common;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import de.westnordost.osmapi.common.errors.XmlParserException;
 
 import java.io.InputStream;
 import java.util.Stack;

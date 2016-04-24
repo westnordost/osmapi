@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.ListHandler;
-import de.westnordost.osmapi.SingleElementHandler;
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.ListHandler;
+import de.westnordost.osmapi.common.SingleElementHandler;
 
 public class NotesParserTest extends TestCase
 {

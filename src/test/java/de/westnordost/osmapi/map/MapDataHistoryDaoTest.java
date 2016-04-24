@@ -1,10 +1,9 @@
 package de.westnordost.osmapi.map;
 
 import junit.framework.TestCase;
-
 import de.westnordost.osmapi.ConnectionTestFactory;
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;
 import de.westnordost.osmapi.map.data.Way;

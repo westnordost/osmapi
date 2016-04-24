@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.xml.XmlParser;
+import de.westnordost.osmapi.common.XmlParser;
 
 /** Parses the osm server capabilites and limits (API 0.6). It parses the XML naively, i.e. it
  *  does not care where in the XML the notes nodes are. */

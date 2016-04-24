@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.Handler;
-import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.user.User;
-import de.westnordost.osmapi.xml.XmlParser;
 
 /**
  * Parses changeset infos. It parses the XML naively, i.e. it does not care

@@ -1,10 +1,12 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Locale;
+
+import de.westnordost.osmapi.ApiRequestWriter;
 
 /** Writes the payload for a multipart/form-data form.<br/>
  *  Override {@link #write()} and add your form fields with {@link #addField(String, String)} and

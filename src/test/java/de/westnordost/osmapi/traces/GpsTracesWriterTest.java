@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.westnordost.osmapi.SingleElementHandler;
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.SingleElementHandler;
 import junit.framework.TestCase;
 
 public class GpsTracesWriterTest extends TestCase

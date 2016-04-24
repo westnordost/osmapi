@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.map.data.BoundingBox;
 
 public class QueryChangesetsFilters

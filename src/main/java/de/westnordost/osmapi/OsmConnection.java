@@ -14,10 +14,10 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.exception.OAuthException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
-import de.westnordost.osmapi.errors.OsmApiReadResponseException;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmConnectionException;
-import de.westnordost.osmapi.errors.RedirectedException;
+import de.westnordost.osmapi.common.errors.OsmApiReadResponseException;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmConnectionException;
+import de.westnordost.osmapi.common.errors.RedirectedException;
 
 /** <p>Talks with the <a href="http://wiki.openstreetmap.org/wiki/API_v0.6">OpenStreetMap API 0.6</a>,
  * acts as a basis for data access objects for openstreetmap data accessible through the API.</p>

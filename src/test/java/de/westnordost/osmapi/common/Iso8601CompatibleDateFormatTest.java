@@ -1,8 +1,9 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
 
 import java.text.ParseException;
 import java.util.Date;
 
+import de.westnordost.osmapi.common.Iso8601CompatibleDateFormat;
 import junit.framework.TestCase;
 
 public class Iso8601CompatibleDateFormatTest extends TestCase

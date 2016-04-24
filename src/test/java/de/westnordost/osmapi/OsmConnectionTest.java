@@ -3,9 +3,9 @@ package de.westnordost.osmapi;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
-import de.westnordost.osmapi.errors.OsmApiReadResponseException;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.errors.OsmConnectionException;
+import de.westnordost.osmapi.common.errors.OsmApiReadResponseException;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmConnectionException;
 
 public class OsmConnectionTest extends TestCase
 {

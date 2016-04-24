@@ -1,9 +1,8 @@
 package de.westnordost.osmapi.user;
 
 import junit.framework.TestCase;
-
 import de.westnordost.osmapi.ConnectionTestFactory;
-import de.westnordost.osmapi.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 
 public class UserDaoTest extends TestCase
 {

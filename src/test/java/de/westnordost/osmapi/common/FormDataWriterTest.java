@@ -1,4 +1,4 @@
-package de.westnordost.osmapi;
+package de.westnordost.osmapi.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,6 +8,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.westnordost.osmapi.ApiRequestWriter;
+import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.FormDataWriter;
+import de.westnordost.osmapi.common.PlainTextWriter;
 import junit.framework.TestCase;
 
 public class FormDataWriterTest extends TestCase

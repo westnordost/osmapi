@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.westnordost.osmapi.ApiResponseReader;
-import de.westnordost.osmapi.OsmXmlDateFormat;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
@@ -23,8 +22,9 @@ import de.westnordost.osmapi.map.data.OsmWay;
 import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
 import de.westnordost.osmapi.changesets.Changeset;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.user.User;
-import de.westnordost.osmapi.xml.XmlParser;
 
 /** Parses the map data. It parses the XML naively, i.e. it does not care where in the XML the map
  *  data is. */

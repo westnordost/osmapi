@@ -3,7 +3,7 @@ package de.westnordost.osmapi.traces;
 import java.io.IOException;
 import java.util.List;
 
-import de.westnordost.osmapi.xml.XmlWriter;
+import de.westnordost.osmapi.common.XmlWriter;
 
 /** Writes only those GPS trace properties that can be changed in an update call to the API.
  *  It does not write everything, like i.e. the creation date. */

@@ -4,8 +4,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import de.westnordost.osmapi.Iso8601CompatibleDateFormat;
-import de.westnordost.osmapi.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.Iso8601CompatibleDateFormat;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
 
 /** Gpx timestamps can optionally include milliseconds */
 public class GpxDateFormat extends OsmXmlDateFormat
