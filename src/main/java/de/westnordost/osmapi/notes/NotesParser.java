@@ -103,8 +103,6 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 
 	private void parseNoteTextNode(String name, String txt) throws ParseException
 	{
-		assert(txt != null);
-		assert(currentNote != null);
 		switch (name)
 		{
 			case "id":
@@ -124,8 +122,6 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 
 	private void parseCommentTextNode(String name, String txt) throws ParseException
 	{
-		assert(txt != null);
-		assert(currentComment != null);
 		switch (name)
 		{
 			case "date":

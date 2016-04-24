@@ -6,6 +6,10 @@ osmapi is a Java implementation of the [OSM API 0.6](http://wiki.openstreetmap.o
 
 This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html). If this does not satisfy your needs, talk to me. I am inclined to change it if an ISC/BSD based open source project wants to use this library.
 
+## Installation
+
+Add `de.westnordost:osmapi:1.0` to your Maven dependencies or run `gradlew build` in the root folder to get the jars.
+
 ## Basic Usage
 
 Everything revolves around the OsmConnection, this is the class that talks to the Api. Specify where to reach the Api, how the client should identify itself towards the server etc.
