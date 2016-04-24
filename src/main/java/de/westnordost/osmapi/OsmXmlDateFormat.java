@@ -3,6 +3,7 @@ package de.westnordost.osmapi;
 import java.text.ParseException;
 import java.util.Date;
 
+/** Format used to represent dates within the OSM Api 0.6 (except notes)*/
 public class OsmXmlDateFormat
 {
 	private static final Iso8601CompatibleDateFormat

@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.westnordost.osmapi.OsmConnection;
 
+/** Get the user permissions */
 public class PermissionsDao
 {
 	private final OsmConnection osm;

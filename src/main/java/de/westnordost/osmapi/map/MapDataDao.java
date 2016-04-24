@@ -58,9 +58,9 @@ public class MapDataDao
 	 * Uploads the data in a new changeset and subscribes the user to it.
 	 *
 	 * @param tags tags of this changeset. Usually it is comment and source.
-	 *              See #updateMap(String, String, Iterable, Handler)
+	 *              See {@link #updateMap(String, String, Iterable, Handler)}
 	 * @param elements elements to upload. No special order required
-	 * @param handler handler that processes the server's diffResult response.
+	 * @param handler handler that processes the server's diffResult response. Optional.
 	 *
 	 * @throws OsmAuthorizationException if the application does not have permission to edit the
 	 * 	                                  map (Permission.MODIFY_MAP)

@@ -2,7 +2,7 @@ package de.westnordost.osmapi.capabilities;
 
 import de.westnordost.osmapi.OsmConnection;
 
-/** Server capabilities */
+/** Get server capabilities */
 public class CapabilitiesDao
 {
 	private final OsmConnection osm;

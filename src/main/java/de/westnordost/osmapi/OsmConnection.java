@@ -19,37 +19,36 @@ import de.westnordost.osmapi.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.errors.OsmConnectionException;
 import de.westnordost.osmapi.errors.RedirectedException;
 
-/** Talks with the <a href="http://wiki.openstreetmap.org/wiki/API_v0.6">OpenStreetMap API 0.6</a>,
- * acts as a basis for data access objects for openstreetmap data accessible through the API.
- *
+/** <p>Talks with the <a href="http://wiki.openstreetmap.org/wiki/API_v0.6">OpenStreetMap API 0.6</a>,
+ * acts as a basis for data access objects for openstreetmap data accessible through the API.</p>
+ * <p>
  * Requests made through this object can generally throw three two kinds of unchecked exceptions:
  * <ul>
- *     <li>OsmConnectionException:
+ *     <li><b>OsmConnectionException:</b>
  *                                 if an error occurs while communicating with the server that is
- *                                 independent of the actual request made. Usually a wrapped
- *                                 IOException and similar, so nothing the application can recover
- *                                 from.</li>
+ *                                 independent of the actual request made. Usually this is a wrapped
+ *                                 IOException and similar.</li>
  *
- *     <li>OsmApiReadResponseException:
+ *     <li><b>OsmApiReadResponseException:</b>
  *                                 an error while parsing the server's response; any exception
  *                                 thrown by a response handler will be wrapped in this exception.
  *                                 It is up to the handler to decide which Exceptions it throws,
  *                                 but if it is thrown during parsing, this hints to a programming
- *                                 error.</li>
- *     <li>OsmApiException:
+ *                                 error (in the parser).</li>
+ *     <li><b>OsmApiException:</b>
  *                                 if there is something wrong with the user's request, i.e. the
- *                                 request itself was invalid - so, likely a programming error.</li>
+ *                                 request itself was invalid, likely a programming error.</li>
  *
- * So, if we used checked exceptions in this library, then OsmConnectionException would be the
- * checked one that should be accounted for.
+ * So, if there were checked exceptions in this library, then OsmConnectionException would be the
+ * checked one because it is a fault in the environment.
  * </ul>
- *
- *
- * A OsmConnection is reusable and thread safe (because it is immutable).
+ * </p>
+ * <p>
+ * A OsmConnection is reusable and thread safe (because it is immutable).</p>
  */
 public class OsmConnection
 {
-	/** charset we use for everything */
+	/** charset we use for everything (UTF-8) */
 	public static final String CHARSET = "UTF-8";
 
 	private static final int DEFAULT_TIMEOUT = 45 * 1000;
@@ -65,7 +64,7 @@ public class OsmConnection
 	 * @param userAgent the user agent this application should identify as
 	 * @param oauth oauth consumer to use to authenticate this app. If this is null, any attempt to
 	 *              make an API call that requires authorization will throw an OsmAuthorizationException
-	 * @param timeout for the server connection
+	 * @param timeout for the server connection. Defaults to 45 seconds.
 	 */
 	public OsmConnection(String apiUrl, String userAgent, OAuthConsumer oauth, Integer timeout)
 	{
@@ -76,11 +75,7 @@ public class OsmConnection
 	}
 
 	/**
-	 * Create a new OsmConnection with the given preferences
-	 * @param apiUrl the URL to the API
-	 * @param userAgent the user agent this application should identify as
-	 * @param oauth oauth consumer to use to authenticate this app. If this is null, any attempt to
-	 *              make an API call that requires authorization will throw an OsmAuthorizationException
+	 * @see #OsmConnection(String, String, OAuthConsumer, Integer)
 	 */
 	public OsmConnection(String apiUrl, String userAgent, OAuthConsumer oauth)
 	{
@@ -102,32 +97,49 @@ public class OsmConnection
 		return oauth;
 	}
 
+	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
 	public <T> T makeRequest(String call, ApiResponseReader<T> reader)
 	{
 		return makeRequest(call, null, false, null, reader);
 	}
 
+	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
 	public <T> T  makeAuthenticatedRequest(String call, String method, ApiResponseReader<T> reader)
 	{
 		return makeRequest(call, method, true, null, reader);
 	}
-
+	
+	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
 	public <T> T makeAuthenticatedRequest(String call, String method, ApiRequestWriter writer,
 										 ApiResponseReader<T> reader)
 	{
 		return makeRequest(call, method, true, writer, reader);
 	}
-
+	
+	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
 	public void makeAuthenticatedRequest(String call, String method)
 	{
 		makeRequest(call, method, true, null, null);
 	}
-
+	
+	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
 	public void makeAuthenticatedRequest(String call, String method, ApiRequestWriter writer)
 	{
 		makeRequest(call, method, true, writer, null);
 	}
 
+	/**
+	 * Make a request to the Http Osm Api
+	 * 
+	 * @param call HTTP path and URL parameters (if any)
+	 * @param method HTTP method. Defaults to "GET"
+	 * @param authenticate whether to make this request as a logged in user
+	 * @param writer the writer to send the request payload to the server. If null, no payload is
+	 *               sent
+	 * @param reader the reader to parse the server's response and return an instance of T.
+	 *               If null, the server's response is ignored
+	 * @return an instance of T
+	 */
 	public <T> T makeRequest(String call, String method, boolean authenticate,
 							  ApiRequestWriter writer, ApiResponseReader<T> reader)
 	{

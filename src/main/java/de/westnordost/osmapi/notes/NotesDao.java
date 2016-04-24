@@ -183,7 +183,7 @@ public class NotesDao
 	/**
 	 * Retrieve all notes in the given area and feed them to the given handler.
 	 *
-	 * @see #getAll(Handler, BoundingBox, String, int, int)
+	 * @see #getAll(BoundingBox, String, Handler, int, int)
 	 */
 	public void getAll(BoundingBox bounds, Handler<Note> handler, int limit, int hideClosedNoteAfter)
 	{

@@ -10,6 +10,7 @@ import de.westnordost.osmapi.errors.OsmConnectionException;
 import de.westnordost.osmapi.errors.OsmNotFoundException;
 import de.westnordost.osmapi.errors.OsmServiceUnavailableException;
 
+/** Static factory that creates the OsmApiExceptions from the HTTP response code and message */
 public class OsmApiErrorFactory
 {
 	public static RuntimeException createError(int error, String response, String description)

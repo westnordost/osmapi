@@ -15,6 +15,7 @@ import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.data.Way;
 import de.westnordost.osmapi.xml.XmlWriter;
 
+/** Writes elements into a osmChange format */
 public class MapDataChangesWriter extends XmlWriter
 {
 	private long changesetId;
