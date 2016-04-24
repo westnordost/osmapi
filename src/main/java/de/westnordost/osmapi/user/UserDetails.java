@@ -20,7 +20,7 @@ public class UserDetails extends UserInfo
 	/** user's self-chosen home location. Null if not set. */
 	public LatLon homeLocation;
 
-	/** @return the language and country codes of the user's preferred languages, sorted by
+	/** the language and country codes of the user's preferred languages, sorted by
 	 *  preferedness. The format is i.e. "en-US" or "en" (according to ISO 639-1 and ISO 3166) */
 	public List<String> preferredLanguages;
 

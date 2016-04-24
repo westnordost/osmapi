@@ -79,7 +79,7 @@ public class GpsTracesDao
 	
 	/** Upload a new trace with no tags
 	 * 
-	 *  @see #upload(String, String, String, List) */
+	 *  @see #create(String, String, String, List) */
 	public long create(String name, GpsTraceDetails.Visibility visibility, String description,
 			final Iterable<GpsTrackpoint> trackpoints)
 	{
