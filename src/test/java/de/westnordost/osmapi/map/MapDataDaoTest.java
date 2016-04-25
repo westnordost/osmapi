@@ -125,9 +125,9 @@ public class MapDataDaoTest extends TestCase
 
 		// a bit of a cheap test, but I had no better idea how to test this:
 
-		assertTrue(totalTime / 2 > timeToFirstData);
+		assertTrue(totalTime *3/4 > timeToFirstData);
 		/*
-		 * = the first data can be processed at least after 50% of the total
+		 * = the first data can be processed at least after 3/4 of the total
 		 * time of transmission. If the processing of the data would only be
 		 * started after the whole data had been transferred, the
 		 * 'timeToFirstData' would be much closer to 'totalTime' (than
