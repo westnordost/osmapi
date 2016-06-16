@@ -1,24 +1,18 @@
 package de.westnordost.osmapi.map;
 
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import de.westnordost.osmapi.ApiResponseReader;
+import de.westnordost.osmapi.changesets.Changeset;
+import de.westnordost.osmapi.common.OsmXmlDateFormat;
+import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
-import de.westnordost.osmapi.changesets.Changeset;
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
-import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.user.User;
+
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.*;
 
 /** Parses the map data. It parses the XML naively, i.e. it does not care where in the XML the map
  *  data is. */
@@ -41,8 +35,8 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	private int version = 0;
 	Long changesetId;
 
-	private double lat;
-	private double lon;
+	private Double lat;
+	private Double lon;
 	private Map<String, String> tags;
 	private List<RelationMember> members;
 	private List<Long> nodes;
