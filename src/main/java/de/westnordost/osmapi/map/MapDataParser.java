@@ -38,8 +38,8 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	private Double lat;
 	private Double lon;
 	private Map<String, String> tags;
-	private List<RelationMember> members;
-	private List<Long> nodes;
+	private List<RelationMember> members = new ArrayList<>();
+	private List<Long> nodes = new LinkedList<>();
 
 	public MapDataParser( MapDataHandler handler, MapDataFactory factory )
 	{
@@ -75,18 +75,10 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		}
 		else if(name.equals("nd"))
 		{
-			if(nodes == null)
-			{
-				nodes = new LinkedList<>();
-			}
 			nodes.add( getLongAttribute("ref") );
 		}
 		else if(name.equals("member"))
 		{
-			if(members == null)
-			{
-				members = new ArrayList<>();
-			}
 			members.add( factory.createRelationMember(
 					getLongAttribute("ref"),
 					getAttribute("role"),
@@ -161,13 +153,14 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 			handler.handle(
 					factory.createWay(id, version, nodes, tags,changesets.get(changesetId)));
 			
-			nodes = null;
+			nodes = new LinkedList<>();
 		}
 		else if(name.equals(RELATION))
 		{
 			handler.handle(
 					factory.createRelation(id, version, members, tags, changesets.get(changesetId)));
-			members = null;
+			
+			members = new ArrayList<>();
 		}
 
 		if (name.equals(NODE) || name.equals(WAY) || name.equals(RELATION))

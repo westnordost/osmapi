@@ -222,7 +222,8 @@ public class MapDataParserTest extends TestCase
 		assertSame(elements.get(0).getChangeset().user, elements.get(1).getChangeset().user);
 	}
 
-	public void testDeletedNode() {
+	public void testDeletedNode()
+	{
 		String xml = "<node id=\"5\" visible=\"false\" version=\"4\" changeset=\"9249514\" " +
 							"timestamp=\"2011-09-08T21:13:24Z\" user=\"mattfromderby\" uid=\"15867\"/>";
 		Node node = parseOne(xml, Node.class);
@@ -230,6 +231,23 @@ public class MapDataParserTest extends TestCase
 		assertNull(node.getPosition());
 	}
 
+	public void testWayWithoutNodes()
+	{
+		String xml =
+				"  <way id=\"101\" visible=\"false\" version=\"7\" changeset=\"4819821\" "
+				+ "timestamp=\"2010-05-27T08:04:37Z\" user=\"burt13de\" uid=\"247670\"/>";
+		Way way = parseOne(xml, Way.class);
+		assertTrue(way.getNodeIds().isEmpty());
+	}
+	
+	public void testRelationWithoutMembers()
+	{
+		String xml = "<relation id=\"1\" visible=\"false\" version=\"2\" changeset=\"300788\" "
+				+ "timestamp=\"2008-03-10T17:21:35Z\" user=\"robx\" uid=\"17508\"/>";
+		Relation relation = parseOne(xml, Relation.class);
+		assertTrue(relation.getMembers().isEmpty());
+	}
+	
 	private List<Element> parseList(String xml)
 	{
 		ListOsmElementHandler<Element> handler = new ListOsmElementHandler<>(Element.class);
