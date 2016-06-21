@@ -147,6 +147,17 @@ public class MapDataChangesWriterTest extends TestCase
 		assertFalse(writer.hasChanges());
 	}
 
+    public void testWriteNodeWithoutPosition() throws Exception {
+        try {
+            OsmNode element = createNode(-1);
+            element.setPosition(null);
+            writeXml(1, element);
+            fail();
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
 	private static String writeXml(long changesetId, Element singleElement) throws IOException
 	{
 		List<Element> elements = new ArrayList<>(1);

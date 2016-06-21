@@ -1,23 +1,16 @@
 package de.westnordost.osmapi.map;
 
-import java.util.List;
-import java.util.Map;
-
 import de.westnordost.osmapi.changesets.Changeset;
 import de.westnordost.osmapi.map.data.Element.Type;
-import de.westnordost.osmapi.map.data.Node;
-import de.westnordost.osmapi.map.data.OsmNode;
-import de.westnordost.osmapi.map.data.OsmRelation;
-import de.westnordost.osmapi.map.data.OsmRelationMember;
-import de.westnordost.osmapi.map.data.OsmWay;
-import de.westnordost.osmapi.map.data.Relation;
-import de.westnordost.osmapi.map.data.RelationMember;
-import de.westnordost.osmapi.map.data.Way;
+import de.westnordost.osmapi.map.data.*;
+
+import java.util.List;
+import java.util.Map;
 
 public class OsmMapDataFactory implements MapDataFactory
 {
 	@Override
-	public Node createNode(long id, int version, double lat, double lon, Map<String, String> tags,
+	public Node createNode(long id, int version, Double lat, Double lon, Map<String, String> tags,
 			Changeset changeset)
 	{
 		return new OsmNode(id, version, lat, lon, tags, changeset);

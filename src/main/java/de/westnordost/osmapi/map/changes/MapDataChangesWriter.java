@@ -1,19 +1,10 @@
 package de.westnordost.osmapi.map.changes;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
 import de.westnordost.osmapi.common.XmlWriter;
-import de.westnordost.osmapi.map.data.Element;
-import de.westnordost.osmapi.map.data.LatLon;
-import de.westnordost.osmapi.map.data.Node;
-import de.westnordost.osmapi.map.data.Relation;
-import de.westnordost.osmapi.map.data.RelationMember;
-import de.westnordost.osmapi.map.data.Way;
+import de.westnordost.osmapi.map.data.*;
+
+import java.io.IOException;
+import java.util.*;
 
 /** Writes elements into a osmChange format */
 public class MapDataChangesWriter extends XmlWriter

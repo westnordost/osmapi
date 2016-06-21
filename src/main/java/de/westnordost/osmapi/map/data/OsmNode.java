@@ -1,19 +1,21 @@
 package de.westnordost.osmapi.map.data;
 
-import java.util.Map;
-
 import de.westnordost.osmapi.changesets.Changeset;
+
+import java.util.Map;
 
 public class OsmNode extends OsmElement implements Node
 {
 	private boolean modified;
 	private LatLon pos;
 
-	public OsmNode(long id, int version, double lat, double lon,
+	public OsmNode(long id, int version, Double lat, Double lon,
 			   Map<String, String> tags, Changeset changeset)
 {
 	super(id, version, tags, changeset);
-	this.pos = new OsmLatLon(lat,lon);
+	if (lat != null && lon != null) {
+		this.pos = new OsmLatLon(lat, lon);
+	}
 }
 	
 	public OsmNode(long id, int version, LatLon pos,
