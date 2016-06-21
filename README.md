@@ -8,7 +8,7 @@ This library is released under the terms of the [GNU Lesser General Public Licen
 
 ## Installation
 
-Add `de.westnordost:osmapi:1.0` as a Maven dependency. On Android, exclude kxml2 from the dependencies since it is already built-in.
+Add `de.westnordost:osmapi:1.1` as a Maven dependency. On Android, exclude kxml2 from the dependencies since it is already built-in.
 
 ## Basic Usage
 
