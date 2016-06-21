@@ -222,6 +222,14 @@ public class MapDataParserTest extends TestCase
 		assertSame(elements.get(0).getChangeset().user, elements.get(1).getChangeset().user);
 	}
 
+	public void testDeletedNode() {
+		String xml = "<node id=\"5\" visible=\"false\" version=\"4\" changeset=\"9249514\" " +
+							"timestamp=\"2011-09-08T21:13:24Z\" user=\"mattfromderby\" uid=\"15867\"/>";
+		Node node = parseOne(xml, Node.class);
+		assertNotNull(node);
+		assertNull(node.getPosition());
+	}
+
 	private List<Element> parseList(String xml)
 	{
 		ListOsmElementHandler<Element> handler = new ListOsmElementHandler<>(Element.class);

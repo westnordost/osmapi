@@ -140,10 +140,8 @@ public class MapDataChangesWriter extends XmlWriter
 	private void writeNodeContents(Node node) throws IOException
 	{
 		LatLon position = node.getPosition();
-		if (position != null) {
-			attribute("lat", position.getLatitude());
-			attribute("lon", position.getLongitude());
-		}
+		attribute("lat", position.getLatitude());
+		attribute("lon", position.getLongitude());
 	}
 
 	private void writeWayContents(Way way) throws IOException
