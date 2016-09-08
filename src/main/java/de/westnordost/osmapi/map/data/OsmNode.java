@@ -2,10 +2,13 @@ package de.westnordost.osmapi.map.data;
 
 import de.westnordost.osmapi.changesets.Changeset;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class OsmNode extends OsmElement implements Node
+public class OsmNode extends OsmElement implements Node, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private boolean modified;
 	private LatLon pos;
 

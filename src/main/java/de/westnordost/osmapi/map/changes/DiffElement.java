@@ -1,9 +1,13 @@
 package de.westnordost.osmapi.map.changes;
 
+import java.io.Serializable;
+
 import de.westnordost.osmapi.map.data.Element;
 
-public class DiffElement
+public class DiffElement implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	public Element.Type type;
 	/** aka old_id: the (placeholder) id the element had when the client sent it. */
 	public long clientId;

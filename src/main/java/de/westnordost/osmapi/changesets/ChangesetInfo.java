@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.changesets;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,10 @@ import de.westnordost.osmapi.map.data.BoundingBox;
 /** Includes information for a changeset inclusive the changeset discussion but exclusive the
  *  elements that were changed in the changeset.
  */
-public class ChangesetInfo extends Changeset
+public class ChangesetInfo extends Changeset implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	/** map of tags associated with this changeset. May be null if there are no tags at all. */
 	public Map<String, String> tags;
 	

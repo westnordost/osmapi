@@ -1,13 +1,16 @@
 package de.westnordost.osmapi.user;
 
+import java.io.Serializable;
 import java.util.List;
 
 import de.westnordost.osmapi.map.data.LatLon;
 
 /** OSM user details. The OSM api does not reveal personal information of other users, so this
  *  information is only available to the current user. */
-public class UserDetails extends UserInfo
+public class UserDetails extends UserInfo implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	public UserDetails(long id, String displayName)
 	{
 		super(id, displayName);

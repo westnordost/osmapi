@@ -1,5 +1,7 @@
 package de.westnordost.osmapi.map.data;
 
+import java.io.Serializable;
+
 /**
  * A geo position (without height) implemented using two fixed 1E7 integers, meaning that the
  * maximum precision is limited to 7 decimal points. Coincidentally, this is exactly the maximum
@@ -7,8 +9,10 @@ package de.westnordost.osmapi.map.data;
  *
  * So, this saves 8 byte per coordinate from an implementation based on doubles ;-)
  */
-public class OsmLatLon implements LatLon
+public class OsmLatLon implements LatLon, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final int latitude;
 	private final int longitude;
 

@@ -1,12 +1,15 @@
 package de.westnordost.osmapi.notes;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import de.westnordost.osmapi.user.User;
 
 /** A note comment from the osm notes api */
-public class NoteComment
+public class NoteComment implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	public Date date;
 	public Action action;
 	public String text;

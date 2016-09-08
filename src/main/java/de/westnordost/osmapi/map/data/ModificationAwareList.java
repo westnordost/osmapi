@@ -1,13 +1,16 @@
 package de.westnordost.osmapi.map.data;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 /** A List that registers if it has been changed from its original state. */
-public class ModificationAwareList<T> implements List<T>
+public class ModificationAwareList<T> implements List<T>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private List<T> list;
 	private boolean modified;
 

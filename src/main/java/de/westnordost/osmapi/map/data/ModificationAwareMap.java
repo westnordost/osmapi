@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.map.data;
 
+import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
@@ -8,8 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 /** A Map that registers if it has been changed from its original state. */
-public class ModificationAwareMap<K,V> implements Map<K,V>
+public class ModificationAwareMap<K,V> implements Map<K,V>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private Map<K,V> map;
 	private boolean modified;
 

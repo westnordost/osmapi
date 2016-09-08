@@ -1,11 +1,14 @@
 package de.westnordost.osmapi.traces;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import de.westnordost.osmapi.map.data.LatLon;
 
-public class GpsTrackpoint
+public class GpsTrackpoint implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	public GpsTrackpoint(LatLon position)
 	{
 		this.position = position;

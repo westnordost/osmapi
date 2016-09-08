@@ -1,10 +1,13 @@
 package de.westnordost.osmapi.capabilities;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** (Current) capabilities of the osm server. */
-public class Capabilities
+public class Capabilities implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	public float minSupportedApiVersion;
 	public float maxSupportedApiVersion;
 	

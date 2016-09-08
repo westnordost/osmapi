@@ -1,11 +1,14 @@
 package de.westnordost.osmapi.map.data;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 /** A rectangle in latitude longitude coordinates. Bounds are immutable. */
-public class BoundingBox
+public class BoundingBox implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	private LatLon min;
 	private LatLon max;
 

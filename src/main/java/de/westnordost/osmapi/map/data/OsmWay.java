@@ -1,12 +1,15 @@
 package de.westnordost.osmapi.map.data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import de.westnordost.osmapi.changesets.Changeset;
 
-public class OsmWay extends OsmElement implements Way
+public class OsmWay extends OsmElement implements Way, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private ModificationAwareList<Long> nodes;
 
 	public OsmWay(long id, int version, List<Long> nodes,

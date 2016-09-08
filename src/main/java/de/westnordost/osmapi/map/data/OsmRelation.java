@@ -1,12 +1,15 @@
 package de.westnordost.osmapi.map.data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import de.westnordost.osmapi.changesets.Changeset;
 
-public class OsmRelation extends OsmElement implements Relation
+public class OsmRelation extends OsmElement implements Relation, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private ModificationAwareList<RelationMember> members;
 
 	public OsmRelation(long id, int version, List<RelationMember> members,

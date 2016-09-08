@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.notes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,8 +8,10 @@ import java.util.List;
 import de.westnordost.osmapi.map.data.LatLon;
 
 /** A note from the osm notes API */
-public class Note
+public class Note implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	public LatLon position;
 
 	public long id;

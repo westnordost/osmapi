@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.map.data;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import de.westnordost.osmapi.changesets.Changeset;
@@ -7,8 +8,10 @@ import de.westnordost.osmapi.changesets.Changeset;
 /**
  * Base class for the osm primitives nodes, ways and relations
  */
-public abstract class OsmElement implements Element
+public abstract class OsmElement implements Element, Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	private long id;
 	private int version;
 	private Changeset changeset;

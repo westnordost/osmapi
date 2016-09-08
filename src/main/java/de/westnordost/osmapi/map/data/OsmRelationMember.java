@@ -1,7 +1,11 @@
 package de.westnordost.osmapi.map.data;
 
-public class OsmRelationMember implements RelationMember
+import java.io.Serializable;
+
+public class OsmRelationMember implements RelationMember, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private boolean modified;
 
 	private final long ref;

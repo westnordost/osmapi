@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.changesets;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import de.westnordost.osmapi.user.User;
@@ -7,8 +8,10 @@ import de.westnordost.osmapi.user.User;
 /**
  * Short info for a changeset.
  */
-public class Changeset
+public class Changeset implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	public long id;
 	/**
 	 * the date of the changeset. (It is deliberately unspecified whether this is the creation or 
