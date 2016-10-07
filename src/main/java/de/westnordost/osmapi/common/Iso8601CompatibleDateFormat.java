@@ -10,6 +10,8 @@ import java.util.Locale;
  */
 public class Iso8601CompatibleDateFormat extends SimpleDateFormat
 {
+	private static final long serialVersionUID = 1L;
+
 	public Iso8601CompatibleDateFormat(String pattern)
 	{
 		super(pattern, Locale.UK);

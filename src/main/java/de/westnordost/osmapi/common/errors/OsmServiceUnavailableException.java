@@ -4,6 +4,8 @@ package de.westnordost.osmapi.common.errors;
  *  available (i.e. database offline)*/
 public class OsmServiceUnavailableException extends OsmConnectionException
 {
+	private static final long serialVersionUID = 1L;
+	
 	public OsmServiceUnavailableException(int errorCode, String errorTitle, String description)
 	{
 		super(errorCode, errorTitle, description);

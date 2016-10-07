@@ -199,6 +199,8 @@ public class ModificationAwareList<T> implements List<T>, Serializable
 
 	private class ModificationAwareSubList extends ModificationAwareList<T>
 	{
+		private static final long serialVersionUID = 1L;
+		
 		ModificationAwareList<T> master;
 		
 		public ModificationAwareSubList(List<T> list, ModificationAwareList<T> master)

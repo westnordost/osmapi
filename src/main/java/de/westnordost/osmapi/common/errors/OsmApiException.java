@@ -11,6 +11,8 @@ package de.westnordost.osmapi.common.errors;
  */
 public class OsmApiException extends RuntimeException
 {
+	private static final long serialVersionUID = 1L;
+	
 	private int errorCode;
 	private String errorTitle;
 	private String description;
