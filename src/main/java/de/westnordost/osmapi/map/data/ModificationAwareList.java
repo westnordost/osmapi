@@ -197,6 +197,12 @@ public class ModificationAwareList<T> implements List<T>, Serializable
 		return list.equals(other);
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return list.hashCode();
+	}
+	
 	private class ModificationAwareSubList extends ModificationAwareList<T>
 	{
 		private static final long serialVersionUID = 1L;

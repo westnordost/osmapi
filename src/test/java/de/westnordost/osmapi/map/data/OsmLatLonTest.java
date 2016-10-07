@@ -65,6 +65,20 @@ public class OsmLatLonTest extends TestCase
 		assertFalse(pos1.equals(new Object()));
 	}
 	
+	public void testHashCode()
+	{
+		OsmLatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
+		OsmLatLon pos2 = new OsmLatLon(VALID_LAT, VALID_LON);
+		assertEquals(pos1.hashCode(), pos2.hashCode());
+	}
+	
+	public void testHashCodeAlgoIsNotTooSimple()
+	{
+		OsmLatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
+		OsmLatLon pos2 = new OsmLatLon(VALID_LON, VALID_LAT);
+		assertFalse(pos1.hashCode() == pos2.hashCode());
+	}
+	
 	public void testInvalidPositiveLatitude()
 	{
 		try

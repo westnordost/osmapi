@@ -6,6 +6,8 @@ import junit.framework.TestCase;
 
 public class BoundingBoxTest extends TestCase
 {
+	private static final double A = 34.1234, B = 12.1234, C = 37.1237, D = 15.1254;
+	
 	public void testValidation4Doubles()
 	{
 		try
@@ -60,21 +62,36 @@ public class BoundingBoxTest extends TestCase
 	
 	public void testEqualsWithDifferentConstructors()
 	{
-		BoundingBox bounds1 = new BoundingBox(34.1234, 12.1234, 37.1237, 15.1254);
-		BoundingBox bounds2 = new BoundingBox(new OsmLatLon(34.1234, 12.1234), new OsmLatLon(37.1237, 15.1254));
+		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
+		BoundingBox bounds2 = new BoundingBox(new OsmLatLon(A,B), new OsmLatLon(C,D));
 		
 		assertEquals(bounds1, bounds2);
 	}
 	
 	public void testEqualsNull()
 	{
-		BoundingBox bounds1 = new BoundingBox(34.1234, 12.1234, 37.1237, 15.1254);
+		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		assertFalse(bounds1.equals(null));
 	}
 	
 	public void testEqualsOtherObject()
 	{
-		BoundingBox bounds1 = new BoundingBox(34.1234, 12.1234, 37.1237, 15.1254);
+		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		assertFalse(bounds1.equals(new Object()));
+	}
+		
+	public void testHashCode()
+	{
+		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
+		BoundingBox bounds2 = new BoundingBox(A,B,C,D);
+		assertEquals(bounds1.hashCode(), bounds2.hashCode());
+	}
+	
+	public void testHashCodeAlgoIsNotTooSimple()
+	{
+		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
+		BoundingBox bounds2 = new BoundingBox(B,A,D,C);
+
+		assertFalse(bounds1.hashCode() == bounds2.hashCode());
 	}
 }

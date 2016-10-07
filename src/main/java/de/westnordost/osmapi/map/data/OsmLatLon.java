@@ -46,6 +46,7 @@ public class OsmLatLon implements LatLon, Serializable
 	@Override
 	public boolean equals(Object obj)
 	{
+		if(obj == this) return true;
 		if(obj == null || !(obj instanceof LatLon)) return false;
 		if(obj instanceof OsmLatLon)
 		{
@@ -54,5 +55,11 @@ public class OsmLatLon implements LatLon, Serializable
 		}
 		LatLon other = (LatLon) obj;
 		return other.getLatitude() == getLatitude() && other.getLongitude() == getLongitude();
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return latitude * 31 + longitude;
 	}
 }

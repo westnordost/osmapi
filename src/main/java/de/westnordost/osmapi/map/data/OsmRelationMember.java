@@ -59,13 +59,23 @@ public class OsmRelationMember implements RelationMember, Serializable
 	@Override
 	public boolean equals(Object other)
 	{
-		if(other == null) return false;
-		if(!(other instanceof RelationMember)) return false;
+		if(other == this) return true;
+		if(other == null || !(other instanceof RelationMember)) return false;
 
 		RelationMember otherMember = (RelationMember) other;
 		return
 				getRole().equals(otherMember.getRole())	&&
 				getRef() == otherMember.getRef() &&
 				getType() == otherMember.getType();
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		int result = 11;
+		result = 31 * result + role.hashCode();
+		result = 31 * result + type.ordinal();
+		result = 31 * result + (int) (ref ^ (ref >>> 32));
+		return result;
 	}
 }

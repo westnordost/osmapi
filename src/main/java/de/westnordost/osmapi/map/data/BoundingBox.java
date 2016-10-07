@@ -105,6 +105,7 @@ public class BoundingBox implements Serializable
 	@Override
 	public boolean equals(Object other)
 	{
+		if(other == this) return true;
 		if(other == null || !(other instanceof BoundingBox)) return false;
 
 		// we do not rely on that every implementation of LatLon implements equals() properly
@@ -114,4 +115,16 @@ public class BoundingBox implements Serializable
 			&& otherBounds.getMinLongitude() == getMinLongitude()
 			&& otherBounds.getMaxLongitude() == getMaxLongitude();
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		double[] allThemDoubles = new double[]
+		{
+				getMinLatitude(), getMaxLatitude(), getMaxLatitude(), getMaxLongitude()
+		};
+		
+		return Arrays.hashCode(allThemDoubles);
+	}
+	
 }
