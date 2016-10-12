@@ -10,7 +10,7 @@ import de.westnordost.osmapi.common.Iso8601CompatibleDateFormat;
 public class NotesDateFormat
 {
 	private static final Iso8601CompatibleDateFormat
-		DEFAULT = new Iso8601CompatibleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+		DEFAULT = new Iso8601CompatibleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
 	public Date parse(String source) throws ParseException
 	{
