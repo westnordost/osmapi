@@ -23,7 +23,7 @@ If you plan to make calls that can only be made by a logged in user, such as upl
 
 		OsmConnection osm = new OsmConnection(
 		                          "https://api.openstreetmap.org/api/0.6/",
-		                          "my user agent");
+		                          "my user agent", null);
 
 You can call osm.makeRequest(...) yourself to talk with the RESTful Api and write your own ApiRequestWriter and ApiResponseReader to write/read the request.
 It is more convenient however to use the appropriate DAO to do that for you and return the data you are interested in. Currently there are the following DAOs:
