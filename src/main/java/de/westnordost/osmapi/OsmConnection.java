@@ -82,6 +82,14 @@ public class OsmConnection
 		this(apiUrl, userAgent, oauth, null);
 	}
 
+	/**
+	 * @see #OsmConnection(String, String, OAuthConsumer, Integer)
+	 */
+	public OsmConnection(String apiUrl, String userAgent)
+	{
+		this(apiUrl, userAgent, null, null);
+	}
+	
 	public String getUserAgent()
 	{
 		return userAgent;
