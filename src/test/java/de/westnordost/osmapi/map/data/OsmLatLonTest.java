@@ -118,4 +118,14 @@ public class OsmLatLonTest extends TestCase
 		}
 		catch(IllegalArgumentException e) {}
 	}
+	
+	public void testInvalidNegative360Longitude()
+	{
+		try
+		{
+			new OsmLatLon(0, -350.0);
+			fail();
+		}
+		catch(IllegalArgumentException e) {}
+	}
 }

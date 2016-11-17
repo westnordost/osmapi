@@ -20,10 +20,10 @@ public class OsmLatLon implements LatLon, Serializable
 	 *          position*/
 	public OsmLatLon(double latitude, double longitude)
 	{
+		LatLons.checkValidity(latitude, longitude);
+		
 		this.latitude = Fixed1E7.doubleToFixed(latitude);
 		this.longitude = Fixed1E7.doubleToFixed(longitude);
-
-		LatLons.checkValidity(this);
 	}
 
 	public static OsmLatLon parseLatLon(String lat, String lon)
