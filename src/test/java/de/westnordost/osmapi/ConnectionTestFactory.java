@@ -16,7 +16,7 @@ public class ConnectionTestFactory
 
 	public enum User
 	{
-		ALLOW_EVERYTHING, ALLOW_NOTHING
+		ALLOW_EVERYTHING, ALLOW_NOTHING, UNKNOWN
 	}
 
 	public static OsmConnection createLiveConnection()
@@ -32,6 +32,8 @@ public class ConnectionTestFactory
 			consumer = createConsumerThatAllowsEverything();
 		else if(user == User.ALLOW_NOTHING)
 			consumer = createConsumerThatProhibitsEverything();
+		else if(user == User.UNKNOWN)
+			consumer = createUnknownUser();
 
 		return new OsmConnection(TEST_API_URL, USER_AGENT, consumer);
 	}
@@ -53,5 +55,10 @@ public class ConnectionTestFactory
 				"2C4LiOQBOn96kXHyal7uzMJiqpCsiyDBvb8pomyX",
 				"1bFMIQpgmu5yjywt3kknopQpcRmwJ6snDDGF7kdr");
 		return result;
+	}
+	
+	private static OAuthConsumer createUnknownUser()
+	{
+		return new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
 	}
 }

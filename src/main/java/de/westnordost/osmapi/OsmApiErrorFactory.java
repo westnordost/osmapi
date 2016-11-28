@@ -22,13 +22,14 @@ public class OsmApiErrorFactory
 				return new OsmServiceUnavailableException(error, response, description);
 
 			// 4xx error codes...
-			//case HttpURLConnection.HTTP_UNAUTHORIZED:
-				// "need to be logged in to make this request..."
-				// this should not be thrown if the implementation of the api is correct...
 			case HttpURLConnection.HTTP_NOT_FOUND:
 			case HttpURLConnection.HTTP_GONE:
 				return new OsmNotFoundException(error, response, description);
 			case HttpURLConnection.HTTP_FORBIDDEN:
+			case HttpURLConnection.HTTP_UNAUTHORIZED:
+			/* 401 unauthorized is returned if the user is not authenticated at all
+			 * 403 forbidden is returned if the user is authenticated, but does not have the 
+			 *     permission to do the action*/
 				return new OsmAuthorizationException(error, response, description);
 			case HttpURLConnection.HTTP_CONFLICT:
 				return new OsmConflictException(error, response, description);
