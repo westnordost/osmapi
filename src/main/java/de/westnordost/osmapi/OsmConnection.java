@@ -44,7 +44,7 @@ import de.westnordost.osmapi.common.errors.RedirectedException;
  * </ul>
  * </p>
  * <p>
- * A OsmConnection is reusable and thread safe (because it is immutable).</p>
+ * A OsmConnection is reusable and thread safe.</p>
  */
 public class OsmConnection
 {
@@ -53,10 +53,12 @@ public class OsmConnection
 
 	private static final int DEFAULT_TIMEOUT = 45 * 1000;
 
-	private final int timeout;
-	private final String apiUrl;
-	private final String userAgent;
-	private final OAuthConsumer oauth;
+	private int timeout;
+	private String apiUrl;
+	private String userAgent;
+	
+	private OAuthConsumer oauth;
+	private final Object oauthLock = new Object();
 
 	/**
 	 * Create a new OsmConnection with the given preferences
@@ -89,20 +91,51 @@ public class OsmConnection
 	{
 		this(apiUrl, userAgent, null, null);
 	}
+
+	public synchronized void setTimeout(int timeout)
+	{
+		this.timeout = timeout;
+	}
+
+	public void setOAuth(OAuthConsumer oauth)
+	{
+		synchronized(oauthLock)
+		{
+			this.oauth = oauth;
+		}
+	}
+
+	public synchronized void setApiUrl(String apiUrl)
+	{
+		this.apiUrl = apiUrl;
+	}
+
+	public synchronized void setUserAgent(String userAgent)
+	{
+		this.userAgent = userAgent;
+	}
 	
-	public String getUserAgent()
+	public synchronized String getUserAgent()
 	{
 		return userAgent;
 	}
 
-	public String getApiUrl()
+	public synchronized String getApiUrl()
 	{
 		return apiUrl;
 	}
 
 	public OAuthConsumer getOAuth()
 	{
-		return oauth;
+		synchronized(oauthLock)
+		{
+			return oauth;
+		}
+	}
+	
+	public synchronized int getTimeout()
+	{
+		return timeout;
 	}
 
 	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
@@ -230,7 +263,7 @@ public class OsmConnection
 		}
 	}
 
-	private HttpURLConnection openConnection(String call) throws IOException
+	private synchronized HttpURLConnection openConnection(String call) throws IOException
 	{
 		URL url = new URL(new URL(apiUrl), call);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -255,18 +288,22 @@ public class OsmConnection
 
 	private OAuthConsumer createOAuthConsumer() throws OAuthExpectationFailedException
 	{
-		if(oauth == null)
+		synchronized(oauthLock)
 		{
-			throw new OAuthExpectationFailedException(
-					"This class has been initialized without a OAuthConsumer. Only API calls that" +
-					" do not require authentication can be made.");
+			if(oauth == null)
+			{
+				throw new OAuthExpectationFailedException(
+						"This class has been initialized without a OAuthConsumer. Only API calls " +
+						"that do not require authentication can be made.");
+			}
+	
+			// "clone" the original consumer every time because the consumer is documented to be not
+			// thread safe and maybe multiple threads are making calls to this class
+			OAuthConsumer consumer = new DefaultOAuthConsumer(
+					oauth.getConsumerKey(), oauth.getConsumerSecret());
+			consumer.setTokenWithSecret(oauth.getToken(), oauth.getTokenSecret());
+			return consumer;
 		}
-
-		// "clone" the original consumer every time because the consumer is documented to be not
-		// thread safe and maybe multiple threads are making calls to this class
-		OAuthConsumer consumer = new DefaultOAuthConsumer(oauth.getConsumerKey(), oauth.getConsumerSecret());
-		consumer.setTokenWithSecret(oauth.getToken(), oauth.getTokenSecret());
-		return consumer;
 	}
 
 	private <T> T handleResponse(HttpURLConnection connection, ApiResponseReader<T> reader)
