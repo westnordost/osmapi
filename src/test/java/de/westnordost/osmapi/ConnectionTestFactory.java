@@ -8,9 +8,9 @@ public class ConnectionTestFactory
 	private static final String CONSUMER_KEY = "CuPCn3sRc8FDiepAoSkH4a9n7w2QuqVCykStfVPG";
 	private static final String CONSUMER_SECRET = "D1nX6BF1NMAZtIq8ouGJJ7zGtSaTRDTz8QfZl5mo";
 
-	private static final String TEST_API_URL = "http://api06.dev.openstreetmap.org/api/0.6/";
+	private static final String TEST_API_URL = "https://master.apis.dev.openstreetmap.org/api/0.6/";
 
-	private static final String LIVE_API_URL = "http://api.openstreetmap.org/api/0.6/";
+	private static final String LIVE_API_URL = "https://api.openstreetmap.org/api/0.6/";
 
 	public static final String USER_AGENT = "osmapi unit test";
 
