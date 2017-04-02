@@ -19,9 +19,9 @@ import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmConnectionException;
 import de.westnordost.osmapi.common.errors.RedirectedException;
 
-/** <p>Talks with the <a href="http://wiki.openstreetmap.org/wiki/API_v0.6">OpenStreetMap API 0.6</a>,
- * acts as a basis for data access objects for openstreetmap data accessible through the API.</p>
- * <p>
+/** Talks with the <a href="http://wiki.openstreetmap.org/wiki/API_v0.6">OpenStreetMap API 0.6</a>,
+ * acts as a basis for data access objects for openstreetmap data accessible through the API.
+ * <br><br>
  * Requests made through this object can generally throw three two kinds of unchecked exceptions:
  * <ul>
  *     <li><b>OsmConnectionException:</b>
@@ -38,13 +38,11 @@ import de.westnordost.osmapi.common.errors.RedirectedException;
  *     <li><b>OsmApiException:</b>
  *                                 if there is something wrong with the user's request, i.e. the
  *                                 request itself was invalid, likely a programming error.</li>
- *
+ * </ul>
  * So, if there were checked exceptions in this library, then OsmConnectionException would be the
  * checked one because it is a fault in the environment.
- * </ul>
- * </p>
- * <p>
- * A OsmConnection is reusable and thread safe.</p>
+ * <br><br>
+ * A OsmConnection is reusable and thread safe.
  */
 public class OsmConnection
 {

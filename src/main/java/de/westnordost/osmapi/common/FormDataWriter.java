@@ -8,7 +8,7 @@ import java.util.Locale;
 
 import de.westnordost.osmapi.ApiRequestWriter;
 
-/** Writes the payload for a multipart/form-data form.<br/>
+/** Writes the payload for a multipart/form-data form.<br>
  *  Override {@link #write()} and add your form fields with {@link #addField(String, String)} and
  *  {@link #addFileField(String, String, ApiRequestWriter)} there. */
 public abstract class FormDataWriter implements ApiRequestWriter

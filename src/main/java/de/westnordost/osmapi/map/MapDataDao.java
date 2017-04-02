@@ -14,6 +14,7 @@ import de.westnordost.osmapi.common.XmlWriter;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.errors.OsmConflictException;
 import de.westnordost.osmapi.common.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.changes.DiffElement;
 import de.westnordost.osmapi.map.changes.MapDataChangesWriter;
