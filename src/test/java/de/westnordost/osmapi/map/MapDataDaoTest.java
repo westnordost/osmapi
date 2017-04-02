@@ -2,16 +2,21 @@ package de.westnordost.osmapi.map;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.OsmConnection;
+import de.westnordost.osmapi.changesets.ChangesetsDao;
 import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
+import de.westnordost.osmapi.common.errors.OsmConflictException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.common.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.changes.DiffElement;
+import de.westnordost.osmapi.map.changes.SimpleMapDataChangesHandler;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.data.LatLon;
@@ -344,6 +349,97 @@ public class MapDataDaoTest extends TestCase
 		assertTrue(dao.getRelations(Collections.<Long> emptyList()).isEmpty());
 	}
 
+	public void testCloseUnopenedChangesetFails()
+	{
+		try
+		{
+			new MapDataDao(privilegedConnection).closeChangeset(Long.MAX_VALUE-1);
+			fail();
+		}
+		catch(OsmNotFoundException e)
+		{
+		}
+	}
+	
+	public void testCloseClosedChangesetFails()
+	{
+		MapDataDao dao = new MapDataDao(privilegedConnection);
+		Map<String,String> tags = new HashMap<>();
+		tags.put("comment", "test case");
+		long changesetId = dao.openChangeset(tags.entrySet());
+		dao.closeChangeset(changesetId);
+		
+		try
+		{
+			dao.closeChangeset(changesetId);
+			fail();
+		}
+		catch(OsmConflictException e)
+		{
+		}
+	}
+	
+	public void testMultipleChangesInChangeset()
+	{
+		MapDataDao mapDataDao = new MapDataDao(privilegedConnection);
+		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);
+		
+		Map<String,String> tags = new HashMap<>();
+		tags.put("comment", "test case");
+		
+		long changesetId = mapDataDao.openChangeset(tags.entrySet());
+		try
+		{
+			assertEquals(true, changesetDao.get(changesetId).isOpen);
+			assertChangesetHasElementCount(changesetId, 0,0,0);
+			
+			try
+			{
+				changesetDao.comment(changesetId, "Trying to comment on a non-closed changeset");
+				fail();
+			}
+			catch(OsmConflictException e) {}
+			
+			// upload first change
+			Element node1 = new OsmNode(-33, 1, new OsmLatLon(10.42313, 65.13221), null, null);
+			mapDataDao.uploadChanges(changesetId, Arrays.asList(node1), null);
+		
+			assertChangesetHasElementCount(changesetId,1,0,0);
+			
+			// delete a non-existing element: -> not found
+			try
+			{
+				OsmNode delNode = new OsmNode(Long.MAX_VALUE-1, 1, new OsmLatLon(0.11111, 1.565467), null, null);
+				delNode.setDeleted(true);
+				Element delElement = delNode;
+				mapDataDao.uploadChanges(changesetId, Arrays.asList(delElement), null);
+				fail();
+			}
+			catch(OsmNotFoundException e) {}
+		
+			assertChangesetHasElementCount(changesetId,1,0,0);
+			
+			Element node2 = new OsmNode(-34, 1, new OsmLatLon(10.42314, 65.13220), null, null);
+			mapDataDao.uploadChanges(changesetId, Arrays.asList(node2), null);
+			assertChangesetHasElementCount(changesetId,2,0,0);
+		}
+		finally
+		{
+			mapDataDao.closeChangeset(changesetId);
+			assertEquals(false, changesetDao.get(changesetId).isOpen);
+		}
+	}
+	
+	private void assertChangesetHasElementCount(long changesetId, int creations, int modifications, int deletions)
+	{
+		ChangesetsDao changesetDao = new ChangesetsDao(connection);
+		SimpleMapDataChangesHandler h = new SimpleMapDataChangesHandler();
+		changesetDao.getData(changesetId, h);
+		assertEquals(creations, h.getCreations().size());
+		assertEquals(modifications, h.getModifications().size());
+		assertEquals(deletions, h.getDeletions().size());
+	}
+	
 	private class CountMapDataHandler implements MapDataHandler
 	{
 		public int bounds;

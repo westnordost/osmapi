@@ -62,7 +62,7 @@ public class MapDataDao
 	}
 
 	/**
-	 * Uploads the data in a new changeset and subscribes the user to it.
+	 * Opens a changeset, uploads the data, closes the changeset and subscribes the user to it.
 	 *
 	 * @param tags tags of this changeset. Usually it is comment and source.
 	 *              See {@link #updateMap(String, String, Iterable, Handler)}
@@ -85,7 +85,7 @@ public class MapDataDao
 		   ourselves. */
 		try
 		{
-			uploadDiff(changesetId, elements, handler);
+			uploadChanges(changesetId, elements, handler);
 		}
 		finally
 		{
@@ -95,7 +95,15 @@ public class MapDataDao
 		return changesetId;
 	}
 
-	private void uploadDiff(long changesetId, Iterable<Element> elements, Handler<DiffElement> handler)
+	/** Upload changes into an opened changeset.
+	 *  @param elements elements to upload. No special order required
+	 *  @param handler handler that processes the server's diffResult response. Optional.
+	 *  @throws OsmNotFoundException if the changeset does not exist (yet) or an element in the
+	 *                               does not exist
+	 *  @throws OsmConflictException if the changeset has already been closed, there is a conflict
+	 *                               for the elements being uploaded, and more
+	 *  */
+	public void uploadChanges(long changesetId, Iterable<Element> elements, Handler<DiffElement> handler)
 	{
 		MapDataDiffParser parser = null;
 		if(handler != null)
@@ -109,7 +117,10 @@ public class MapDataDao
 		);
 	}
 
-	private long openChangeset(final Collection<Map.Entry<String, String>> tags)
+	/** Open a new changeset with the given tags
+	 *  @param tags tags of this changeset. Usually it is comment and source.
+	 *  */
+	public long openChangeset(final Collection<Map.Entry<String, String>> tags)
 	{
 		XmlWriter writer = new XmlWriter()
 		{
@@ -134,7 +145,11 @@ public class MapDataDao
 		return osm.makeAuthenticatedRequest("changeset/create", "PUT", writer, new IdResponseReader());
 	}
 
-	private void closeChangeset(long changesetId)
+	/** Closes the given changeset.
+	 *  @throws OsmConflictException if the changeset has already been closed
+	 *  @throws OsmNotFoundException if the changeset does not exist (yet) 
+	 *  */
+	public void closeChangeset(long changesetId)
 	{
 		osm.makeAuthenticatedRequest("changeset/" + changesetId + "/close", "PUT");
 	}
