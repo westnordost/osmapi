@@ -8,10 +8,14 @@ import java.util.Map;
 public class OsmTags extends ModificationAwareMap<String, String> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-
+	
 	public OsmTags(Map<String, String> map)
-	{
+	{	
 		super(map);
+		for(Entry<String, String> entry : map.entrySet())
+		{
+			checkKeyValueLength(entry.getKey(), entry.getValue());
+		}
 	}
 
 	@Override

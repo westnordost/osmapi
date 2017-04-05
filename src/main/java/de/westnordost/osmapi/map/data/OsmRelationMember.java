@@ -15,6 +15,7 @@ public class OsmRelationMember implements RelationMember, Serializable
 
 	public OsmRelationMember(long ref, String role, Element.Type type)
 	{
+		checkRoleLength(role);
 		this.ref = ref;
 		this.role = role;
 		this.type = type;
@@ -37,11 +38,7 @@ public class OsmRelationMember implements RelationMember, Serializable
 
 	public void setRole(String newRole)
 	{
-		if(newRole.length() >= 256)
-		{
-			throw new IllegalArgumentException("Role \"" + newRole + "\": Role length is limited" +
-					"to less than 256 characters.");
-		}
+		checkRoleLength(newRole);
 
 		if(!role.equals(newRole))
 		{
@@ -50,6 +47,15 @@ public class OsmRelationMember implements RelationMember, Serializable
 		}
 	}
 
+	private void checkRoleLength(String r)
+	{
+		if(r.length() >= 256)
+		{
+			throw new IllegalArgumentException("Role \"" + r + "\": Role length is limited" +
+					"to less than 256 characters.");
+		}
+	}
+	
 	@Override
 	public boolean isModified()
 	{
