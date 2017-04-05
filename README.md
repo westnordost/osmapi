@@ -1,6 +1,8 @@
 # osmapi
 
-osmapi is a Java implementation of the [OSM API 0.6](http://wiki.openstreetmap.org/wiki/API_v0.6) for clients
+osmapi is a complete Java implementation of the [OSM API 0.6](http://wiki.openstreetmap.org/wiki/API_v0.6) for clients.
+
+It is well tested (test coverage over 90%) and being used by [StreetComplete](https://github.com/westnordost/StreetComplete), thus actively maintained.
 
 ## License
 
@@ -8,10 +10,10 @@ This library is released under the terms of the [GNU Lesser General Public Licen
 
 ## Installation
 
-Add [`de.westnordost:osmapi:1.5`](https://maven-repository.com/artifact/de.westnordost/osmapi/1.5) as a Maven dependency or download the jar from there. 
+Add [`de.westnordost:osmapi:1.6`](https://maven-repository.com/artifact/de.westnordost/osmapi/1.6) as a Maven dependency or download the jar from there. 
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
-		compile ('de.westnordost:osmapi:1.5')
+		compile ('de.westnordost:osmapi:1.6')
 		{
 			exclude group: 'net.sf.kxml', module: 'kxml2' // already included in Android
 		}
