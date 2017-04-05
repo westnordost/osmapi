@@ -80,7 +80,7 @@ public class MapDataDao
 	{
 		tags.put("created_by", osm.getUserAgent());
 
-		long changesetId = openChangeset(tags.entrySet());
+		long changesetId = openChangeset(tags);
 		/* the try-finally is not really necessary because the server closes an open changeset after
 		   24 hours automatically but it is nicer if we clean up after ourselves in case of error
 		   ourselves. */
@@ -102,7 +102,8 @@ public class MapDataDao
 	 *  @throws OsmNotFoundException if the changeset does not exist (yet) or an element in the
 	 *                               does not exist
 	 *  @throws OsmConflictException if the changeset has already been closed, there is a conflict
-	 *                               for the elements being uploaded, and more
+	 *                               for the elements being uploaded or the user who created the
+	 *                               changeset is not the same as the one uploading the change
 	 *  */
 	public void uploadChanges(long changesetId, Iterable<Element> elements, Handler<DiffElement> handler)
 	{
@@ -121,16 +122,32 @@ public class MapDataDao
 	/** Open a new changeset with the given tags
 	 *  @param tags tags of this changeset. Usually it is comment and source.
 	 *  */
-	public long openChangeset(final Collection<Map.Entry<String, String>> tags)
+	public long openChangeset(Map<String, String> tags)
 	{
-		XmlWriter writer = new XmlWriter()
+		return osm.makeAuthenticatedRequest("changeset/create", "PUT", 
+				createOsmChangesetTagsWriter(tags), new IdResponseReader());
+	}
+
+	/** Set new the tags of a changeset (the old set of tags is deleted)
+	 * @param tags the new tags of this changeset
+	 * @throws OsmConflictException if the changeset has already been closed
+	 * @throws OsmNotFoundException if the changeset does not exist (yet)  */
+	public void updateChangeset(long changesetId, final Map<String, String> tags)
+	{
+		osm.makeAuthenticatedRequest("changeset/"+changesetId, "PUT",
+				createOsmChangesetTagsWriter(tags), null);
+	}
+	
+	private XmlWriter createOsmChangesetTagsWriter(final Map<String, String> tags)
+	{
+		return new XmlWriter()
 		{
 			protected void write() throws IOException
 			{
 				begin("osm");
 				begin("changeset");
 
-				for (Map.Entry<String, String> tag : tags)
+				for (Map.Entry<String, String> tag : tags.entrySet())
 				{
 					begin("tag");
 					attribute("k", tag.getKey());
@@ -142,10 +159,8 @@ public class MapDataDao
 				end();
 			}
 		};
-
-		return osm.makeAuthenticatedRequest("changeset/create", "PUT", writer, new IdResponseReader());
 	}
-
+	
 	/** Closes the given changeset.
 	 *  @throws OsmConflictException if the changeset has already been closed
 	 *  @throws OsmNotFoundException if the changeset does not exist (yet) 

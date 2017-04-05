@@ -366,7 +366,7 @@ public class MapDataDaoTest extends TestCase
 		MapDataDao dao = new MapDataDao(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
-		long changesetId = dao.openChangeset(tags.entrySet());
+		long changesetId = dao.openChangeset(tags);
 		dao.closeChangeset(changesetId);
 		
 		try
@@ -387,7 +387,7 @@ public class MapDataDaoTest extends TestCase
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
 		
-		long changesetId = mapDataDao.openChangeset(tags.entrySet());
+		long changesetId = mapDataDao.openChangeset(tags);
 		try
 		{
 			assertEquals(true, changesetDao.get(changesetId).isOpen);
@@ -428,6 +428,60 @@ public class MapDataDaoTest extends TestCase
 			mapDataDao.closeChangeset(changesetId);
 			assertEquals(false, changesetDao.get(changesetId).isOpen);
 		}
+	}
+	
+	public void testUpdateClosedChangesetFails()
+	{
+		MapDataDao dao = new MapDataDao(privilegedConnection);
+		Map<String,String> tags = new HashMap<>();
+		tags.put("comment", "test case");
+		long changesetId = dao.openChangeset(tags);
+		dao.closeChangeset(changesetId);
+		
+		try
+		{
+			dao.updateChangeset(changesetId, tags);
+			fail();
+		}
+		catch(OsmConflictException e)
+		{
+		}
+	}
+	
+	public void testUpdateUnopenedChangesetFails()
+	{
+		Map<String,String> tags = new HashMap<>();
+		tags.put("comment", "test case");
+		try
+		{
+			new MapDataDao(privilegedConnection).updateChangeset(Long.MAX_VALUE-1, tags);
+			fail();
+		}
+		catch(OsmNotFoundException e)
+		{
+		}
+	}
+	
+	public void testUpdateChangesetOverwritesOldTags()
+	{
+		MapDataDao dao = new MapDataDao(privilegedConnection);
+		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);
+
+		Map<String,String> tags1 = new HashMap<>();
+		tags1.put("comment", "test case");
+		long changesetId = dao.openChangeset(tags1);
+		
+		assertEquals(tags1, changesetDao.get(changesetId).tags);
+		
+		Map<String,String> tags2 = new HashMap<>();
+		tags2.put("comment2", "test case2");
+		
+		dao.updateChangeset(changesetId, tags2);
+		
+		assertEquals(tags2, changesetDao.get(changesetId).tags);
+		
+		// just cleaning up
+		dao.closeChangeset(changesetId);
 	}
 	
 	private void assertChangesetHasElementCount(long changesetId, int creations, int modifications, int deletions)
