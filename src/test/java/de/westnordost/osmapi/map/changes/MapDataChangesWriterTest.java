@@ -246,16 +246,16 @@ public class MapDataChangesWriterTest extends TestCase
 
 	private static OsmNode createNode(long id)
 	{
-		return new OsmNode(id, 1, pos, null, null);
+		return new OsmNode(id, 1, pos, null);
 	}
 
 	private static OsmWay createWay(long id)
 	{
-		return new OsmWay(id, 1, nodes, null, null);
+		return new OsmWay(id, 1, nodes, null);
 	}
 
 	private static OsmRelation createRelation(long id)
 	{
-		return new OsmRelation(id, 1, relationMembers, null, null);
+		return new OsmRelation(id, 1, relationMembers, null);
 	}
 }

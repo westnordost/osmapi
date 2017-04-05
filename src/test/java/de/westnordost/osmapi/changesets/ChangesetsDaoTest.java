@@ -214,7 +214,7 @@ public class ChangesetsDaoTest extends TestCase
 	{
 		MapDataDao mapDataDao = new MapDataDao(userConnection);
 
-		Node node = new OsmNode(-1, 1, new OsmLatLon(55.12313,50.13221), null, null);
+		Node node = new OsmNode(-1, 1, new OsmLatLon(55.12313,50.13221), null);
 		List<Element> elements = new ArrayList<>();
 		elements.add(node);
 		long changesetId = mapDataDao.updateMap("test", "test", elements, null);

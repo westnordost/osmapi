@@ -173,14 +173,14 @@ public class MapDataDaoTest extends TestCase
 		final LatLon POS = new OsmLatLon(55.42313, 50.13221);
 		final long PLACEHOLDER_ID = -33;
 
-		Element node = new OsmNode(PLACEHOLDER_ID, 1, POS, null, null);
+		Element node = new OsmNode(PLACEHOLDER_ID, 1, POS, null);
 		SingleElementHandler<DiffElement> handlerCreated = new SingleElementHandler<>();
 		mapDataDao.updateMap("test", "test", Arrays.asList(node), handlerCreated);
 		DiffElement diffCreated = handlerCreated.get();
 
 		// update id and delete again... (clean up before asserting)
 		OsmNode deleteNode = new OsmNode(diffCreated.serverId, diffCreated.serverVersion, POS,
-				null, null);
+				null);
 		deleteNode.setDeleted(true);
 		SingleElementHandler<DiffElement> handlerDeleted = new SingleElementHandler<>();
 		mapDataDao.updateMap("clean up test", "test", Arrays.asList((Element) deleteNode),
@@ -401,7 +401,7 @@ public class MapDataDaoTest extends TestCase
 			catch(OsmConflictException e) {}
 			
 			// upload first change
-			Element node1 = new OsmNode(-33, 1, new OsmLatLon(10.42313, 65.13221), null, null);
+			Element node1 = new OsmNode(-33, 1, new OsmLatLon(10.42313, 65.13221), null);
 			mapDataDao.uploadChanges(changesetId, Arrays.asList(node1), null);
 		
 			assertChangesetHasElementCount(changesetId,1,0,0);
@@ -409,7 +409,7 @@ public class MapDataDaoTest extends TestCase
 			// delete a non-existing element: -> not found
 			try
 			{
-				OsmNode delNode = new OsmNode(Long.MAX_VALUE-1, 1, new OsmLatLon(0.11111, 1.565467), null, null);
+				OsmNode delNode = new OsmNode(Long.MAX_VALUE-1, 1, new OsmLatLon(0.11111, 1.565467), null);
 				delNode.setDeleted(true);
 				Element delElement = delNode;
 				mapDataDao.uploadChanges(changesetId, Arrays.asList(delElement), null);
@@ -419,7 +419,7 @@ public class MapDataDaoTest extends TestCase
 		
 			assertChangesetHasElementCount(changesetId,1,0,0);
 			
-			Element node2 = new OsmNode(-34, 1, new OsmLatLon(10.42314, 65.13220), null, null);
+			Element node2 = new OsmNode(-34, 1, new OsmLatLon(10.42314, 65.13220), null);
 			mapDataDao.uploadChanges(changesetId, Arrays.asList(node2), null);
 			assertChangesetHasElementCount(changesetId,2,0,0);
 		}

@@ -18,9 +18,9 @@ public class Changeset implements Serializable
 	 * closed date, see note below)
 	 *
 	 * <p>Note that the OSM API does actually not give out this information per changeset but for each
-	 * element last edited as committing a changeset in OSM is not an atomic operation. In theory,
-	 * a changeset can be open for up to 24 hours (after which it is automatically closed).
-	 * In practice, changesets created by popular editors are open a few seconds to minutes.</p>
+	 * element last edited as committing a changeset in OSM is not an atomic operation. For 
+	 * convenience, an edited date of an element included in the changeset is put here additionally.
+	 * (In an element, this is the dateEdited property.)</p>
 	 */
 	public Date date;
 	public User user;

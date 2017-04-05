@@ -1,6 +1,7 @@
 package de.westnordost.osmapi.map.data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Map;
 
 import de.westnordost.osmapi.changesets.Changeset;
@@ -15,16 +16,23 @@ public abstract class OsmElement implements Element, Serializable
 	private long id;
 	private int version;
 	private Changeset changeset;
+	private Date dateEdited;
 	private OsmTags tags;
 	private boolean deleted;
 	private boolean modified;
 
-	public OsmElement(long id, int version, Map<String,String> tags, Changeset changeset)
+	public OsmElement(long id, int version, Map<String,String> tags)
+	{
+		this(id,version,tags,null,null);
+	}
+	
+	public OsmElement(long id, int version, Map<String,String> tags, Changeset changeset, Date dateEdited)
 	{
 		this.id = id;
 		this.version = version;
 		this.changeset = changeset;
 		this.tags = tags != null ? new OsmTags(tags) : null;
+		this.dateEdited = dateEdited;
 	}
 
 	@Override
@@ -82,4 +90,9 @@ public abstract class OsmElement implements Element, Serializable
 
 	@Override
 	public abstract Type getType();
+
+	public Date getDateEdited()
+	{
+		return dateEdited;
+	}
 }

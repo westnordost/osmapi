@@ -1,6 +1,7 @@
 package de.westnordost.osmapi.map.data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +14,17 @@ public class OsmRelation extends OsmElement implements Relation, Serializable
 	private ModificationAwareList<RelationMember> members;
 
 	public OsmRelation(long id, int version, List<RelationMember> members,
-					   Map<String, String> tags, Changeset changeset)
+					   Map<String, String> tags, Changeset changeset, Date dateEdited)
 	{
-		super(id, version, tags, changeset);
+		super(id, version, tags, changeset, dateEdited);
 		this.members = new ModificationAwareList<>(members);
 	}
 
+	public OsmRelation(long id, int version, List<RelationMember> members, Map<String, String> tags)
+	{
+		this(id, version, members, tags, null, null);
+	}
+	
 	@Override
 	public List<RelationMember> getMembers()
 	{

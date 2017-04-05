@@ -33,7 +33,8 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 
 	private long id = -1;
 	private int version = 0;
-	Long changesetId;
+	private Long changesetId;
+	private Date timestamp;
 
 	private Double lat;
 	private Double lon;
@@ -94,12 +95,14 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		}
 		else if (name.equals(NODE) || name.equals(WAY) || name.equals(RELATION))
 		{
+			timestamp = parseDate();
+			
 			changesetId = getLongAttribute("changeset");
 			if(changesetId != null && !changesets.containsKey(changesetId))
 			{
 				Changeset changeset = new Changeset();
 				changeset.id = changesetId;
-				changeset.date = parseDate();
+				changeset.date = timestamp;
 				changeset.user = parseUser();
 				
 				changesets.put( changesetId, changeset);
@@ -146,19 +149,19 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		if(name.equals(NODE))
 		{
 			handler.handle(
-					factory.createNode(id, version, lat, lon, tags, changesets.get(changesetId)));
+					factory.createNode(id, version, lat, lon, tags, changesets.get(changesetId), timestamp));
 		}
 		else if(name.equals(WAY))
 		{
 			handler.handle(
-					factory.createWay(id, version, nodes, tags,changesets.get(changesetId)));
+					factory.createWay(id, version, nodes, tags,changesets.get(changesetId), timestamp));
 			
 			nodes = new LinkedList<>();
 		}
 		else if(name.equals(RELATION))
 		{
 			handler.handle(
-					factory.createRelation(id, version, members, tags, changesets.get(changesetId)));
+					factory.createRelation(id, version, members, tags, changesets.get(changesetId), timestamp));
 			
 			members = new ArrayList<>();
 		}
