@@ -2,6 +2,7 @@ package de.westnordost.osmapi.notes;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -210,6 +211,13 @@ public class NotesParserTest extends TestCase
 	
 	private void parse(String xml, Handler<Note> handler)
 	{
-		new NotesParser(handler).parse(TestUtils.asInputStream(xml));
+		try
+		{
+			new NotesParser(handler).parse(TestUtils.asInputStream(xml));
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

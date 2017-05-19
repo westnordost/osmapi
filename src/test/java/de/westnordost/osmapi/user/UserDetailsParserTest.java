@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.user;
 
+import java.io.IOException;
 import java.util.List;
 
 import de.westnordost.osmapi.TestUtils;
@@ -87,6 +88,13 @@ public class UserDetailsParserTest extends TestCase
 	
 	private UserDetails parseDetails(String xml)
 	{
-		return (UserDetails) new UserDetailsParser().parse(TestUtils.asInputStream(xml));
+		try
+		{
+			return (UserDetails) new UserDetailsParser().parse(TestUtils.asInputStream(xml));
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

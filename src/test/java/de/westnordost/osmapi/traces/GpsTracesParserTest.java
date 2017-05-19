@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.traces;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -49,7 +50,7 @@ public class GpsTracesParserTest extends TestCase
 		assertEquals(c.getTimeInMillis() / 1000, result.date.getTime() / 1000);
 	}
 	
-	public void testParseVisibility()
+	public void testParseVisibility() throws IOException
 	{
 		String xml =
 				"<osm>" + 
@@ -118,9 +119,16 @@ public class GpsTracesParserTest extends TestCase
 	
 	private GpsTraceDetails parseOne(String xml)
 	{
-		SingleElementHandler<GpsTraceDetails> handler = new SingleElementHandler<GpsTraceDetails>();
-		new GpsTracesParser(handler).parse(TestUtils.asInputStream(xml));
-		return handler.get();
+		try
+		{
+			SingleElementHandler<GpsTraceDetails> handler = new SingleElementHandler<GpsTraceDetails>();
+			new GpsTracesParser(handler).parse(TestUtils.asInputStream(xml));
+			return handler.get();
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -313,6 +313,10 @@ public class OsmConnection
 			in = new BufferedInputStream(connection.getInputStream());
 			return reader.parse(in);
 		}
+		catch (IOException e)
+		{
+			throw e;
+		}
 		catch (Exception e)
 		{
 			throw new OsmApiReadResponseException(e);

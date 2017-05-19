@@ -175,12 +175,19 @@ public class MapDataChangesWriterTest extends TestCase
 
 	private static MapDataChanges parseXml(String xml)
 	{
-		SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
-
-		MapDataParser parser = new MapDataChangesParser(handler, new OsmMapDataFactory());
-		parser.parse(TestUtils.asInputStream(xml));
-
-		return handler;
+		try
+		{
+			SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
+	
+			MapDataParser parser = new MapDataChangesParser(handler, new OsmMapDataFactory());
+			parser.parse(TestUtils.asInputStream(xml));
+	
+			return handler;
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static LatLon pos = new OsmLatLon(5,6);

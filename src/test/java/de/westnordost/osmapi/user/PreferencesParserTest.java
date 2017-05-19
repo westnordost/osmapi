@@ -2,13 +2,14 @@ package de.westnordost.osmapi.user;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
 import java.util.Map;
 
 import de.westnordost.osmapi.TestUtils;
 
 public class PreferencesParserTest extends TestCase
 {
-	public void testPreferencesParser()
+	public void testPreferencesParser() throws IOException
 	{
 		String xml =
 				"<preferences>" +

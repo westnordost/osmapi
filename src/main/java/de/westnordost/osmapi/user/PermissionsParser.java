@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.user;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class PermissionsParser extends XmlParser implements ApiResponseReader<Li
 
 	List<String> permissions;
 
-	public List<String> parse(InputStream in)
+	public List<String> parse(InputStream in) throws IOException
 	{
 		doParse(in);
 		return permissions;

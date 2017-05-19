@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.map;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -139,7 +140,7 @@ public class MapDataParserTest extends TestCase
 		assertNull(relation.getTags());
 	}
 
-	public void testOrder()
+	public void testOrder() throws IOException
 	{
 		String xml =
 				"<bounds minlat=\"51.7400000\" minlon=\"0.2400000\" maxlat=\"51.7500000\" maxlon=\"0.2500000\"/> " +
@@ -253,15 +254,29 @@ public class MapDataParserTest extends TestCase
 	
 	private List<Element> parseList(String xml)
 	{
-		ListOsmElementHandler<Element> handler = new ListOsmElementHandler<>(Element.class);
-		new MapDataParser(handler, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
-		return handler.get();
+		try
+		{
+			ListOsmElementHandler<Element> handler = new ListOsmElementHandler<>(Element.class);
+			new MapDataParser(handler, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
+			return handler.get();
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 	
 	private <T> T parseOne(String xml, Class<T> tClass)
 	{
-		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
-		new MapDataParser(handler, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
-		return handler.get();
+		try
+		{
+			SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
+			new MapDataParser(handler, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
+			return handler.get();
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.user;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class PreferencesParser extends XmlParser implements ApiResponseReader<Ma
 	Map<String,String> preferences;
 
 	@Override
-	public Map<String,String> parse(InputStream in)
+	public Map<String,String> parse(InputStream in) throws IOException
 	{
 		doParse(in);
 		return preferences;

@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.notes;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 	}
 
 	@Override
-	public Void parse(InputStream in)
+	public Void parse(InputStream in) throws IOException
 	{
 		users = new HashMap<>();
 		doParse(in);

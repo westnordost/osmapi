@@ -1,5 +1,8 @@
 package de.westnordost.osmapi.common;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.common.errors.XmlParserException;
@@ -164,14 +167,48 @@ public class XmlParserTest extends TestCase
 			// test passed
 		}
 	}
+	
+	public void testIOExceptionIsNotWrappedIntoXmlParserException()
+	{
+		InputStream exceptionStream = new InputStream() {
+
+			@Override
+			public int read() throws IOException
+			{
+				throw new IOException();
+			}
+		};
+		
+		try
+		{
+			new TestXmlParser().testStream(exceptionStream);
+			fail();
+		}
+		catch(IOException e1)
+		{
+			// test passed
+		}
+	}
 
 	private class TestXmlParser extends XmlParser
 	{
 		public void test(String xml)
 		{
-			doParse(TestUtils.asInputStream(xml));
+			try
+			{
+				doParse(TestUtils.asInputStream(xml));
+			}
+			catch(IOException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 
+		public void testStream(InputStream is) throws IOException
+		{
+			doParse(is);
+		}
+		
 		@Override
 		protected void onStartElement()
 		{

@@ -10,6 +10,7 @@ import de.westnordost.osmapi.map.data.RelationMember;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
 import de.westnordost.osmapi.user.User;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
@@ -49,7 +50,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	}
 	
 	@Override
-	public Void parse(InputStream in)
+	public Void parse(InputStream in) throws IOException
 	{
 		users = new HashMap<>();
 		changesets = new HashMap<>();

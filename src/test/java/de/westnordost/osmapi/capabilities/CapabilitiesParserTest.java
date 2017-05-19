@@ -1,11 +1,13 @@
 package de.westnordost.osmapi.capabilities;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 
 public class CapabilitiesParserTest extends TestCase
 {
-	public void testBasicFields()
+	public void testBasicFields() throws IOException
 	{
 		String xml =
 				"<api>" +
@@ -28,7 +30,7 @@ public class CapabilitiesParserTest extends TestCase
 		assertEquals(300, capabilities.timeoutInSeconds);
 	}
 
-	public void testApiStatus()
+	public void testApiStatus() throws IOException
 	{
 		String xml =
 				"<api>" +
@@ -44,7 +46,7 @@ public class CapabilitiesParserTest extends TestCase
 		assertFalse(capabilities.isGpsTracesUploadable());
 	}
 
-	public void testPolicy()
+	public void testPolicy() throws IOException
 	{
 		String xml =
 				"<policy>" +

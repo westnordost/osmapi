@@ -1,5 +1,7 @@
 package de.westnordost.osmapi.map.changes;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.map.OsmMapDataFactory;
@@ -45,9 +47,16 @@ public class MapDataChangesParserTest extends TestCase
 
 	private MapDataChanges parse(String xml)
 	{
-		SimpleMapDataChangesHandler changeMapDataHandler = new SimpleMapDataChangesHandler();
-		new MapDataChangesParser(changeMapDataHandler, new OsmMapDataFactory()).parse(
-				TestUtils.asInputStream(xml));
-		return changeMapDataHandler;
+		try
+		{
+			SimpleMapDataChangesHandler changeMapDataHandler = new SimpleMapDataChangesHandler();
+			new MapDataChangesParser(changeMapDataHandler, new OsmMapDataFactory()).parse(
+					TestUtils.asInputStream(xml));
+			return changeMapDataHandler;
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

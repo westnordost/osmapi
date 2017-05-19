@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.user;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<UserI
 	protected UserInfo user;
 
 	@Override
-	public UserInfo parse(InputStream in)
+	public UserInfo parse(InputStream in) throws IOException
 	{
 		doParse(in);
 		return user;

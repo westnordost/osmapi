@@ -5,6 +5,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import de.westnordost.osmapi.common.errors.XmlParserException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Stack;
 
@@ -21,7 +22,7 @@ public abstract class XmlParser
 	private String text;
 	private XmlPullParser xpp;
 
-	protected final void doParse(InputStream in) throws XmlParserException
+	protected final void doParse(InputStream in) throws XmlParserException, IOException
 	{
 		try
 		{
@@ -51,6 +52,10 @@ public abstract class XmlParser
 				}
 				eventType = xpp.next();
 			}
+		}
+		catch(IOException e)
+		{
+			throw e;
 		}
 		catch (Exception e)
 		{

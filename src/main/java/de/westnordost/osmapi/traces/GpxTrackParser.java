@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.traces;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 
@@ -30,7 +31,7 @@ public class GpxTrackParser extends XmlParser implements ApiResponseReader<Void>
 	}
 	
 	@Override
-	public Void parse(InputStream in)
+	public Void parse(InputStream in) throws IOException
 	{
 		doParse(in);
 		return null;

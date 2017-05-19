@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.changesets;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 	}
 
 	@Override
-	public Void parse(InputStream in)
+	public Void parse(InputStream in) throws IOException
 	{
 		users = new HashMap<>();
 		doParse(in);

@@ -2,6 +2,7 @@ package de.westnordost.osmapi.user;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -10,7 +11,7 @@ import de.westnordost.osmapi.TestUtils;
 
 public class UserInfoParserTest extends TestCase
 {
-	public void testNoInput()
+	public void testNoInput() throws IOException
 	{
 		UserInfo user = new UserInfoParser().parse(TestUtils.asInputStream(""));
 		assertNull(user);
@@ -116,6 +117,13 @@ public class UserInfoParserTest extends TestCase
 	
 	private UserInfo parse(String xml)
 	{
-		return new UserInfoParser().parse(TestUtils.asInputStream(xml));
+		try
+		{
+			return new UserInfoParser().parse(TestUtils.asInputStream(xml));
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

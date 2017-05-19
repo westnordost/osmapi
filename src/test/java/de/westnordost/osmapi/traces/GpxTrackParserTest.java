@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.traces;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -94,6 +95,13 @@ public class GpxTrackParserTest extends TestCase
 	
 	private void parse(String xml, Handler<GpsTrackpoint> handler)
 	{
-		new GpxTrackParser(handler).parse(TestUtils.asInputStream(xml));
+		try
+		{
+			new GpxTrackParser(handler).parse(TestUtils.asInputStream(xml));
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

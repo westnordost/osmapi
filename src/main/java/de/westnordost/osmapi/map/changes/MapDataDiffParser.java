@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.map.changes;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 
@@ -23,7 +24,7 @@ public class MapDataDiffParser extends XmlParser implements ApiResponseReader<Vo
 	}
 
 	@Override
-	public Void parse(InputStream in)
+	public Void parse(InputStream in) throws IOException
 	{
 		doParse(in);
 		return null;

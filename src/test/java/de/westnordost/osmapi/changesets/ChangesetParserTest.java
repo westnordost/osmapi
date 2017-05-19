@@ -1,5 +1,6 @@
 package de.westnordost.osmapi.changesets;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -175,6 +176,13 @@ public class ChangesetParserTest extends TestCase
 	
 	private void parse(String xml, Handler<ChangesetInfo> handler)
 	{
-		new ChangesetParser(handler).parse(TestUtils.asInputStream(xml));
+		try
+		{
+			new ChangesetParser(handler).parse(TestUtils.asInputStream(xml));
+		}
+		catch(IOException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }

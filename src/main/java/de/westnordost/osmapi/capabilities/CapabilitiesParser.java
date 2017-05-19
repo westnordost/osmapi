@@ -1,6 +1,7 @@
 package de.westnordost.osmapi.capabilities;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class CapabilitiesParser extends XmlParser implements ApiResponseReader<C
 	private List<String> imageBlacklistRegexes;
 
 	@Override
-	public Capabilities parse(InputStream in)
+	public Capabilities parse(InputStream in) throws IOException
 	{
 		capabilities = new Capabilities();
 		doParse(in);
