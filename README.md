@@ -10,10 +10,10 @@ This library is released under the terms of the [GNU Lesser General Public Licen
 
 ## Installation
 
-Add [`de.westnordost:osmapi:1.6`](https://maven-repository.com/artifact/de.westnordost/osmapi/1.6) as a Maven dependency or download the jar from there. 
+Add [`de.westnordost:osmapi:1.7`](https://maven-repository.com/artifact/de.westnordost/osmapi/1.7) as a Maven dependency or download the jar from there. 
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
-		compile ('de.westnordost:osmapi:1.6')
+		compile ('de.westnordost:osmapi:1.7')
 		{
 			exclude group: 'net.sf.kxml', module: 'kxml2' // already included in Android
 		}
