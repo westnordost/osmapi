@@ -31,7 +31,6 @@ public abstract class XmlWriter implements ApiRequestWriter
 		try
 		{
 			xml = XmlPullParserFactory.newInstance().newSerializer();
-			xml.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
 		}
 		catch(XmlPullParserException e)
 		{
