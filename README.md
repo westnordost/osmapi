@@ -34,15 +34,17 @@ If you plan to make calls that can only be made by a logged in user, such as upl
 You can call osm.makeRequest(...) yourself to talk with the RESTful Api and write your own ApiRequestWriter and ApiResponseReader to write/read the request.
 It is more convenient however to use the appropriate DAO to do that for you and return the data you are interested in. Currently there are the following DAOs:
 
-* MapDataDao - download and upload map data, query single elements and their relations toward each other
-* NotesDao - open, comment and close notes
-* MapDataHistoryDao - query the history and specific versions of elements
-* GpsTracesDao - query gps traces, upload and download traces and trackpoints
-* ChangesetsDao - query changesets, take part in changeset discussions
-* CapabilitiesDao - query the server capabilities
-* UserDao - get user infos
-* PermissionsDao - get user permissions
-* UserPreferencesDao - query and edit user preferences
+| Class | Description
+| ----- | -----------
+| MapDataDao | download and upload map data, query single elements and their relations toward each other
+| NotesDao | open, comment and close notes
+| MapDataHistoryDao | query the history and specific versions of elements
+| GpsTracesDao | query gps traces, upload and download traces and trackpoints
+| ChangesetsDao | query changesets, take part in changeset discussions
+| CapabilitiesDao | query the server capabilities
+| UserDao | get user infos
+| PermissionsDao | get user permissions
+| UserPreferencesDao | query and edit user preferences
 
 For example...
 
