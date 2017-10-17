@@ -12,8 +12,6 @@ import de.westnordost.osmapi.map.data.BoundingBox;
 
 public class QueryChangesetsFiltersTest extends TestCase
 {
-	private static final String VALID_DATE = "2222-11-22T22:11:00+0100";
-	
 	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
 	
 	public void testByBounds()
@@ -59,9 +57,10 @@ public class QueryChangesetsFiltersTest extends TestCase
 	public void testByClosedAfter() throws ParseException
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		filters.byClosedAfter(dateFormat.parse(VALID_DATE));
-		
-		assertEquals(VALID_DATE, getParam(filters.toParamString(), "time"));
+		Date validDate = dateFormat.parse("2222-11-22T22:11:00+0700");
+		filters.byClosedAfter(validDate);
+
+		assertEquals(validDate, dateFormat.parse(getParam(filters.toParamString(), "time")));
 	}
 	
 	public void testTwoDates()
