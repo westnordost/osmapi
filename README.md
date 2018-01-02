@@ -89,3 +89,11 @@ myMapDataHandler implements MapDataHandler whose methods are called as the eleme
 
 ## Combine with data processing library
 [Read this](https://github.com/westnordost/osmapi/wiki/Combine-With-Data-Processing-Libraries) if you want to use this library in conjunction with a data processing library like Osmosis, osm4j or have your own map data structures already.
+
+## Troubleshooting
+
+If you are getting the exception
+```
+sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target.
+```
+, try updating your Java SDK. Openstreetmap.org uses Let's Encrypt certificates which are not trusted in earlier versions of Java by default. [Read more here](https://stackoverflow.com/questions/34110426/does-java-support-lets-encrypt-certificates).
