@@ -4,9 +4,9 @@ osmapi is a complete Java implementation of the [OSM API 0.6](http://wiki.openst
 
 It is well tested (test coverage over 90%) and being used by [StreetComplete](https://github.com/westnordost/StreetComplete), thus actively maintained.
 
-## License
+## Copyright and License
 
-This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html). If this does not satisfy your needs, talk to me. I am inclined to change it if an ISC/BSD based open source project wants to use this library.
+© 2016-2018 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
 
 ## Installation
 
