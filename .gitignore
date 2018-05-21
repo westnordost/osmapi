@@ -5,3 +5,5 @@ build
 .classpath
 .settings
 gradle-app.setting
+/.idea/
+/local.properties
