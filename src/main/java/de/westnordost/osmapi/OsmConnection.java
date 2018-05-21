@@ -143,6 +143,12 @@ public class OsmConnection
 	}
 
 	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
+	public <T> T makeRequest(String call, boolean authenticate, ApiResponseReader<T> reader)
+	{
+		return makeRequest(call, null, authenticate, null, reader);
+	}
+
+	/** @see #makeRequest(String, String, boolean, ApiRequestWriter, ApiResponseReader)*/
 	public <T> T  makeAuthenticatedRequest(String call, String method, ApiResponseReader<T> reader)
 	{
 		return makeRequest(call, method, true, null, reader);

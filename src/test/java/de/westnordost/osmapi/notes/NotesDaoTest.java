@@ -109,13 +109,6 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			unprivilegedDao.comment(note.id, TEXT, false);
-			fail();
-		}
-		catch(OsmAuthorizationException e) {}
-
-		try
-		{
 			unprivilegedDao.comment(note.id, TEXT);
 			fail();
 		}
@@ -193,13 +186,6 @@ public class NotesDaoTest extends TestCase
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
-
-		try
-		{
-			privilegedDao.comment(note.id, "", false);
-			fail();
-		}
-		catch(IllegalArgumentException e) {}
 	}
 
 	public void testCommentNoteWithNullTextFails()
@@ -207,13 +193,6 @@ public class NotesDaoTest extends TestCase
 		try
 		{
 			privilegedDao.comment(note.id, null);
-			fail();
-		}
-		catch(NullPointerException e) {}
-
-		try
-		{
-			privilegedDao.comment(note.id, null, false);
 			fail();
 		}
 		catch(NullPointerException e) {}
@@ -359,7 +338,7 @@ public class NotesDaoTest extends TestCase
 
 	public void testGetNote()
 	{
-		Note note2 = anonymousDao.get(note.id);
+		Note note2 = unprivilegedDao.get(note.id);
 		assertEquals(note.id, note2.id);
 		assertEquals(note.status, note2.status);
 		assertEquals(note.comments.size(), note2.comments.size());
@@ -369,7 +348,17 @@ public class NotesDaoTest extends TestCase
 
 	public void testGetNoNote()
 	{
-		assertNull(anonymousDao.get(0));
+		assertNull(unprivilegedDao.get(0));
+	}
+
+	public void testGetNoteAsAnonymousFails()
+	{
+		try
+		{
+			anonymousDao.get(note.id);
+			fail();
+		}
+		catch (OsmAuthorizationException e) {}
 	}
 
 	public void testQueryTooBig()
@@ -413,8 +402,18 @@ public class NotesDaoTest extends TestCase
 	public void testGetNotes()
 	{
 		Counter counter = new Counter();
-		anonymousDao.getAll(MY_AREA, counter, 100, -1);
+		unprivilegedDao.getAll(MY_AREA, counter, 100, -1);
 		assertTrue(counter.count > 0);
+	}
+
+	public void testGetNotesAsAnonymousFails()
+	{
+		try
+		{
+			anonymousDao.getAll(MY_AREA, null, 100, -1);
+			fail();
+		}
+		catch(OsmAuthorizationException e) {}
 	}
 
 	public void testSearchNotes()

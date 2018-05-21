@@ -21,9 +21,11 @@ import de.westnordost.osmapi.map.changes.SimpleMapDataChangesHandler;
 
 public class ChangesetsDaoTest extends TestCase
 {
-	private OsmConnection connection;
-	private OsmConnection userConnection;
-	private OsmConnection badUserConnection;
+	private ChangesetsDao privilegedDao;
+	private ChangesetsDao anonymousDao;
+	private ChangesetsDao unprivilegedDao;
+
+	private MapDataDao mapDataDao;
 
 	private long changesetId = 1;
 
@@ -36,32 +38,32 @@ public class ChangesetsDaoTest extends TestCase
 	private static final int A_USER_WITHOUT_CHANGESETS = 3632;
 	
 	@Override
-	protected void setUp() throws Exception
+	protected void setUp()
 	{
-		// Create the different connections...
-		connection = ConnectionTestFactory.createConnection(null);
-		userConnection = ConnectionTestFactory.createConnection(
+		OsmConnection userConnection = ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING);
-		badUserConnection = ConnectionTestFactory.createConnection(
-				ConnectionTestFactory.User.ALLOW_NOTHING
-		);
+
+		mapDataDao = new MapDataDao(userConnection);
+
+		anonymousDao = new ChangesetsDao(ConnectionTestFactory.createConnection(null));
+		privilegedDao = new ChangesetsDao(userConnection);
+		unprivilegedDao = new ChangesetsDao(ConnectionTestFactory.createConnection(
+				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 
 	public void testSubscribe()
 	{
-		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
-
-		ChangesetInfo info = infoDao.subscribe(changesetId);
-		infoDao.unsubscribe(changesetId);
+		ChangesetInfo info = privilegedDao.subscribe(changesetId);
+		privilegedDao.unsubscribe(changesetId);
 		assertEquals(changesetId, info.id);
 	}
 
 	public void testRead()
 	{
 		List<Element> elements = new ArrayList<>();
-		long myChangesetId = new MapDataDao(userConnection).updateMap("unit test", "", elements, null);
+		long myChangesetId = mapDataDao.updateMap("unit test", "", elements, null);
 
-		ChangesetInfo infos = new ChangesetsDao(connection).get(myChangesetId);
+		ChangesetInfo infos = unprivilegedDao.get(myChangesetId);
 		assertEquals(myChangesetId, infos.id);
 		assertEquals(ConnectionTestFactory.USER_AGENT, infos.getGenerator());
 		assertEquals("unit test",infos.getChangesetComment());
@@ -75,20 +77,18 @@ public class ChangesetsDaoTest extends TestCase
 
 	public void testReadInvalidReturnsNull()
 	{
-		assertNull(new ChangesetsDao(connection).get(0));
+		assertNull(unprivilegedDao.get(0));
 	}
 
 	public void testComment()
 	{
 		List<Element> elements = new ArrayList<>();
-		long myChangesetId = new MapDataDao(userConnection).updateMap("unit test", "", elements, null);
+		long myChangesetId = mapDataDao.updateMap("unit test", "", elements, null);
 
-		ChangesetsDao dao = new ChangesetsDao(userConnection);
-
-		ChangesetInfo infos = dao.comment(myChangesetId, "test comment");
+		ChangesetInfo infos = privilegedDao.comment(myChangesetId, "test comment");
 		assertEquals(1, infos.notesCount);
 
-		List<ChangesetNote> comments = dao.get(myChangesetId).discussion;
+		List<ChangesetNote> comments = privilegedDao.get(myChangesetId).discussion;
 		assertNotNull(comments);
 		assertTrue(Math.abs(new Date().getTime() - comments.get(0).date.getTime()) < TEN_MINUTES);
 		assertEquals("test comment", comments.get(0).text);
@@ -96,11 +96,9 @@ public class ChangesetsDaoTest extends TestCase
 
 	public void testEmptyComment()
 	{
-		ChangesetsDao dao = new ChangesetsDao(userConnection);
-
 		try
 		{
-			dao.comment(changesetId, "");
+			privilegedDao.comment(changesetId, "");
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
@@ -108,25 +106,23 @@ public class ChangesetsDaoTest extends TestCase
 
 	public void testAuthFail()
 	{
-		ChangesetsDao infoDao = new ChangesetsDao(badUserConnection);
-
 		try
 		{
-			infoDao.subscribe(changesetId);
+			unprivilegedDao.subscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.unsubscribe(changesetId);
+			unprivilegedDao.unsubscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.comment(changesetId, "test comment");
+			unprivilegedDao.comment(changesetId, "test comment");
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -136,46 +132,62 @@ public class ChangesetsDaoTest extends TestCase
 	{
 		// ...which is different from the "raw" API response
 
-		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
-		assertNotNull(infoDao.subscribe(changesetId));
-		assertNotNull(infoDao.subscribe(changesetId));
+		assertNotNull(privilegedDao.subscribe(changesetId));
+		assertNotNull(privilegedDao.subscribe(changesetId));
 	}
 
 	public void testNotSubscribedDoesNotFail()
 	{
 		// ...which is different from the "raw" API response
-		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
-		assertNotNull(infoDao.unsubscribe(changesetId));
+		assertNotNull(privilegedDao.unsubscribe(changesetId));
 	}
 
 	public void testSubscribeNonExistingChangesetFails()
 	{
-		ChangesetsDao infoDao = new ChangesetsDao(userConnection);
-		try { infoDao.subscribe(0); fail(); } catch(OsmNotFoundException e) {}
-		try { infoDao.unsubscribe(0); fail(); } catch(OsmNotFoundException e) {}
+		try { privilegedDao.subscribe(0); fail(); } catch(OsmNotFoundException e) {}
+		try { privilegedDao.unsubscribe(0); fail(); } catch(OsmNotFoundException e) {}
 	}
 
 	public void testAnonymousFail()
 	{
-		ChangesetsDao infoDao = new ChangesetsDao(connection);
-
 		try
 		{
-			infoDao.subscribe(changesetId);
+			anonymousDao.subscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.unsubscribe(changesetId);
+			anonymousDao.unsubscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
 
 		try
 		{
-			infoDao.comment(changesetId, "test comment");
+			anonymousDao.comment(changesetId, "test comment");
+			fail();
+		}
+		catch(OsmAuthorizationException e) {}
+
+		try
+		{
+			anonymousDao.get(changesetId);
+			fail();
+		}
+		catch(OsmAuthorizationException e) {}
+
+		try
+		{
+			anonymousDao.find(new Handler<ChangesetInfo>()
+			{
+				@Override
+				public void handle(ChangesetInfo tea)
+				{
+					// nothing...
+				}
+			}, new QueryChangesetsFilters().byUser(A_USER_WITH_CHANGESETS));
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}
@@ -183,8 +195,7 @@ public class ChangesetsDaoTest extends TestCase
 
 	public void testGetChangesets()
 	{
-		ChangesetsDao dao = new ChangesetsDao(connection);
-		dao.find(new Handler<ChangesetInfo>()
+		unprivilegedDao.find(new Handler<ChangesetInfo>()
 		{
 			@Override
 			public void handle(ChangesetInfo tea)
@@ -199,8 +210,7 @@ public class ChangesetsDaoTest extends TestCase
 
 	public void testGetChangesetsEmptyDoesNotFail()
 	{
-		ChangesetsDao dao = new ChangesetsDao(connection);
-		dao.find(new Handler<ChangesetInfo>()
+		unprivilegedDao.find(new Handler<ChangesetInfo>()
 		{
 			@Override
 			public void handle(ChangesetInfo tea)
@@ -212,16 +222,13 @@ public class ChangesetsDaoTest extends TestCase
 	
 	public void testGetChanges()
 	{
-		MapDataDao mapDataDao = new MapDataDao(userConnection);
-
 		Node node = new OsmNode(-1, 1, new OsmLatLon(55.12313,50.13221), null);
 		List<Element> elements = new ArrayList<>();
 		elements.add(node);
 		long changesetId = mapDataDao.updateMap("test", "test", elements, null);
 
-		ChangesetsDao changesetsDao = new ChangesetsDao(userConnection);
 		SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
-		changesetsDao.getData(changesetId, handler);
+		unprivilegedDao.getData(changesetId, handler);
 
 		List<Element> createdElements = handler.getCreations();
 

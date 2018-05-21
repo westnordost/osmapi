@@ -42,6 +42,7 @@ public class NotesDao
 		return create(pos, text, asAnonymous);
 	}
 
+	// TODO GDPR posting as anonymous still allowed?
 	/**
 	 * Create a new note at the given location
 	 *
@@ -71,29 +72,17 @@ public class NotesDao
 	}
 
 	/**
-	 * Comment the note with the given id as the current user or anonymous if not logged in.
-	 *
-	 * @see #comment(long, String, boolean)
-	 */
-	public Note comment(long id, String text)
-	{
-		boolean asAnonymous = osm.getOAuth() == null;
-		return comment(id, text, asAnonymous);
-	}
-
-	/**
 	 * @param id id of the note
 	 * @param text comment to be added to the note. Must not be null or empty
-	 * @param asAnonymous whether to comment on this note as anonymous
 	 *
 	 * @throws OsmConflictException if the note has already been closed.
 	 * @throws OsmAuthorizationException if this application is not authorized to write notes
-	 *                                    (Permission.WRITE_NOTES) - and posting as non anonymous
+	 *                                    (Permission.WRITE_NOTES)
 	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore)
 	 *
 	 * @return the updated commented note
 	 */
-	public Note comment(long id, String text, boolean asAnonymous)
+	public Note comment(long id, String text)
 	{
 		if(text.isEmpty())
 		{
@@ -101,7 +90,7 @@ public class NotesDao
 		}
 
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
-		makeSingleNoteRequest(id, "comment", !asAnonymous, text, new NotesParser(noteHandler));
+		makeSingleNoteRequest(id, "comment", text, new NotesParser(noteHandler));
 		return noteHandler.get();
 	}
 
@@ -128,7 +117,7 @@ public class NotesDao
 	public Note reopen(long id, String reason)
 	{
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
-		makeSingleNoteRequest(id, "reopen", true, reason, new NotesParser(noteHandler));
+		makeSingleNoteRequest(id, "reopen", reason, new NotesParser(noteHandler));
 		return noteHandler.get();
 	}
 
@@ -148,7 +137,7 @@ public class NotesDao
 	public Note close(long id, String reason)
 	{
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
-		makeSingleNoteRequest(id, "close", true, reason, new NotesParser(noteHandler));
+		makeSingleNoteRequest(id, "close", reason, new NotesParser(noteHandler));
 		return noteHandler.get();
 	}
 
@@ -164,6 +153,9 @@ public class NotesDao
 
 	/**
 	 * @param id id of the note
+	 *
+	 * @throws OsmAuthorizationException if not logged in
+	 *
 	 * @return the note with the given id. null if the note with that id does not exist (anymore).
 	 */
 	public Note get(long id)
@@ -171,7 +163,7 @@ public class NotesDao
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
 		try
 		{
-			osm.makeRequest(NOTES + "/" + id, new NotesParser(noteHandler));
+			osm.makeAuthenticatedRequest(NOTES + "/" + id, null, new NotesParser(noteHandler));
 		}
 		catch (OsmNotFoundException e)
 		{
@@ -204,6 +196,7 @@ public class NotesDao
 	 *
 	 * @throws OsmQueryTooBigException if the bounds area is too large
 	 * @throws IllegalArgumentException if the bounds cross the 180th meridian
+	 * @throws OsmAuthorizationException if not logged in
 	 */
 	public void getAll(BoundingBox bounds, String search, Handler<Note> handler, int limit,
 						 int hideClosedNoteAfter)
@@ -228,7 +221,7 @@ public class NotesDao
 
 		try
 		{
-			osm.makeRequest(call, new NotesParser(handler));
+			osm.makeAuthenticatedRequest(call, null, new NotesParser(handler));
 		}
 		catch(OsmBadUserInputException e)
 		{
@@ -237,8 +230,7 @@ public class NotesDao
 		}
 	}
 	
-	private <T> T makeSingleNoteRequest(long id, String call, boolean authenticate,	String text,
-										ApiResponseReader<T> reader)
+	private <T> T makeSingleNoteRequest(long id, String call, String text, ApiResponseReader<T> reader)
 	{
 		String data = "";
 		if(text != null)
@@ -246,7 +238,7 @@ public class NotesDao
 			data = "?text=" + urlEncode(text);
 		}
 		String apiCall = NOTES + "/" + id + "/" + call + data;
-		return osm.makeRequest(apiCall, "POST", authenticate, null, reader);
+		return osm.makeAuthenticatedRequest(apiCall, "POST", reader);
 	}
 
 	private String urlEncode(String text)

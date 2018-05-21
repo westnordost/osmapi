@@ -29,6 +29,7 @@ public class ChangesetsDao
 	/** Get the changeset information with the given id. Always includes the changeset discussion.
 	 *
 	 * @param id changeset id
+	 * @throws OsmAuthorizationException if not logged in
 	 * @return info for the given changeset. Null if it does not exist. */
 	public ChangesetInfo get(long id)
 	{
@@ -36,7 +37,7 @@ public class ChangesetsDao
 		String query = CHANGESET + "/" + id + "?include_discussion=true";
 		try
 		{
-			osm.makeRequest(query, new ChangesetParser(handler));
+			osm.makeAuthenticatedRequest(query, null, new ChangesetParser(handler));
 		}
 		catch(OsmNotFoundException e)
 		{
@@ -49,13 +50,15 @@ public class ChangesetsDao
 	 *
 	 *  @param handler The handler which is fed the incoming changeset infos
 	 *  @param filters what to search for. I.e.
-	 *                 new QueryChangesetsFilters().byUser(123).onlyClosed() */
+	 *                 new QueryChangesetsFilters().byUser(123).onlyClosed()
+	 *
+	 *	@throws OsmAuthorizationException if not logged in */
 	public void find(Handler<ChangesetInfo> handler, QueryChangesetsFilters filters)
 	{
 		String query = filters != null ? "?" + filters.toParamString() : "";
 		try
 		{
-			osm.makeRequest(CHANGESET + "s" + query, new ChangesetParser(handler));
+			osm.makeAuthenticatedRequest(CHANGESET + "s" + query, null, new ChangesetParser(handler));
 		}
 		catch(OsmNotFoundException e)
 		{
@@ -174,6 +177,7 @@ public class ChangesetsDao
 		return result;
 	}
 
+	// TODO GDPR anonymous access still possible?
 	/**
 	 * Get map data changes associated with the given changeset, using the default OsmMapDataFactory
 	 * 
@@ -183,9 +187,10 @@ public class ChangesetsDao
 	{
 		getData(id, handler, new OsmMapDataFactory());
 	}
-	
+
+	// TODO GDPR anonymous access still possible?
 	/**
-	 * Get map data changes associated with the given changeset. 
+	 * Get map data changes associated with the given changeset.
 	 * 
 	 * @throws OsmNotFoundException if changeset with the given id does not exist
 	 */

@@ -171,7 +171,9 @@ public class MapDataDao
 	}
 
 	/**
-	 * Feeds map data to the given MapDataHandler.
+	 * Feeds map data to the given MapDataHandler.<br/>
+	 * Note that the changeset information for each returned element will only include the user
+	 * information if logged in.
 	 *
 	 * @param bounds rectangle in which to query map data. May not cross the 180th meridian. This is
 	 *               usually limited at 0.25 square degrees. Check the server capabilities.
@@ -188,10 +190,11 @@ public class MapDataDao
 		}
 
 		String request = "map?bbox=" + bounds.getAsLeftBottomRightTopString();
+		boolean authenticate = osm.getOAuth() != null;
 
 		try
 		{
-			osm.makeRequest(request, new MapDataParser(handler, factory));
+			osm.makeRequest(request, authenticate, new MapDataParser(handler, factory));
 		}
 		catch(OsmBadUserInputException e)
 		{
@@ -201,18 +204,23 @@ public class MapDataDao
 		}
 	}
 
-	/** Queries the way with the given id plus all nodes that are in referenced by it.
+	/** Queries the way with the given id plus all nodes that are in referenced by it.<br/>
+	 *  Note that the changeset information for the returned way will only include the user
+	 *  information if logged in.
 	 *
 	 *  @param id the way's id
 	 *  @param handler map data handler that is fed the map data
 	 *  @throws OsmNotFoundException if the way with the given id does not exist */
 	public void getWayComplete(long id, MapDataHandler handler)
 	{
-		osm.makeRequest(WAY + "/" + id + "/" + FULL, new MapDataParser(handler, factory));
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(WAY + "/" + id + "/" + FULL, authenticate, new MapDataParser(handler, factory));
 	}
 
 	/** Queries the relation with the given id plus all it's members and all nodes of ways that are
-	 *  members of the relation.
+	 *  members of the relation.<br/>
+	 *  Note that the changeset information for each returned element will only include the user
+	 *  information if logged in.
 	 *
 	 *  @param id the way's id
 	 *  @param handler map data handler that is fed the map data
@@ -220,22 +228,32 @@ public class MapDataDao
 	 *  @throws OsmNotFoundException if the relation with the given id does not exist*/
 	public void getRelationComplete(long id, MapDataHandler handler)
 	{
-		osm.makeRequest(RELATION + "/" + id + "/" + FULL, new MapDataParser(handler, factory));
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(RELATION + "/" + id + "/" + FULL, authenticate, new MapDataParser(handler, factory));
 	}
 
-	/** @return the node with the given id or null if it does not exist */
+	/** Note that the changeset information for the returned node will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return the node with the given id or null if it does not exist */
 	public Node getNode(long id)
 	{
 		return getOneElement(NODE + "/" + id, Node.class);
 	}
 
-	/** @return the way with the given id or null if it does not exist */
+	/** Note that the changeset information for the returned way will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return the way with the given id or null if it does not exist */
 	public Way getWay(long id)
 	{
 		return getOneElement(WAY + "/" + id, Way.class);
 	}
 
-	/** @return the relation with the given id or null if it does not exist */
+	/** Note that the changeset information for the returned relation will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return the relation with the given id or null if it does not exist */
 	public Relation getRelation(long id)
 	{
 		return getOneElement(RELATION + "/" + id, Relation.class);
@@ -246,7 +264,8 @@ public class MapDataDao
 		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
 		try
 		{
-			osm.makeRequest(call, new MapDataParser(handler, factory));
+			boolean authenticate = osm.getOAuth() != null;
+			osm.makeRequest(call, authenticate, new MapDataParser(handler, factory));
 		}
 		catch(OsmNotFoundException e)
 		{
@@ -255,7 +274,10 @@ public class MapDataDao
 		return handler.get();
 	}
 
-	/** @param nodeIds a collection of node ids to return.
+	/** Note that the changeset information for each returned node will only include the user
+	 *  information if logged in.
+	 *
+	 *  @param nodeIds a collection of node ids to return.
 	 *  @throws OsmNotFoundException if <b>any</b> one of the given nodes does not exist
 	 *  @return a list of nodes. */
 	public List<Node> getNodes(Collection<Long> nodeIds)
@@ -264,7 +286,10 @@ public class MapDataDao
 		return getSomeElements(NODE + "s?" + NODE + "s=" + toCommaList(nodeIds), Node.class);
 	}
 
-	/** @param wayIds a collection of way ids to return
+	/** Note that the changeset information for each returned way will only include the user
+	 *  information if logged in.
+	 *
+	 *  @param wayIds a collection of way ids to return
 	 *  @throws OsmNotFoundException if <b>any</b> one of the given ways does not exist
 	 *  @return a list of ways. */
 	public List<Way> getWays(Collection<Long> wayIds)
@@ -273,7 +298,10 @@ public class MapDataDao
 		return getSomeElements(WAY + "s?" + WAY + "s=" + toCommaList(wayIds), Way.class);
 	}
 
-	/** @param relationIds a collection of relation ids to return
+	/** Note that the changeset information for each returned relation will only include the user
+	 *  information if logged in.
+	 *
+	 *  @param relationIds a collection of relation ids to return
 	 *  @throws OsmNotFoundException if <b>any</b> one of the given relations does not exist
 	 *  @return a list of relations. */
 	public List<Relation> getRelations(Collection<Long> relationIds)
@@ -282,25 +310,37 @@ public class MapDataDao
 		return getSomeElements(RELATION + "s?" + RELATION + "s=" + toCommaList(relationIds), Relation.class);
 	}
 
-	/** @return all ways that reference the node with the given id. Empty if none. */
+	/** Note that the changeset information for each returned way will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return all ways that reference the node with the given id. Empty if none. */
 	public List<Way> getWaysForNode(long id)
 	{
 		return getSomeElements(NODE + "/" + id + "/" + WAY + "s", Way.class);
 	}
 
-	/** @return all relations that reference the node with the given id. Empty if none. */
+	/** Note that the changeset information for each returned relation will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return all relations that reference the node with the given id. Empty if none. */
 	public List<Relation> getRelationsForNode(long id)
 	{
 		return getSomeElements(NODE + "/" + id + "/" + RELATION + "s", Relation.class);
 	}
 
-	/** @return all relations that reference the way with the given id. Empty if none. */
+	/** Note that the changeset information for each returned relation will only include the user
+	 *  information if logged in.
+	 *
+	 * @return all relations that reference the way with the given id. Empty if none. */
 	public List<Relation> getRelationsForWay(long id)
 	{
 		return getSomeElements(WAY + "/" + id + "/" + RELATION + "s", Relation.class);
 	}
 
-	/** @return all relations that reference the relation with the given id. Empty if none. */
+	/** Note that the changeset information for each returned relation will only include the user
+	 *  information if logged in.
+	 *
+	 * @return all relations that reference the relation with the given id. Empty if none. */
 	public List<Relation> getRelationsForRelation(long id)
 	{
 		return getSomeElements(RELATION + "/" + id + "/" + RELATION + "s", Relation.class);
@@ -324,7 +364,8 @@ public class MapDataDao
 	private <T extends Element> List<T> getSomeElements(String call, Class<T> tClass)
 	{
 		ListOsmElementHandler<T> handler = new ListOsmElementHandler<>(tClass);
-		osm.makeRequest(call, new MapDataParser(handler, factory));
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(call, authenticate, new MapDataParser(handler, factory));
 		return handler.get();
 	}
 }

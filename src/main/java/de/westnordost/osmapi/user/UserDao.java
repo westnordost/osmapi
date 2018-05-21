@@ -19,15 +19,18 @@ public class UserDao
 	 *                                     Permission.READ_PREFERENCES_AND_USER_DETAILS*/
 	public UserDetails getMine()
 	{
-		return (UserDetails) osm.makeAuthenticatedRequest("user/details", "GET", new UserDetailsParser());
+		return (UserDetails) osm.makeAuthenticatedRequest("user/details", null, new UserDetailsParser());
 	}
 
-	/** @return the user info of the given user. Null if the user does not exist. */
+	/**
+	 * @throws OsmAuthorizationException if not logged in
+	 * @return the user info of the given user. Null if the user does not exist.
+	 *  */
 	public UserInfo get(long userId)
 	{
 		try
 		{
-			return osm.makeRequest("user/" + userId, new UserInfoParser());
+			return osm.makeAuthenticatedRequest("user/" + userId, null, new UserInfoParser());
 		}
 		catch(OsmNotFoundException e)
 		{

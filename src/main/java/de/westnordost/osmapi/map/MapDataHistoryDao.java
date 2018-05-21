@@ -40,53 +40,71 @@ public class MapDataHistoryDao
 	}
 
 	/** Feeds all versions of the given node to the handler. The elements are sorted by version,
-	 *  the oldest version is the first, the newest version is the last element.
+	 *  the oldest version is the first, the newest version is the last element.<br/>
+	 *  Note that the changeset information for each returned node will only include the user
+	 *  information if logged in.
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
 	public void getNodeHistory(long id, Handler<Node> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Node.class, handler);
-		osm.makeRequest(NODE + "/" + id + "/" + HISTORY,
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(NODE + "/" + id + "/" + HISTORY, authenticate,
 				new MapDataParser(mapDataHandler, factory));
 	}
 
 	/** Feeds all versions of the given way to the handler. The elements are sorted by version,
-	 *  the oldest version is the first, the newest version is the last element.
+	 *  the oldest version is the first, the newest version is the last element.<br/>
+	 *  Note that the changeset information for each returned way will only include the user
+	 *  information if logged in.
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
 	public void getWayHistory(long id, Handler<Way> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Way.class, handler);
-		osm.makeRequest(WAY + "/" + id + "/" + HISTORY,
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(WAY + "/" + id + "/" + HISTORY, authenticate,
 				new MapDataParser(mapDataHandler, factory));
 	}
 
 	/** Feeds all versions of the given relation to the handler. The elements are sorted by version,
-	 *  the oldest version is the first, the newest version is the last element.
+	 *  the oldest version is the first, the newest version is the last element.<br/>
+	 *  Note that the changeset information for each returned relation will only include the user
+	 *  information if logged in.
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
 	public void getRelationHistory(long id, Handler<Relation> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Relation.class, handler);
-		osm.makeRequest(RELATION + "/" + id + "/" + HISTORY,
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(RELATION + "/" + id + "/" + HISTORY, authenticate,
 				new MapDataParser(mapDataHandler, factory));
 	}
 
-	/** @return the given version of the given element or null if either the node or given the version
+	/** Note that the changeset information for the returned node will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return the given version of the given element or null if either the node or given the version
 	 *          of the node does not exist (anymore).  */
 	public Node getNodeVersion(long id, int version)
 	{
 		return getElementVersion(NODE + "/" + id + "/" + version, Node.class);
 	}
 
-	/** @return the given version of the given element or null if either the node or given the version
+	/** Note that the changeset information for the returned way will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return the given version of the given element or null if either the node or given the version
 	 *          of the node does not exist (anymore).  */
 	public Way getWayVersion(long id, int version)
 	{
 		return getElementVersion(WAY + "/" + id + "/" + version, Way.class);
 	}
 
-	/** @return the given version of the given element or null if either the node or given the version
+	/** Note that the changeset information for the returned relation will only include the user
+	 *  information if logged in.
+	 *
+	 *  @return the given version of the given element or null if either the node or given the version
 	 *          of the node does not exist (anymore).  */
 	public Relation getRelationVersion(long id, int version)
 	{
@@ -98,7 +116,8 @@ public class MapDataHistoryDao
 		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
 		try
 		{
-			osm.makeRequest(call, new MapDataParser(handler, factory));
+			boolean authenticate = osm.getOAuth() != null;
+			osm.makeRequest(call, authenticate, new MapDataParser(handler, factory));
 		}
 		catch(OsmApiException e)
 		{
