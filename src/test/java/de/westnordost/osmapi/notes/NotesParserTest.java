@@ -46,7 +46,7 @@ public class NotesParserTest extends TestCase
 		List<Note> notes = parseList(xml);
 		
 		assertEquals(Note.Status.OPEN, notes.get(0).status);
-		assertEquals(Note.Status.HIDDEN, notes.get(0).status);
+		assertEquals(Note.Status.HIDDEN, notes.get(1).status);
 		assertEquals(Note.Status.CLOSED, notes.get(2).status);
 	}
 
@@ -124,7 +124,7 @@ public class NotesParserTest extends TestCase
 		Note note = parseOne(xml);
 		
 		List<NoteComment> comments = note.comments;
-		assertEquals(4, comments.size());
+		assertEquals(5, comments.size());
 		assertEquals(NoteComment.Action.OPENED, comments.get(0).action);
 		assertEquals(NoteComment.Action.CLOSED, comments.get(1).action);
 		assertEquals(NoteComment.Action.COMMENTED, comments.get(2).action);
