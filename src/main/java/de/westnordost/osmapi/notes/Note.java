@@ -31,9 +31,15 @@ public class Note implements Serializable
 		return status == Status.CLOSED;
 	}
 
+	public boolean isHidden()
+	{
+		return status == Status.HIDDEN;
+	}
+	
 	public enum Status
 	{
 		OPEN,
-		CLOSED
+		CLOSED,
+		HIDDEN
 	}
 }
