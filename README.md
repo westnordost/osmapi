@@ -4,17 +4,17 @@ osmapi is a complete Java implementation of the [OSM API 0.6](http://wiki.openst
 
 It is well tested (test coverage over 90%) and being used by [StreetComplete](https://github.com/westnordost/StreetComplete), thus actively maintained.
 
-## License
+## Copyright and License
 
-This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html). If this does not satisfy your needs, talk to me. I am inclined to change it if an ISC/BSD based open source project wants to use this library.
+© 2016-2018 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
 
 ## Installation
 
-Add [`de.westnordost:osmapi:1.7`](https://maven-repository.com/artifact/de.westnordost/osmapi/1.7) as a Maven dependency or download the jar from there. 
+Add [`de.westnordost:osmapi:1.8`](https://maven-repository.com/artifact/de.westnordost/osmapi/1.8) as a Maven dependency or download the jar from there.
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
-	compile ('de.westnordost:osmapi:1.7')
+	compile ('de.westnordost:osmapi:1.8')
 	{
 		exclude group: 'net.sf.kxml', module: 'kxml2' // already included in Android
 	}
@@ -89,3 +89,11 @@ myMapDataHandler implements MapDataHandler whose methods are called as the eleme
 
 ## Combine with data processing library
 [Read this](https://github.com/westnordost/osmapi/wiki/Combine-With-Data-Processing-Libraries) if you want to use this library in conjunction with a data processing library like Osmosis, osm4j or have your own map data structures already.
+
+## Troubleshooting
+
+If you are getting the exception
+```
+sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target.
+```
+, try updating your Java SDK. Openstreetmap.org uses Let's Encrypt certificates which are not trusted in earlier versions of Java by default. [Read more here](https://stackoverflow.com/questions/34110426/does-java-support-lets-encrypt-certificates).

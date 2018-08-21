@@ -37,13 +37,17 @@ public class NotesParserTest extends TestCase
 				"	<status>open</status>" +
 				"</note>" +
 				"<note lon=\"0\" lat=\"0\">" +
+				"	<status>hidden</status>" +
+				"</note>" +
+				"<note lon=\"0\" lat=\"0\">" +
 				"	<status>closed</status>" +
 				"</note>";
 
 		List<Note> notes = parseList(xml);
 		
 		assertEquals(Note.Status.OPEN, notes.get(0).status);
-		assertEquals(Note.Status.CLOSED, notes.get(1).status);
+		assertEquals(Note.Status.HIDDEN, notes.get(1).status);
+		assertEquals(Note.Status.CLOSED, notes.get(2).status);
 	}
 
 	public void testParseNoteOptionalDate()
@@ -111,17 +115,21 @@ public class NotesParserTest extends TestCase
 				"		<comment>" +
 				"			<action>reopened</action>" +
 				"		</comment>" +
+				"		<comment>" +
+				"			<action>hidden</action>" +
+				"		</comment>" +
 				"	</comments>" +
 				"</note>";
 
 		Note note = parseOne(xml);
 		
 		List<NoteComment> comments = note.comments;
-		assertEquals(4, comments.size());
+		assertEquals(5, comments.size());
 		assertEquals(NoteComment.Action.OPENED, comments.get(0).action);
 		assertEquals(NoteComment.Action.CLOSED, comments.get(1).action);
 		assertEquals(NoteComment.Action.COMMENTED, comments.get(2).action);
 		assertEquals(NoteComment.Action.REOPENED, comments.get(3).action);
+		assertEquals(NoteComment.Action.HIDDEN, comments.get(4).action);
 	}
 
 	public void testParseCommentOptionalFields()

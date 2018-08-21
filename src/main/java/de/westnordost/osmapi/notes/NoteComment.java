@@ -26,6 +26,7 @@ public class NoteComment implements Serializable
 		OPENED,
 		COMMENTED,
 		CLOSED,
-		REOPENED
+		REOPENED,
+		HIDDEN
 	}
 }
