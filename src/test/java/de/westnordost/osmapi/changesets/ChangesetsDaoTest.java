@@ -11,6 +11,7 @@ import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.map.changes.MapDataChangesHandler;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.MapDataDao;
 import de.westnordost.osmapi.map.data.Node;
@@ -174,6 +175,13 @@ public class ChangesetsDaoTest extends TestCase
 		try
 		{
 			anonymousDao.get(changesetId);
+			fail();
+		}
+		catch(OsmAuthorizationException e) {}
+
+		try
+		{
+			anonymousDao.getData(123, new SimpleMapDataChangesHandler());
 			fail();
 		}
 		catch(OsmAuthorizationException e) {}

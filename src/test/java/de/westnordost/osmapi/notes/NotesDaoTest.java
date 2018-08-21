@@ -91,13 +91,6 @@ public class NotesDaoTest extends TestCase
 	{
 		try
 		{
-			unprivilegedDao.create(POINT, TEXT, false);
-			fail();
-		}
-		catch(OsmAuthorizationException e) {}
-
-		try
-		{
 			unprivilegedDao.create(POINT, TEXT);
 			fail();
 		}
@@ -166,13 +159,6 @@ public class NotesDaoTest extends TestCase
 		try
 		{
 			privilegedDao.create(POINT, "");
-			fail();
-		}
-		catch(IllegalArgumentException e) {}
-
-		try
-		{
-			privilegedDao.create(POINT, "", false);
 			fail();
 		}
 		catch(IllegalArgumentException e) {}
