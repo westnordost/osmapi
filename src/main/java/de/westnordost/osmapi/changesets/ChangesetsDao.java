@@ -14,7 +14,8 @@ import de.westnordost.osmapi.map.OsmMapDataFactory;
 import de.westnordost.osmapi.map.changes.MapDataChangesHandler;
 import de.westnordost.osmapi.map.changes.MapDataChangesParser;
 
-/** Gets information for, searches for and shows changeset discussions. */
+/** Gets information for, searches for and shows changeset discussions.
+ *  All interactions with this class require an OsmConnection with a logged in user. */
 public class ChangesetsDao
 {
 	private static final String CHANGESET = "changeset";
@@ -177,7 +178,6 @@ public class ChangesetsDao
 		return result;
 	}
 
-	// TODO GDPR anonymous access still possible?
 	/**
 	 * Get map data changes associated with the given changeset, using the default OsmMapDataFactory
 	 * 
@@ -188,15 +188,15 @@ public class ChangesetsDao
 		getData(id, handler, new OsmMapDataFactory());
 	}
 
-	// TODO GDPR anonymous access still possible?
 	/**
 	 * Get map data changes associated with the given changeset.
-	 * 
+	 *
+	 * @throws OsmAuthorizationException if not logged in
 	 * @throws OsmNotFoundException if changeset with the given id does not exist
 	 */
 	public void getData(long id, MapDataChangesHandler handler, MapDataFactory factory)
 	{
-		osm.makeRequest(CHANGESET + "/" + id + "/download",
+		osm.makeAuthenticatedRequest(CHANGESET + "/" + id + "/download", null,
 				new MapDataChangesParser(handler, factory));
 	}
 

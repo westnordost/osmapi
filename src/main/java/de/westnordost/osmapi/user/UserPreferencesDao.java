@@ -16,7 +16,8 @@ import de.westnordost.osmapi.common.XmlWriter;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 
-/** Get and set the user's custom preferences */
+/** Get and set the user's custom preferences.
+ *  All interactions with this class require an OsmConnection with a logged in user. */
 public class UserPreferencesDao
 {
 	private static final String USERPREFS = "user/preferences/";
@@ -32,9 +33,9 @@ public class UserPreferencesDao
 	}
 
 	/**
-	 * @return	a key-value map of the user preferences
+	 * @return a key-value map of the user preferences
 	 * @throws OsmAuthorizationException if the application is not authenticated to read the
-	 *                                     user's preferences. (Permission.READ_PREFERENCES_AND_USER_DETAILS) */
+	 *                                   user's preferences. (Permission.READ_PREFERENCES_AND_USER_DETAILS) */
 	public Map<String,String> getAll()
 	{
 		return osm.makeAuthenticatedRequest(USERPREFS, "GET", new PreferencesParser());
@@ -45,7 +46,7 @@ public class UserPreferencesDao
 	 * @return	the value of the given preference or null if the preference does not exist
 	 *
 	 * @throws	OsmAuthorizationException if the application is not authenticated to read the
-	 *                                     user's preferences. (Permission.READ_PREFERENCES_AND_USER_DETAILS) */
+	 *                                   user's preferences. (Permission.READ_PREFERENCES_AND_USER_DETAILS) */
 	public String get(String key)
 	{
 		String urlKey = urlEncode(key);
@@ -75,7 +76,7 @@ public class UserPreferencesDao
 	 *                    characters.
 	 *
 	 * @throws OsmAuthorizationException if this application is not authorized to change the
-	 *                                    user's preferences. (Permission.CHANGE_PREFERENCES)
+	 *                                   user's preferences. (Permission.CHANGE_PREFERENCES)
 	 */
 	public void setAll(Map<String, String> preferences)
 	{
@@ -117,7 +118,7 @@ public class UserPreferencesDao
 	 * @param value preference to set. Must be less than 256 characters.
 	 *
 	 * @throws OsmAuthorizationException if this application is not authorized to change the
-	 *                                    user's preferences. (Permission.CHANGE_PREFERENCES)
+	 *                                   user's preferences. (Permission.CHANGE_PREFERENCES)
 	 */
 	public void set(String key, String value)
 	{
@@ -133,7 +134,7 @@ public class UserPreferencesDao
 	 *
 	 * @param key preference to delete. Must be less than 256 characters.
 	 * @throws OsmAuthorizationException if this application is not authorized to change the
-	 *                                    user's preferences. (Permission.CHANGE_PREFERENCES)
+	 *                                   user's preferences. (Permission.CHANGE_PREFERENCES)
 	 */
 	public void delete(String key)
 	{

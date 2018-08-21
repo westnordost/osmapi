@@ -39,7 +39,7 @@ public class GpsTracesDao
 	 *                                  255 characters
 	 * @throws OsmBadUserInputException if the trace is invalid
 	 * @throws OsmAuthorizationException if this application is not authorized to write traces
-	 *                                    (Permission.WRITE_GPS_TRACES)
+	 *                                   (Permission.WRITE_GPS_TRACES)
 	 */
 	public long create(
 			final String name, final GpsTraceDetails.Visibility visibility,
@@ -122,8 +122,8 @@ public class GpsTracesDao
 	 * 
 	 * @throws OsmNotFoundException if the trace with the given id does not exist
 	 * @throws OsmAuthorizationException if this application is not authorized to write traces
-	 *                                    (Permission.WRITE_GPS_TRACES)
-	 *                                    OR if the trace in question is not the user's own trace
+	 *                                   (Permission.WRITE_GPS_TRACES)
+	 *                                   OR if the trace in question is not the user's own trace
 	 * @throws IllegalArgumentException if the length of the description or any one single tag
 	 *                                  is more than 256 characters
 	 */
@@ -142,8 +142,8 @@ public class GpsTracesDao
 	 * Delete one of the user's traces
 	 * 
 	 * @throws OsmAuthorizationException if this application is not authorized to write traces
-	 *                                    (Permission.WRITE_GPS_TRACES)
-	 *                                    OR if the trace in question is not the user's own trace
+	 *                                   (Permission.WRITE_GPS_TRACES)
+	 *                                   OR if the trace in question is not the user's own trace
 	 */
 	public void delete(long id)
 	{
@@ -157,6 +157,7 @@ public class GpsTracesDao
 	 *                                   traces (Permission.READ_GPS_TRACES)
 	 *                                   OR if the trace in question is not the user's own trace 
 	 *                                   and at the same time it is not public
+	 *                                   OR if not logged in at all
 	 */
 	public GpsTraceDetails get(long id)
 	{
@@ -182,6 +183,7 @@ public class GpsTracesDao
 	 *                                   traces (Permission.READ_GPS_TRACES)
 	 *                                   OR if the trace in question is not the user's own trace and
 	 *                                   at the same time it is not public
+	 *                                   OR if not logged in at all
 	 */
 	public void getData(long id, Handler<GpsTrackpoint> handler)
 	{
@@ -190,8 +192,8 @@ public class GpsTracesDao
 	
 	/** Pass all gps traces the current user uploaded to the given handler 
 	 * 	
-	 * @throws OsmAuthorizationException if this application is not authorized to read the user's traces
-	 *                                    (Permission.READ_GPS_TRACES)
+	 * @throws OsmAuthorizationException if this application is not authorized to read the user's
+	 *                                   traces (Permission.READ_GPS_TRACES)
 	 */
 	public void getMine(Handler<GpsTraceDetails> handler)
 	{
@@ -207,7 +209,7 @@ public class GpsTracesDao
 	 *             an empty response
 	 *
 	 * @throws OsmQueryTooBigException if the bounds area is too large
-	 * @throws IllegalArgumentException if the bounds cross the 180th meridian.
+	 * @throws IllegalArgumentException if the bounds cross the 180th meridian or page is < 0
 	 */
 	public void getAll(BoundingBox bounds, Handler<GpsTrackpoint> handler, int page)
 	{

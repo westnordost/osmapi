@@ -15,7 +15,8 @@ import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.LatLon;
 
-/** Creates, comments, closes, reopens and search for notes */
+/** Creates, comments, closes, reopens and search for notes
+ *  All interactions with this class require an OsmConnection with a logged in user. */
 public class NotesDao
 {
 	private static final String NOTES = "notes";
@@ -28,34 +29,17 @@ public class NotesDao
 	}
 
 	/**
-	 * Create a new note at the given location as the current user or anonymous if not logged in.
-	 *
-	 * @param pos position of the note. Must not be null.
-	 * @param text text for the new note. Must not be empty nor null.
-	 * @throws OsmAuthorizationException if this application is not authorized to write notes
-	 *                                    (Permission.WRITE_NOTES)
-	 * @return the new note
-	 */
-	public Note create(LatLon pos, String text)
-	{
-		boolean asAnonymous = osm.getOAuth() == null;
-		return create(pos, text, asAnonymous);
-	}
-
-	// TODO GDPR posting as anonymous still allowed?
-	/**
 	 * Create a new note at the given location
 	 *
 	 * @param pos position of the note. Must not be null.
 	 * @param text text for the new note. Must not be empty nor null.
-	 * @param asAnonymous whether to post this note as anonymous
 	 *
 	 * @throws OsmAuthorizationException if this application is not authorized to write notes
-	 *                                    (Permission.WRITE_NOTES) - and posting as non anonymous
+	 *                                   (Permission.WRITE_NOTES)
 	 *
 	 * @return the new note
 	 */
-	public Note create(LatLon pos, String text, boolean asAnonymous)
+	public Note create(LatLon pos, String text)
 	{
 		if(text.isEmpty())
 		{
@@ -67,7 +51,7 @@ public class NotesDao
 		String call = NOTES + "?" + data;
 
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
-		osm.makeRequest(call, "POST", !asAnonymous, null, new NotesParser(noteHandler));
+		osm.makeAuthenticatedRequest(call, "POST", new NotesParser(noteHandler));
 		return noteHandler.get();
 	}
 
@@ -77,7 +61,7 @@ public class NotesDao
 	 *
 	 * @throws OsmConflictException if the note has already been closed.
 	 * @throws OsmAuthorizationException if this application is not authorized to write notes
-	 *                                    (Permission.WRITE_NOTES)
+	 *                                   (Permission.WRITE_NOTES)
 	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore)
 	 *
 	 * @return the updated commented note
@@ -129,7 +113,7 @@ public class NotesDao
 	 *
 	 * @throws OsmConflictException if the note has already been closed.
 	 * @throws OsmAuthorizationException if this application is not authorized to write notes
-	 *                                    (Permission.WRITE_NOTES)
+	 *                                   (Permission.WRITE_NOTES)
 	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore)
 	 *
 	 * @return the closed note
@@ -199,7 +183,7 @@ public class NotesDao
 	 * @throws OsmAuthorizationException if not logged in
 	 */
 	public void getAll(BoundingBox bounds, String search, Handler<Note> handler, int limit,
-						 int hideClosedNoteAfter)
+					   int hideClosedNoteAfter)
 	{
 		if(limit <= 0 || limit > 10000)
 		{

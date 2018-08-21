@@ -41,8 +41,7 @@ public class MapDataHistoryDao
 
 	/** Feeds all versions of the given node to the handler. The elements are sorted by version,
 	 *  the oldest version is the first, the newest version is the last element.<br/>
-	 *  Note that the changeset information for each returned node will only include the user
-	 *  information if logged in.
+	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
 	public void getNodeHistory(long id, Handler<Node> handler)
@@ -55,8 +54,7 @@ public class MapDataHistoryDao
 
 	/** Feeds all versions of the given way to the handler. The elements are sorted by version,
 	 *  the oldest version is the first, the newest version is the last element.<br/>
-	 *  Note that the changeset information for each returned way will only include the user
-	 *  information if logged in.
+	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
 	public void getWayHistory(long id, Handler<Way> handler)
@@ -69,8 +67,7 @@ public class MapDataHistoryDao
 
 	/** Feeds all versions of the given relation to the handler. The elements are sorted by version,
 	 *  the oldest version is the first, the newest version is the last element.<br/>
-	 *  Note that the changeset information for each returned relation will only include the user
-	 *  information if logged in.
+	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
 	public void getRelationHistory(long id, Handler<Relation> handler)
@@ -81,8 +78,7 @@ public class MapDataHistoryDao
 				new MapDataParser(mapDataHandler, factory));
 	}
 
-	/** Note that the changeset information for the returned node will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return the given version of the given element or null if either the node or given the version
 	 *          of the node does not exist (anymore).  */
@@ -91,8 +87,7 @@ public class MapDataHistoryDao
 		return getElementVersion(NODE + "/" + id + "/" + version, Node.class);
 	}
 
-	/** Note that the changeset information for the returned way will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return the given version of the given element or null if either the node or given the version
 	 *          of the node does not exist (anymore).  */
@@ -101,8 +96,7 @@ public class MapDataHistoryDao
 		return getElementVersion(WAY + "/" + id + "/" + version, Way.class);
 	}
 
-	/** Note that the changeset information for the returned relation will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return the given version of the given element or null if either the node or given the version
 	 *          of the node does not exist (anymore).  */
@@ -121,7 +115,7 @@ public class MapDataHistoryDao
 		}
 		catch(OsmApiException e)
 		{
-			/** if a version of an element has been redacted, the api will send back a 403
+			/* if a version of an element has been redacted, the api will send back a 403
 			 *  forbidden error instead of a 404. Since for the user, this is just a "it's not
 			 *  there" because he has no way to acquire redacted versions, it should just return
 			 *  null. The error code between "version does not exist" and "element does not exist"

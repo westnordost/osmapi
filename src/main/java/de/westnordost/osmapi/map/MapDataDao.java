@@ -97,13 +97,17 @@ public class MapDataDao
 	}
 
 	/** Upload changes into an opened changeset.
+	 *
 	 *  @param elements elements to upload. No special order required
 	 *  @param handler handler that processes the server's diffResult response. Optional.
+	 *
 	 *  @throws OsmNotFoundException if the changeset does not exist (yet) or an element in the
 	 *                               does not exist
 	 *  @throws OsmConflictException if the changeset has already been closed, there is a conflict
 	 *                               for the elements being uploaded or the user who created the
 	 *                               changeset is not the same as the one uploading the change
+	 * @throws OsmAuthorizationException if the application does not have permission to edit the
+	 *                                   map (Permission.MODIFY_MAP)
 	 *  */
 	public void uploadChanges(long changesetId, Iterable<Element> elements, Handler<DiffElement> handler)
 	{
@@ -121,6 +125,9 @@ public class MapDataDao
 
 	/** Open a new changeset with the given tags
 	 *  @param tags tags of this changeset. Usually it is comment and source.
+	 *
+	 *  @throws OsmAuthorizationException if the application does not have permission to edit the
+	 *                                    map (Permission.MODIFY_MAP)
 	 *  */
 	public long openChangeset(Map<String, String> tags)
 	{
@@ -129,9 +136,13 @@ public class MapDataDao
 	}
 
 	/** Set new the tags of a changeset (the old set of tags is deleted)
+	 *
 	 * @param tags the new tags of this changeset
+	 *
 	 * @throws OsmConflictException if the changeset has already been closed
-	 * @throws OsmNotFoundException if the changeset does not exist (yet)  */
+	 * @throws OsmNotFoundException if the changeset does not exist (yet)
+	 * @throws OsmAuthorizationException if the application does not have permission to edit the
+	 *                                   map (Permission.MODIFY_MAP) */
 	public void updateChangeset(long changesetId, final Map<String, String> tags)
 	{
 		osm.makeAuthenticatedRequest("changeset/"+changesetId, "PUT",
@@ -162,9 +173,12 @@ public class MapDataDao
 	}
 	
 	/** Closes the given changeset.
+	 *
 	 *  @throws OsmConflictException if the changeset has already been closed
-	 *  @throws OsmNotFoundException if the changeset does not exist (yet) 
-	 *  */
+	 *  @throws OsmNotFoundException if the changeset does not exist (yet)
+	 *  @throws OsmAuthorizationException if the application does not have permission to edit the
+	 *                                    map (Permission.MODIFY_MAP)
+	 */
 	public void closeChangeset(long changesetId)
 	{
 		osm.makeAuthenticatedRequest("changeset/" + changesetId + "/close", "PUT");
@@ -172,8 +186,7 @@ public class MapDataDao
 
 	/**
 	 * Feeds map data to the given MapDataHandler.<br/>
-	 * Note that the changeset information for each returned element will only include the user
-	 * information if logged in.
+	 * If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @param bounds rectangle in which to query map data. May not cross the 180th meridian. This is
 	 *               usually limited at 0.25 square degrees. Check the server capabilities.
@@ -205,8 +218,7 @@ public class MapDataDao
 	}
 
 	/** Queries the way with the given id plus all nodes that are in referenced by it.<br/>
-	 *  Note that the changeset information for the returned way will only include the user
-	 *  information if logged in.
+	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @param id the way's id
 	 *  @param handler map data handler that is fed the map data
@@ -219,8 +231,7 @@ public class MapDataDao
 
 	/** Queries the relation with the given id plus all it's members and all nodes of ways that are
 	 *  members of the relation.<br/>
-	 *  Note that the changeset information for each returned element will only include the user
-	 *  information if logged in.
+	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @param id the way's id
 	 *  @param handler map data handler that is fed the map data
@@ -232,8 +243,7 @@ public class MapDataDao
 		osm.makeRequest(RELATION + "/" + id + "/" + FULL, authenticate, new MapDataParser(handler, factory));
 	}
 
-	/** Note that the changeset information for the returned node will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return the node with the given id or null if it does not exist */
 	public Node getNode(long id)
@@ -241,8 +251,7 @@ public class MapDataDao
 		return getOneElement(NODE + "/" + id, Node.class);
 	}
 
-	/** Note that the changeset information for the returned way will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return the way with the given id or null if it does not exist */
 	public Way getWay(long id)
@@ -250,8 +259,7 @@ public class MapDataDao
 		return getOneElement(WAY + "/" + id, Way.class);
 	}
 
-	/** Note that the changeset information for the returned relation will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return the relation with the given id or null if it does not exist */
 	public Relation getRelation(long id)
@@ -274,8 +282,7 @@ public class MapDataDao
 		return handler.get();
 	}
 
-	/** Note that the changeset information for each returned node will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @param nodeIds a collection of node ids to return.
 	 *  @throws OsmNotFoundException if <b>any</b> one of the given nodes does not exist
@@ -286,8 +293,7 @@ public class MapDataDao
 		return getSomeElements(NODE + "s?" + NODE + "s=" + toCommaList(nodeIds), Node.class);
 	}
 
-	/** Note that the changeset information for each returned way will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @param wayIds a collection of way ids to return
 	 *  @throws OsmNotFoundException if <b>any</b> one of the given ways does not exist
@@ -298,8 +304,7 @@ public class MapDataDao
 		return getSomeElements(WAY + "s?" + WAY + "s=" + toCommaList(wayIds), Way.class);
 	}
 
-	/** Note that the changeset information for each returned relation will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @param relationIds a collection of relation ids to return
 	 *  @throws OsmNotFoundException if <b>any</b> one of the given relations does not exist
@@ -310,8 +315,7 @@ public class MapDataDao
 		return getSomeElements(RELATION + "s?" + RELATION + "s=" + toCommaList(relationIds), Relation.class);
 	}
 
-	/** Note that the changeset information for each returned way will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return all ways that reference the node with the given id. Empty if none. */
 	public List<Way> getWaysForNode(long id)
@@ -319,8 +323,7 @@ public class MapDataDao
 		return getSomeElements(NODE + "/" + id + "/" + WAY + "s", Way.class);
 	}
 
-	/** Note that the changeset information for each returned relation will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @return all relations that reference the node with the given id. Empty if none. */
 	public List<Relation> getRelationsForNode(long id)
@@ -328,8 +331,7 @@ public class MapDataDao
 		return getSomeElements(NODE + "/" + id + "/" + RELATION + "s", Relation.class);
 	}
 
-	/** Note that the changeset information for each returned relation will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 * @return all relations that reference the way with the given id. Empty if none. */
 	public List<Relation> getRelationsForWay(long id)
@@ -337,8 +339,7 @@ public class MapDataDao
 		return getSomeElements(WAY + "/" + id + "/" + RELATION + "s", Relation.class);
 	}
 
-	/** Note that the changeset information for each returned relation will only include the user
-	 *  information if logged in.
+	/** Note that if not logged in, the Changeset for each returned element will be null
 	 *
 	 * @return all relations that reference the relation with the given id. Empty if none. */
 	public List<Relation> getRelationsForRelation(long id)

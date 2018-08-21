@@ -4,7 +4,8 @@ import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 
-/** Get user infos and details */
+/** Get user infos and details.
+ *  All interactions with this class require an OsmConnection with a logged in user. */
 public class UserDao
 {
 	private final OsmConnection osm;
