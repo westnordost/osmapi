@@ -209,7 +209,7 @@ public class GpsTracesDao
 	 *             an empty response
 	 *
 	 * @throws OsmQueryTooBigException if the bounds area is too large
-	 * @throws IllegalArgumentException if the bounds cross the 180th meridian or page is < 0
+	 * @throws IllegalArgumentException if the bounds cross the 180th meridian or page is &lt; 0
 	 */
 	public void getAll(BoundingBox bounds, Handler<GpsTrackpoint> handler, int page)
 	{

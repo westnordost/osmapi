@@ -40,7 +40,7 @@ public class MapDataHistoryDao
 	}
 
 	/** Feeds all versions of the given node to the handler. The elements are sorted by version,
-	 *  the oldest version is the first, the newest version is the last element.<br/>
+	 *  the oldest version is the first, the newest version is the last element.<br>
 	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
@@ -53,7 +53,7 @@ public class MapDataHistoryDao
 	}
 
 	/** Feeds all versions of the given way to the handler. The elements are sorted by version,
-	 *  the oldest version is the first, the newest version is the last element.<br/>
+	 *  the oldest version is the first, the newest version is the last element.<br>
 	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */
@@ -66,7 +66,7 @@ public class MapDataHistoryDao
 	}
 
 	/** Feeds all versions of the given relation to the handler. The elements are sorted by version,
-	 *  the oldest version is the first, the newest version is the last element.<br/>
+	 *  the oldest version is the first, the newest version is the last element.<br>
 	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @throws OsmNotFoundException if the node has not been found. */

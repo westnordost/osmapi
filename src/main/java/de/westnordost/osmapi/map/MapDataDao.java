@@ -185,7 +185,7 @@ public class MapDataDao
 	}
 
 	/**
-	 * Feeds map data to the given MapDataHandler.<br/>
+	 * Feeds map data to the given MapDataHandler.<br>
 	 * If not logged in, the Changeset for each returned element will be null
 	 *
 	 * @param bounds rectangle in which to query map data. May not cross the 180th meridian. This is
@@ -217,7 +217,7 @@ public class MapDataDao
 		}
 	}
 
-	/** Queries the way with the given id plus all nodes that are in referenced by it.<br/>
+	/** Queries the way with the given id plus all nodes that are in referenced by it.<br>
 	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @param id the way's id
@@ -230,7 +230,7 @@ public class MapDataDao
 	}
 
 	/** Queries the relation with the given id plus all it's members and all nodes of ways that are
-	 *  members of the relation.<br/>
+	 *  members of the relation.<br>
 	 *  If not logged in, the Changeset for each returned element will be null
 	 *
 	 *  @param id the way's id
