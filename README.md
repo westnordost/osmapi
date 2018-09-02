@@ -10,11 +10,11 @@ It is well tested (test coverage over 90%) and being used by [StreetComplete](ht
 
 ## Installation
 
-Add [`de.westnordost:osmapi:2.0`](https://maven-repository.com/artifact/de.westnordost/osmapi/2.0) as a Maven dependency or download the jar from there.
+Add [`de.westnordost:osmapi:3.0`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.0) as a Maven dependency or download the jar from there.
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
-	compile ('de.westnordost:osmapi:2.0')
+	compile ('de.westnordost:osmapi:3.0')
 	{
 		exclude group: 'net.sf.kxml', module: 'kxml2' // already included in Android
 	}
