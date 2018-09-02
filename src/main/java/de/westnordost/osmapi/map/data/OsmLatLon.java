@@ -3,18 +3,18 @@ package de.westnordost.osmapi.map.data;
 import java.io.Serializable;
 
 /**
- * A geo position (without height) implemented using two fixed 1E7 integers, meaning that the
- * maximum precision is limited to 7 decimal points. Coincidentally, this is exactly the maximum
- * precision the positions are saved in the OSM database, hence the name OsmLatLon
+ * A geo position (without height).
  *
- * So, this saves 8 byte per coordinate from an implementation based on doubles ;-)
+ * In prior versions, it was based on two integers, saving 8 byte from an implementation based on
+ * doubles, but every access thus involved a division operation so that was bullocks for general
+ * usage.
  */
 public class OsmLatLon implements LatLon, Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
-	private final int latitude;
-	private final int longitude;
+	private final double latitude;
+	private final double longitude;
 
 	/** @throws IllegalArgumentException if the given latitude and longitude do not make up a valid
 	 *          position*/
@@ -22,8 +22,8 @@ public class OsmLatLon implements LatLon, Serializable
 	{
 		LatLons.checkValidity(latitude, longitude);
 		
-		this.latitude = Fixed1E7.doubleToFixed(latitude);
-		this.longitude = Fixed1E7.doubleToFixed(longitude);
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 
 	public static OsmLatLon parseLatLon(String lat, String lon)
@@ -34,13 +34,13 @@ public class OsmLatLon implements LatLon, Serializable
 	@Override
 	public double getLatitude()
 	{
-		return Fixed1E7.toDouble(latitude);
+		return latitude;
 	}
 
 	@Override
 	public double getLongitude()
 	{
-		return Fixed1E7.toDouble(longitude);
+		return longitude;
 	}
 
 	@Override
@@ -48,18 +48,18 @@ public class OsmLatLon implements LatLon, Serializable
 	{
 		if(obj == this) return true;
 		if(obj == null || !(obj instanceof LatLon)) return false;
-		if(obj instanceof OsmLatLon)
-		{
-			OsmLatLon other = (OsmLatLon) obj;
-			return other.latitude == latitude && other.longitude == longitude;
-		}
 		LatLon other = (LatLon) obj;
 		return other.getLatitude() == getLatitude() && other.getLongitude() == getLongitude();
 	}
-	
-	@Override
-	public int hashCode()
+
+	@Override public int hashCode()
 	{
-		return latitude * 31 + longitude;
+		return 31 * hashCode(latitude) + hashCode(longitude);
+	}
+
+	private static int hashCode(double val)
+	{
+		long longBits = Double.doubleToLongBits(val);
+		return (int) (longBits ^ (longBits >>> 32));
 	}
 }
