@@ -23,7 +23,7 @@ public class OsmTagsTest extends TestCase
 			new OsmTags(tooLong);
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 	
 	public void testInitWithTooLongValueFails()
@@ -36,7 +36,7 @@ public class OsmTagsTest extends TestCase
 			new OsmTags(tooLong);
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 	
 	public void testPutWithTooLongKeyFails()
@@ -46,7 +46,7 @@ public class OsmTagsTest extends TestCase
 			new OsmTags(new HashMap<String,String>()).put(TOO_LONG, "jo");
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 	
 	public void testPutWithTooLongValueFails()
@@ -56,7 +56,7 @@ public class OsmTagsTest extends TestCase
 			new OsmTags(new HashMap<String,String>()).put("jo", TOO_LONG);
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 	
 	public void testPutAllWithTooLongKeyFails()
@@ -69,7 +69,7 @@ public class OsmTagsTest extends TestCase
 			new OsmTags(new HashMap<String,String>()).putAll(tooLong);
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 	
 	public void testPutAllWithTooLongValueFails()
@@ -82,6 +82,6 @@ public class OsmTagsTest extends TestCase
 			new OsmTags(new HashMap<String,String>()).putAll(tooLong);
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 }

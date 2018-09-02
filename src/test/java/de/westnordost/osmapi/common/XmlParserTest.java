@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import de.westnordost.osmapi.TestUtils;
-import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.common.errors.XmlParserException;
 import junit.framework.TestCase;
 

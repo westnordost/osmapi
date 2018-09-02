@@ -64,9 +64,7 @@ public class MapDataDaoTest extends TestCase
 					new DefaultMapDataHandler());
 			fail();
 		}
-		catch(OsmQueryTooBigException e)
-		{
-		}
+		catch(OsmQueryTooBigException ignore) {}
 	}
 
 	public void testGetMapBoundsCross180thMeridian()
@@ -79,9 +77,7 @@ public class MapDataDaoTest extends TestCase
 					new DefaultMapDataHandler());
 			fail();
 		}
-		catch(IllegalArgumentException e)
-		{
-		}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testGetMapBounds()
@@ -148,9 +144,7 @@ public class MapDataDaoTest extends TestCase
 					null);
 			fail();
 		}
-		catch(OsmAuthorizationException e)
-		{
-		}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testUploadAsUnprivilegedUserFails()
@@ -161,9 +155,7 @@ public class MapDataDaoTest extends TestCase
 					Collections.<Element> emptyList(), null);
 			fail();
 		}
-		catch(OsmAuthorizationException e)
-		{
-		}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testReadDiff()
@@ -209,18 +201,14 @@ public class MapDataDaoTest extends TestCase
 			dao.getWayComplete(Long.MAX_VALUE, h);
 			fail();
 		}
-		catch(OsmNotFoundException e)
-		{
-		}
+		catch(OsmNotFoundException ignore) {}
 
 		try
 		{
 			dao.getRelationComplete(Long.MAX_VALUE, h);
 			fail();
 		}
-		catch(OsmNotFoundException e)
-		{
-		}
+		catch(OsmNotFoundException ignore) {}
 	}
 
 	// we do not test the validity of the data here, just they should not throw
@@ -295,9 +283,7 @@ public class MapDataDaoTest extends TestCase
 			new MapDataDao(liveConnection).getNodes(places);
 			fail();
 		}
-		catch(OsmNotFoundException e)
-		{
-		}
+		catch(OsmNotFoundException ignore) {}
 
 		List<Long> place = Arrays.asList(ElementShouldExist.NODE);
 		assertFalse(new MapDataDao(liveConnection).getNodes(place).isEmpty());
@@ -313,9 +299,7 @@ public class MapDataDaoTest extends TestCase
 			new MapDataDao(liveConnection).getRelations(places);
 			fail();
 		}
-		catch(OsmNotFoundException e)
-		{
-		}
+		catch(OsmNotFoundException ignore) {}
 
 		List<Long> place = Arrays.asList(ElementShouldExist.RELATION);
 		assertFalse(new MapDataDao(liveConnection).getRelations(place).isEmpty());
@@ -333,9 +317,7 @@ public class MapDataDaoTest extends TestCase
 			ways.isEmpty();
 			fail();
 		}
-		catch(OsmNotFoundException e)
-		{
-		}
+		catch(OsmNotFoundException ignore) {}
 
 		List<Long> place = Arrays.asList(ElementShouldExist.WAY);
 		assertFalse(new MapDataDao(liveConnection).getWays(place).isEmpty());
@@ -356,9 +338,7 @@ public class MapDataDaoTest extends TestCase
 			new MapDataDao(privilegedConnection).closeChangeset(Long.MAX_VALUE-1);
 			fail();
 		}
-		catch(OsmNotFoundException e)
-		{
-		}
+		catch(OsmNotFoundException ignore) {}
 	}
 	
 	public void testCloseClosedChangesetFails()
@@ -374,9 +354,7 @@ public class MapDataDaoTest extends TestCase
 			dao.closeChangeset(changesetId);
 			fail();
 		}
-		catch(OsmConflictException e)
-		{
-		}
+		catch(OsmConflictException ignore) { }
 	}
 	
 	public void testMultipleChangesInChangeset()
@@ -398,7 +376,7 @@ public class MapDataDaoTest extends TestCase
 				changesetDao.comment(changesetId, "Trying to comment on a non-closed changeset");
 				fail();
 			}
-			catch(OsmConflictException e) {}
+			catch(OsmConflictException ignore) {}
 			
 			// upload first change
 			Element node1 = new OsmNode(-33, 1, new OsmLatLon(10.42313, 65.13221), null);
@@ -415,7 +393,7 @@ public class MapDataDaoTest extends TestCase
 				mapDataDao.uploadChanges(changesetId, Arrays.asList(delElement), null);
 				fail();
 			}
-			catch(OsmNotFoundException e) {}
+			catch(OsmNotFoundException ignore) {}
 		
 			assertChangesetHasElementCount(changesetId,1,0,0);
 			
@@ -443,7 +421,7 @@ public class MapDataDaoTest extends TestCase
 			dao.updateChangeset(changesetId, tags);
 			fail();
 		}
-		catch(OsmConflictException e)
+		catch(OsmConflictException ignore)
 		{
 		}
 	}
@@ -457,7 +435,7 @@ public class MapDataDaoTest extends TestCase
 			new MapDataDao(privilegedConnection).updateChangeset(Long.MAX_VALUE-1, tags);
 			fail();
 		}
-		catch(OsmNotFoundException e)
+		catch(OsmNotFoundException ignore)
 		{
 		}
 	}
@@ -486,7 +464,7 @@ public class MapDataDaoTest extends TestCase
 	
 	private void assertChangesetHasElementCount(long changesetId, int creations, int modifications, int deletions)
 	{
-		ChangesetsDao changesetDao = new ChangesetsDao(connection);
+		ChangesetsDao changesetDao = new ChangesetsDao(unprivilegedConnection);
 		SimpleMapDataChangesHandler h = new SimpleMapDataChangesHandler();
 		changesetDao.getData(changesetId, h);
 		assertEquals(creations, h.getCreations().size());
@@ -494,12 +472,12 @@ public class MapDataDaoTest extends TestCase
 		assertEquals(deletions, h.getDeletions().size());
 	}
 	
-	private class CountMapDataHandler implements MapDataHandler
+	private static class CountMapDataHandler implements MapDataHandler
 	{
-		public int bounds;
-		public int nodes;
-		public int ways;
-		public int relations;
+		int bounds;
+		int nodes;
+		int ways;
+		int relations;
 
 		@Override
 		public void handle(BoundingBox bbox)
@@ -526,11 +504,11 @@ public class MapDataDaoTest extends TestCase
 		}
 	}
 
-	private class CheckFirstHandleCallHandler extends OneElementTypeHandler<Element>
+	private static class CheckFirstHandleCallHandler extends OneElementTypeHandler<Element>
 	{
-		public long firstCallTime = -1;
+		long firstCallTime = -1;
 
-		public CheckFirstHandleCallHandler()
+		CheckFirstHandleCallHandler()
 		{
 			super(Element.class);
 		}

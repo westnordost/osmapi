@@ -184,9 +184,8 @@ public class ModificationAwareList<T> implements List<T>, Serializable
 		return list.toArray();
 	}
 
-	@SuppressWarnings("hiding")
 	@Override
-	public <T> T[] toArray(T[] array)
+	public <U> U[] toArray(U[] array)
 	{
 		return list.toArray(array);
 	}

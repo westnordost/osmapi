@@ -1,13 +1,11 @@
 package de.westnordost.osmapi.common;
 
-
 import junit.framework.TestCase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import de.westnordost.osmapi.TestUtils;
-import de.westnordost.osmapi.common.XmlWriter;
 
 public class XmlWriterTest extends TestCase
 {
@@ -27,7 +25,7 @@ public class XmlWriterTest extends TestCase
 			}.test();
 			fail();
 		}
-		catch (IllegalStateException e) { }
+		catch (IllegalStateException ignore) { }
 	}
 
 	public void testDidCloseOneTagTooMany() throws IOException
@@ -46,7 +44,7 @@ public class XmlWriterTest extends TestCase
 			}.test();
 			fail();
 		}
-		catch (IllegalStateException e) {}
+		catch (IllegalStateException ignore) {}
 	}
 
 	public void testSimple() throws IOException

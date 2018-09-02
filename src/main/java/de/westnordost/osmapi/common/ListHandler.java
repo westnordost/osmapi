@@ -6,7 +6,7 @@ import java.util.List;
 /** Puts all the elements into a list*/
 public class ListHandler<T> implements Handler<T>
 {
-	List<T> list = new ArrayList<>();
+	private List<T> list = new ArrayList<>();
 	
 	@Override
 	public void handle(T tea)

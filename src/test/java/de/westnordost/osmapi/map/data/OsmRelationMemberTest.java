@@ -18,7 +18,7 @@ public class OsmRelationMemberTest extends TestCase
 			new OsmRelationMember(1,"jo", Type.NODE).setRole(TOO_LONG);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 	
 	public void testInitWithTooLongRoleFails()
@@ -28,6 +28,6 @@ public class OsmRelationMemberTest extends TestCase
 			new OsmRelationMember(1,TOO_LONG, Type.NODE);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 }

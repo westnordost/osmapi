@@ -10,8 +10,6 @@ import java.util.Map;
 
 import de.westnordost.osmapi.ApiRequestWriter;
 import de.westnordost.osmapi.TestUtils;
-import de.westnordost.osmapi.common.FormDataWriter;
-import de.westnordost.osmapi.common.PlainTextWriter;
 import junit.framework.TestCase;
 
 public class FormDataWriterTest extends TestCase
@@ -85,7 +83,7 @@ public class FormDataWriterTest extends TestCase
 		writer.write(out);
 		
 		String expected = createExpectedOutput(writer.boundary, params, fileParams);
-		assertEquals(expected.toString(), TestUtils.asString(out));
+		assertEquals(expected, TestUtils.asString(out));
 	}
 		
 	private String createExpectedOutput(String boundary, Map<String, String> params,

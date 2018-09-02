@@ -18,9 +18,8 @@ public class TestUtils
 		catch (UnsupportedEncodingException e)
 		{
 			// doesn't know UTF8? Why is this even a checked exception?
-			assert false;
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 	
 	public static String asString(ByteArrayOutputStream out)
@@ -32,8 +31,7 @@ public class TestUtils
 		catch (UnsupportedEncodingException e)
 		{
 			// doesn't know UTF8? Why is this even a checked exception?
-			assert false;
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 }

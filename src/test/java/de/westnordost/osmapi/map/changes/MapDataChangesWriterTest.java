@@ -153,8 +153,7 @@ public class MapDataChangesWriterTest extends TestCase
             element.setPosition(null);
             writeXml(1, element);
             fail();
-        } catch (NullPointerException e) {
-            // expected
+        } catch (NullPointerException ignore) {
         }
     }
 

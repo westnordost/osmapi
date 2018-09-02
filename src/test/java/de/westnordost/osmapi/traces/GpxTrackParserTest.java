@@ -39,7 +39,7 @@ public class GpxTrackParserTest extends TestCase
 		assertEquals(789.1f, trackpoint.elevation);
 		
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2016, Calendar.APRIL, 17, 16, 41, 02);
+		c.set(2016, Calendar.APRIL, 17, 16, 41, 2);
 		assertEquals(c.getTimeInMillis() / 1000, trackpoint.time.getTime() / 1000);
 	}
 	
@@ -55,7 +55,7 @@ public class GpxTrackParserTest extends TestCase
 		GpsTrackpoint trackpoint = parseOne(xml);
 		
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2016, Calendar.APRIL, 17, 16, 41, 02);
+		c.set(2016, Calendar.APRIL, 17, 16, 41, 2);
 		// I cannot set the milliseconds with the calendar.... :-(
 		assertEquals(c.getTimeInMillis() / 1000, trackpoint.time.getTime() / 1000);
 		assertEquals(654, trackpoint.time.getTime() % 1000);

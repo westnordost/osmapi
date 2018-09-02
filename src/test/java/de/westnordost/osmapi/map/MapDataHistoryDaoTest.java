@@ -14,7 +14,7 @@ public class MapDataHistoryDaoTest extends TestCase
 	private MapDataHistoryDao dao;
 
 	@Override
-	protected void setUp() throws Exception
+	protected void setUp()
 	{
 		liveDao = new MapDataHistoryDao(ConnectionTestFactory.createLiveConnection());
 		dao = new MapDataHistoryDao(ConnectionTestFactory.createConnection(null));
@@ -27,7 +27,7 @@ public class MapDataHistoryDaoTest extends TestCase
 			dao.getNodeHistory(Long.MAX_VALUE, new NullHandler<Node>());
 			fail();
 		}
-		catch(OsmNotFoundException e) { }
+		catch(OsmNotFoundException ignore) { }
 
 		assertNull(dao.getNodeVersion(Long.MAX_VALUE,1));
 	}
@@ -39,7 +39,7 @@ public class MapDataHistoryDaoTest extends TestCase
 			dao.getWayHistory(Long.MAX_VALUE, new NullHandler<Way>());
 			fail();
 		}
-		catch(OsmNotFoundException e) { }
+		catch(OsmNotFoundException ignore) { }
 		assertNull(dao.getWayVersion(Long.MAX_VALUE, 1));
 	}
 
@@ -50,7 +50,7 @@ public class MapDataHistoryDaoTest extends TestCase
 			dao.getRelationHistory(Long.MAX_VALUE, new NullHandler<Relation>());
 			fail();
 		}
-		catch(OsmNotFoundException e) { }
+		catch(OsmNotFoundException ignore) { }
 		assertNull(dao.getRelationVersion(Long.MAX_VALUE, 1));
 	}
 
@@ -98,9 +98,9 @@ public class MapDataHistoryDaoTest extends TestCase
 		public void handle(T tea) { }
 	}
 
-	private class CountHandler<T> implements Handler<T>
+	private static class CountHandler<T> implements Handler<T>
 	{
-		public int count;
+		int count;
 
 		public void handle(T tea) { count++; }
 	}

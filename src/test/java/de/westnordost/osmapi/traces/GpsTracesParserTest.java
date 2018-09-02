@@ -8,8 +8,6 @@ import java.util.TimeZone;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.SingleElementHandler;
-import de.westnordost.osmapi.traces.GpsTraceDetails;
-import de.westnordost.osmapi.traces.GpsTracesParser;
 import junit.framework.TestCase;
 
 public class GpsTracesParserTest extends TestCase
@@ -121,7 +119,7 @@ public class GpsTracesParserTest extends TestCase
 	{
 		try
 		{
-			SingleElementHandler<GpsTraceDetails> handler = new SingleElementHandler<GpsTraceDetails>();
+			SingleElementHandler<GpsTraceDetails> handler = new SingleElementHandler<>();
 			new GpsTracesParser(handler).parse(TestUtils.asInputStream(xml));
 			return handler.get();
 		}

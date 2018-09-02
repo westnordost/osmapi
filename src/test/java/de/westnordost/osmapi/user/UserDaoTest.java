@@ -28,7 +28,7 @@ public class UserDaoTest extends TestCase
 			unprivilegedDao.getMine();
 			fail();
 		}
-		catch(OsmAuthorizationException e)	{ }
+		catch(OsmAuthorizationException ignore) { }
 	}
 
 	public void testGetUserDetailsPrivilegedWorks()
@@ -50,6 +50,6 @@ public class UserDaoTest extends TestCase
 		{
 			anonymousDao.get(0L);
 		}
-		catch (OsmAuthorizationException e) {}
+		catch (OsmAuthorizationException ignore) {}
 	}
 }

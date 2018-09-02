@@ -86,7 +86,7 @@ public class OsmLatLonTest extends TestCase
 			new OsmLatLon(90.0000001, 0);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testInvalidNegativeLatitude()
@@ -96,7 +96,7 @@ public class OsmLatLonTest extends TestCase
 			new OsmLatLon(-90.0000001, 0);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testInvalidPositiveLongitude()
@@ -106,7 +106,7 @@ public class OsmLatLonTest extends TestCase
 			new OsmLatLon(0, 180.0000001);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testInvalidNegativeLongitude()
@@ -116,7 +116,7 @@ public class OsmLatLonTest extends TestCase
 			new OsmLatLon(0, -180.0000001);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 	
 	public void testInvalidNegative360Longitude()
@@ -126,6 +126,6 @@ public class OsmLatLonTest extends TestCase
 			new OsmLatLon(0, -350.0);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 }

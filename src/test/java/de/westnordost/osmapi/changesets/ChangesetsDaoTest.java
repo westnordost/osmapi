@@ -11,14 +11,12 @@ import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
-import de.westnordost.osmapi.map.changes.MapDataChangesHandler;
 import de.westnordost.osmapi.map.data.Element;
 import de.westnordost.osmapi.map.MapDataDao;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.map.data.OsmNode;
 import de.westnordost.osmapi.map.changes.SimpleMapDataChangesHandler;
-
 
 public class ChangesetsDaoTest extends TestCase
 {
@@ -102,7 +100,7 @@ public class ChangesetsDaoTest extends TestCase
 			privilegedDao.comment(changesetId, "");
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testAuthFail()
@@ -112,21 +110,21 @@ public class ChangesetsDaoTest extends TestCase
 			unprivilegedDao.subscribe(changesetId);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
 			unprivilegedDao.unsubscribe(changesetId);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
 			unprivilegedDao.comment(changesetId, "test comment");
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testAlreadySubscribedDoesNotFail()
@@ -145,8 +143,8 @@ public class ChangesetsDaoTest extends TestCase
 
 	public void testSubscribeNonExistingChangesetFails()
 	{
-		try { privilegedDao.subscribe(0); fail(); } catch(OsmNotFoundException e) {}
-		try { privilegedDao.unsubscribe(0); fail(); } catch(OsmNotFoundException e) {}
+		try { privilegedDao.subscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedDao.unsubscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
 	}
 
 	public void testAnonymousFail()
@@ -156,35 +154,35 @@ public class ChangesetsDaoTest extends TestCase
 			anonymousDao.subscribe(changesetId);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
 			anonymousDao.unsubscribe(changesetId);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
 			anonymousDao.comment(changesetId, "test comment");
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
 			anonymousDao.get(changesetId);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
 			anonymousDao.getData(123, new SimpleMapDataChangesHandler());
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
@@ -198,7 +196,7 @@ public class ChangesetsDaoTest extends TestCase
 			}, new QueryChangesetsFilters().byUser(A_USER_WITH_CHANGESETS));
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testGetChangesets()

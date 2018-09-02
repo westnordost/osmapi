@@ -2,7 +2,6 @@ package de.westnordost.osmapi.map.changes;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
@@ -31,7 +30,7 @@ public class MapDataDiffParser extends XmlParser implements ApiResponseReader<Vo
 	}
 
 	@Override
-	protected void onStartElement() throws ParseException
+	protected void onStartElement()
 	{
 		String name = getName();
 
@@ -47,7 +46,7 @@ public class MapDataDiffParser extends XmlParser implements ApiResponseReader<Vo
 	}
 
 	@Override
-	protected void onEndElement() throws Exception
+	protected void onEndElement()
 	{
 
 	}

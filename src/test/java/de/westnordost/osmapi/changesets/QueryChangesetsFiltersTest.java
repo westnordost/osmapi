@@ -104,7 +104,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 			new QueryChangesetsFilters().byBounds(new BoundingBox(0, 15, 10, 5));
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testIllegalUserSelection()
@@ -116,7 +116,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 			filters.byUser("hans");
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 		
 		QueryChangesetsFilters filters2 = new QueryChangesetsFilters();
 
@@ -126,7 +126,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 			filters2.byUser(1);
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 	
 	public void testIllegalChangesetCount()
@@ -136,14 +136,14 @@ public class QueryChangesetsFiltersTest extends TestCase
 			new QueryChangesetsFilters().byChangesets();
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 		
 		try
 		{
 			new QueryChangesetsFilters().byChangesets(new ArrayList<Long>());
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	private String getParam(String params, String paramName)

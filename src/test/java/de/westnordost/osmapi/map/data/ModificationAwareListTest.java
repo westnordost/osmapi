@@ -164,10 +164,10 @@ public class ModificationAwareListTest extends TestCase
 	
 	private ModificationAwareList<String> makeList()
 	{
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add("a");
 		list.add("b");
 		list.add("d");
-		return new ModificationAwareList<String>(list);
+		return new ModificationAwareList<>(list);
 	}
 }

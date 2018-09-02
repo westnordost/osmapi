@@ -18,7 +18,7 @@ public class OsmConnectionTest extends TestCase
 			osm.makeAuthenticatedRequest("doesntMatter", "GET");
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 	
 	public void testAuthorizationException2()
@@ -29,7 +29,7 @@ public class OsmConnectionTest extends TestCase
 			osm.makeAuthenticatedRequest("changeset/create", "PUT", null, null);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 	
 	public void testConnectionException()
@@ -40,7 +40,7 @@ public class OsmConnectionTest extends TestCase
 			osm.makeRequest("doesntMatter", null);
 			fail();
 		}
-		catch(OsmConnectionException e) {}
+		catch(OsmConnectionException ignore) {}
 	}
 	
 	public void testErrorParsingApiResponse()
@@ -58,7 +58,7 @@ public class OsmConnectionTest extends TestCase
 			});
 			fail();
 		}
-		catch(OsmApiReadResponseException e) {}
+		catch(OsmApiReadResponseException ignore) {}
 	}
 
 }

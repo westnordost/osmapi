@@ -29,7 +29,7 @@ public class GpsTracesDaoTest extends TestCase
 	private GpsTracesDao unprivilegedDao;
 	
 	@Override
-	protected void setUp() throws Exception
+	protected void setUp()
 	{
 		privilegedDao = new GpsTracesDao(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
@@ -75,7 +75,7 @@ public class GpsTracesDaoTest extends TestCase
 			unprivilegedDao.create("bla", Visibility.PUBLIC, "desc", Collections.<GpsTrackpoint> emptyList());
 			fail();
 		}
-		catch(OsmAuthorizationException e) { }
+		catch(OsmAuthorizationException ignore) { }
 		
 //		try
 //		{
@@ -110,7 +110,7 @@ public class GpsTracesDaoTest extends TestCase
 			unprivilegedDao.getMine(new Handler<GpsTraceDetails>() { public void handle(GpsTraceDetails tea) {}} );
 			fail();
 		}
-		catch(OsmAuthorizationException e) { }
+		catch(OsmAuthorizationException ignore) { }
 	}
 	
 	
@@ -121,14 +121,14 @@ public class GpsTracesDaoTest extends TestCase
 			privilegedDao.getData(NONEXISTING_TRACE, null);
 			fail();
 		}
-		catch(OsmNotFoundException e) {}
+		catch(OsmNotFoundException ignore) {}
 		
 		try
 		{
 			privilegedDao.update(NONEXISTING_TRACE, Visibility.TRACKABLE, "desc", null);
 			fail();
 		}
-		catch(OsmNotFoundException e) {}
+		catch(OsmNotFoundException ignore) {}
 	}
 	
 	public void testGetNonexistingTrace()
@@ -151,7 +151,7 @@ public class GpsTracesDaoTest extends TestCase
 					Collections.<GpsTrackpoint> emptyList());
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 	
 	public void testTooLongTags()
@@ -166,7 +166,7 @@ public class GpsTracesDaoTest extends TestCase
 					Collections.<GpsTrackpoint> emptyList());
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 		
 //		try
 //		{

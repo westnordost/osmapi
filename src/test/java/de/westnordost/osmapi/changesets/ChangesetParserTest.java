@@ -152,7 +152,7 @@ public class ChangesetParserTest extends TestCase
 						"</discussion>" +
 				"</changeset>" + 
 				"<changeset id=\"1656\" user=\"blub\" uid=\"123\" " +
-						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" />";;
+						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" />";
 
 		List<ChangesetInfo> changesets = parseList(xml);
 		
@@ -162,14 +162,14 @@ public class ChangesetParserTest extends TestCase
 	
 	private List<ChangesetInfo> parseList(String xml)
 	{
-		ListHandler<ChangesetInfo> handler = new ListHandler<ChangesetInfo>();
+		ListHandler<ChangesetInfo> handler = new ListHandler<>();
 		parse(xml, handler);
 		return handler.get();
 	}
 	
 	private ChangesetInfo parseOne(String xml)
 	{
-		SingleElementHandler<ChangesetInfo> handler = new SingleElementHandler<ChangesetInfo>();
+		SingleElementHandler<ChangesetInfo> handler = new SingleElementHandler<>();
 		parse(xml, handler);
 		return handler.get();
 	}

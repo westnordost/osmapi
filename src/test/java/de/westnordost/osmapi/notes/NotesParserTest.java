@@ -168,7 +168,7 @@ public class NotesParserTest extends TestCase
 
 		NoteComment comment = note.comments.get(0);
 		assertNotNull(comment.user);
-		assertEquals(123, (long) comment.user.id);
+		assertEquals(123, comment.user.id);
 		assertEquals("mr_x", comment.user.displayName);
 		assertEquals("Last sighted here", comment.text);
 	}

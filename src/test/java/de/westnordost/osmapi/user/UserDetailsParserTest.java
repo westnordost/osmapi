@@ -37,7 +37,6 @@ public class UserDetailsParserTest extends TestCase
 				"</user>";
 
 		UserDetails user = parseDetails(xml);
-		assertNotNull(user.considersHisContributionsAsPublicDomain);
 		assertFalse(user.considersHisContributionsAsPublicDomain);
 		assertNotNull(user.homeLocation);
 		assertEquals(16.8151000, user.homeLocation.getLatitude());
@@ -77,12 +76,9 @@ public class UserDetailsParserTest extends TestCase
 						"</user>";
 
 		UserDetails user = parseDetails(xml);
-		assertNotNull(user.inboxMessageCount);
-		assertEquals(24, (int) user.inboxMessageCount);
-		assertNotNull(user.unreadMessagesCount);
-		assertEquals(1, (int) user.unreadMessagesCount);
-		assertNotNull(user.sentMessagesCount);
-		assertEquals(29, (int) user.sentMessagesCount);
+		assertEquals(24, user.inboxMessageCount);
+		assertEquals(1, user.unreadMessagesCount);
+		assertEquals(29, user.sentMessagesCount);
 	}
 
 	

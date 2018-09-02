@@ -191,19 +191,19 @@ public class ModificationAwareMapTest extends TestCase
 	
 	private ModificationAwareMap<String,String> makeMap()
 	{
-		Map<String, String> map = new HashMap<String,String>();
+		Map<String, String> map = new HashMap<>();
 		map.put("key1", "value1");
 		map.put("key2", "value2");
-		return new ModificationAwareMap<String,String>(map);
+		return new ModificationAwareMap<>(map);
 	}
 	
 	private Entry<String,String> makeExistingEntry()
 	{
-		return new AbstractMap.SimpleEntry<String,String>("key1","value1");
+		return new AbstractMap.SimpleEntry<>("key1","value1");
 	}
 	
 	private Entry<String,String> makeNewEntry()
 	{
-		return new AbstractMap.SimpleEntry<String,String>("key3","value3");
+		return new AbstractMap.SimpleEntry<>("key3","value3");
 	}
 }

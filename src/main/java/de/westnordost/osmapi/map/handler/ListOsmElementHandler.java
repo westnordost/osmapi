@@ -6,7 +6,7 @@ import java.util.List;
 /** Handler that expects a number of elements of the given type */
 public class ListOsmElementHandler<T> extends OneElementTypeHandler<T>
 {
-	private List<T> result = new ArrayList<T>();
+	private List<T> result = new ArrayList<>();
 
 	public ListOsmElementHandler(Class<T> tClass)
 	{

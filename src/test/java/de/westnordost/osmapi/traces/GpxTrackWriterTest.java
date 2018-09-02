@@ -102,7 +102,7 @@ public class GpxTrackWriterTest extends TestCase
 		if(e != null)
 			assertEquals(e.getTime()/1000, a.getTime()/1000);
 		else
-			assertEquals(e, a);
+			assertEquals(null, a);
 	}
 	
 	private List<GpsTrackpoint> writeAndRead(Iterable<GpsTrackpoint> elements)

@@ -51,7 +51,7 @@ public class NotesDaoTest extends TestCase
 			OsmLatLon.parseLatLon("0.0000001", "-179.9999999"));
 
 	@Override
-	protected void setUp() throws Exception
+	protected void setUp()
 	{
 		anonymousDao = new NotesDao(ConnectionTestFactory.createConnection(null));
 		privilegedDao = new NotesDao(ConnectionTestFactory.createConnection(
@@ -64,7 +64,7 @@ public class NotesDaoTest extends TestCase
 	}
 
 	@Override
-	protected void tearDown() throws Exception
+	protected void tearDown()
 	{
 		privilegedDao.close(note.id);
 	}
@@ -94,7 +94,7 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.create(POINT, TEXT);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 
 	}
 
@@ -105,7 +105,7 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.comment(note.id, TEXT);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testReopenNoteInsufficientPrivileges()
@@ -115,7 +115,7 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.reopen(note.id, TEXT);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testCloseNoteInsufficientPrivileges()
@@ -125,7 +125,7 @@ public class NotesDaoTest extends TestCase
 			unprivilegedDao.close(note.id, TEXT);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testReopenNoteAsAnonymousFails()
@@ -161,7 +161,7 @@ public class NotesDaoTest extends TestCase
 			privilegedDao.create(POINT, "");
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testCommentNoteWithoutTextFails()
@@ -171,7 +171,7 @@ public class NotesDaoTest extends TestCase
 			privilegedDao.comment(note.id, "");
 			fail();
 		}
-		catch(IllegalArgumentException e) {}
+		catch(IllegalArgumentException ignoree) {}
 	}
 
 	public void testCommentNoteWithNullTextFails()
@@ -181,7 +181,7 @@ public class NotesDaoTest extends TestCase
 			privilegedDao.comment(note.id, null);
 			fail();
 		}
-		catch(NullPointerException e) {}
+		catch(NullPointerException ignore) {}
 	}
 
 	public void testCloseAndReopenNoteWithoutTextDoesNotFail()
@@ -207,33 +207,19 @@ public class NotesDaoTest extends TestCase
 		privilegedDao.close(myNote.id);
 	}
 
-	public void testCreateNoteAsAnonymousWorks()
-	{
-		Note myNote = anonymousDao.create(POINT2, TEXT);
-		assertTrue(myNote.isOpen());
-		assertEquals(POINT2, myNote.position);
-		assertEquals(Note.Status.OPEN, myNote.status);
-		assertEquals(1, myNote.comments.size());
-
-		Note closedNote = privilegedDao.close(myNote.id);
-		assertFalse(closedNote.isOpen());
-		assertEquals(POINT2, closedNote.position);
-		assertEquals(Note.Status.CLOSED, closedNote.status);
-	}
-
 	public void testCommentNote()
 	{
 		List<NoteComment> comments;
 		long now, commentTime;
 
-		Note myNote = anonymousDao.create(POINT4, TEXT);
+		Note myNote = privilegedDao.create(POINT4, TEXT);
 
-		comments = anonymousDao.comment(myNote.id, TEXT + 1).comments;
+		comments = privilegedDao.comment(myNote.id, TEXT + 1).comments;
 		assertEquals(2, comments.size());
 		assertEquals(TEXT + 1, comments.get(1).text);
 		assertEquals(NoteComment.Action.COMMENTED, comments.get(1).action);
-		assertNull(comments.get(1).user);
-		assertTrue(comments.get(1).isAnonymous());
+		assertNotNull(comments.get(1).user);
+		assertFalse(comments.get(1).isAnonymous());
 
 		now = new Date().getTime();
 		commentTime = comments.get(1).date.getTime();
@@ -257,7 +243,7 @@ public class NotesDaoTest extends TestCase
 	{
 		List<NoteComment> comments;
 
-		Note myNote = anonymousDao.create(POINT5, TEXT);
+		Note myNote = privilegedDao.create(POINT5, TEXT);
 
 		myNote = privilegedDao.close(myNote.id, TEXT + 1);
 
@@ -289,21 +275,21 @@ public class NotesDaoTest extends TestCase
 
 	public void testNoteNotFound()
 	{
-		try { privilegedDao.comment(0, TEXT); fail(); } catch(OsmNotFoundException e) {}
-		try { privilegedDao.reopen(0); fail(); } catch(OsmNotFoundException e) {}
-		try { privilegedDao.close(0); fail(); } catch(OsmNotFoundException e) {}
+		try { privilegedDao.comment(0, TEXT); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedDao.reopen(0); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedDao.close(0); fail(); } catch(OsmNotFoundException ignore) {}
 	}
 
 	public void testConflict()
 	{
-		Note myNote = anonymousDao.create(POINT6, TEXT);
+		Note myNote = privilegedDao.create(POINT6, TEXT);
 
 		try
 		{
 			privilegedDao.reopen(myNote.id);
 			fail();
 		}
-		catch(OsmConflictException e) {}
+		catch(OsmConflictException ignore) {}
 
 		privilegedDao.close(myNote.id);
 
@@ -312,14 +298,14 @@ public class NotesDaoTest extends TestCase
 			privilegedDao.close(myNote.id);
 			fail();
 		}
-		catch(OsmConflictException e) {}
+		catch(OsmConflictException ignore) {}
 
 		try
 		{
 			privilegedDao.comment(myNote.id, TEXT);
 			fail();
 		}
-		catch(OsmConflictException e) {}
+		catch(OsmConflictException ignore) {}
 	}
 
 	public void testGetNote()
@@ -344,7 +330,7 @@ public class NotesDaoTest extends TestCase
 			anonymousDao.get(note.id);
 			fail();
 		}
-		catch (OsmAuthorizationException e) {}
+		catch (OsmAuthorizationException ignore) {}
 	}
 
 	public void testQueryTooBig()
@@ -352,37 +338,37 @@ public class NotesDaoTest extends TestCase
 		try
 		{
 			// try to download the whole world...
-			anonymousDao.getAll(WHOLE_WORLD, new FailIfCalled(), 10000, -1);
+			unprivilegedDao.getAll(WHOLE_WORLD, new FailIfCalled(), 10000, -1);
 			fail();
 		}
-		catch (OsmQueryTooBigException e) {}
+		catch (OsmQueryTooBigException ignore) {}
 	}
 
 	public void testWrongLimit()
 	{
 		try
 		{
-			anonymousDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, -1);
+			unprivilegedDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, -1);
 			fail();
 		}
-		catch (IllegalArgumentException e) {}
+		catch (IllegalArgumentException ignore) {}
 
 		try
 		{
-			anonymousDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, 10001);
+			unprivilegedDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, 10001);
 			fail();
 		}
-		catch (IllegalArgumentException e) {}
+		catch (IllegalArgumentException ignore) {}
 	}
 
 	public void testCrosses180thMeridian()
 	{
 		try
 		{
-			anonymousDao.getAll(CROSS_180TH_MERIDIAN, new FailIfCalled(), 10000, -1);
+			unprivilegedDao.getAll(CROSS_180TH_MERIDIAN, new FailIfCalled(), 10000, -1);
 			fail();
 		}
-		catch (IllegalArgumentException e) {}
+		catch (IllegalArgumentException ignore) {}
 	}
 
 	public void testGetNotes()
@@ -399,19 +385,19 @@ public class NotesDaoTest extends TestCase
 			anonymousDao.getAll(MY_AREA, null, 100, -1);
 			fail();
 		}
-		catch(OsmAuthorizationException e) {}
+		catch(OsmAuthorizationException ignore) {}
 	}
 
 	public void testSearchNotes()
 	{
 		Counter counter = new Counter();
-		anonymousDao.getAll(MY_AREA, TEXT, counter, 100, -1);
+		unprivilegedDao.getAll(MY_AREA, TEXT, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 
-	private class Counter implements Handler<Note>
+	private static class Counter implements Handler<Note>
 	{
-		public int count;
+		int count;
 
 		@Override
 		public void handle(Note tea)
@@ -420,13 +406,12 @@ public class NotesDaoTest extends TestCase
 		}
 	}
 
-	private class FailIfCalled implements Handler<Note>
+	private static class FailIfCalled implements Handler<Note>
 	{
 		@Override
 		public void handle(Note tea)
 		{
 			assertTrue(false);
 		}
-	};
-
+	}
 }

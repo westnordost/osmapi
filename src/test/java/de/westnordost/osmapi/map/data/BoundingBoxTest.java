@@ -15,7 +15,7 @@ public class BoundingBoxTest extends TestCase
 			new BoundingBox(0, 0, -1, 0);
 			fail();
 		}
-		catch (IllegalArgumentException e) {}
+		catch (IllegalArgumentException ignore) {}
 	}
 
 	public void testValidationLatLon()
@@ -25,7 +25,7 @@ public class BoundingBoxTest extends TestCase
 			new BoundingBox(new OsmLatLon(0, 0), new OsmLatLon(-1, 0));
 			fail();
 		}
-		catch (IllegalArgumentException e) {}
+		catch (IllegalArgumentException ignore) {}
 	}
 
 	

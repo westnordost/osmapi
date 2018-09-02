@@ -14,7 +14,7 @@ public class UserPreferencesDaoTest extends TestCase
 	private UserPreferencesDao unprivilegedDao;
 
 	@Override
-	protected void setUp() throws Exception
+	protected void setUp()
 	{
 		privilegedDao = new UserPreferencesDao(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
@@ -30,31 +30,31 @@ public class UserPreferencesDaoTest extends TestCase
 			unprivilegedDao.delete("A");
 			fail();
 		}
-		catch (OsmAuthorizationException e) { }
+		catch (OsmAuthorizationException ignore) { }
 
 		try {
 			unprivilegedDao.get("A");
 			fail();
 		}
-		catch (OsmAuthorizationException e) { }
+		catch (OsmAuthorizationException ignore) { }
 
 		try {
 			unprivilegedDao.getAll();
 			fail();
 		}
-		catch (OsmAuthorizationException e) { }
+		catch (OsmAuthorizationException ignore) { }
 
 		try {
 			unprivilegedDao.set("A","a");
 			fail();
 		}
-		catch (OsmAuthorizationException e) { }
+		catch (OsmAuthorizationException ignore) { }
 
 		try {
 			unprivilegedDao.setAll(new HashMap<String, String>());
 			fail();
 		}
-		catch (OsmAuthorizationException e) { }
+		catch (OsmAuthorizationException ignore) { }
 	}
 
 	public void testSetGetAndDeleteUserPreference()
@@ -72,7 +72,7 @@ public class UserPreferencesDaoTest extends TestCase
 			privilegedDao.set(tooLong(), "jo");
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 
 	public void testValueTooLong()
@@ -82,7 +82,7 @@ public class UserPreferencesDaoTest extends TestCase
 			privilegedDao.set("jo", tooLong());
 			fail();
 		}
-		catch(IllegalArgumentException e) { }
+		catch(IllegalArgumentException ignore) { }
 	}
 	
 	private static String tooLong()
