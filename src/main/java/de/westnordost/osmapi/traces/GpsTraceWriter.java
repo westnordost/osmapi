@@ -2,6 +2,7 @@ package de.westnordost.osmapi.traces;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import de.westnordost.osmapi.common.XmlWriter;
 
@@ -35,7 +36,7 @@ public class GpsTraceWriter extends XmlWriter
 	private void writeTrace() throws IOException
 	{
 		attribute("id", id);
-		attribute("visibility", visibility.toString().toLowerCase());
+		attribute("visibility", visibility.toString().toLowerCase(Locale.UK));
 		
 		begin("description");
 		if(description != null) text(description);

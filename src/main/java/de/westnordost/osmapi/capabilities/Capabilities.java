@@ -2,6 +2,7 @@ package de.westnordost.osmapi.capabilities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
 
 /** (Current) capabilities of the osm server. */
 public class Capabilities implements Serializable
@@ -42,7 +43,7 @@ public class Capabilities implements Serializable
 
 	static ApiStatus parseApiStatus(String status)
 	{
-		return ApiStatus.valueOf(status.toUpperCase());
+		return ApiStatus.valueOf(status.toUpperCase(Locale.UK));
 	}
 
 	/* Convenience getters */

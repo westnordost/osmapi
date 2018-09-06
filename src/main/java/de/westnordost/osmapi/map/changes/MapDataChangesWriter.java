@@ -127,7 +127,7 @@ public class MapDataChangesWriter extends XmlWriter
 
 	private static String toXmlName(Element.Type type)
 	{
-		return type.toString().toLowerCase();
+		return type.toString().toLowerCase(Locale.UK);
 	}
 
 	private void writeElementAttributes(Element element) throws IOException

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
@@ -44,7 +45,7 @@ public class GpsTracesParser extends XmlParser implements ApiResponseReader<Void
 		{
 			trace = new GpsTraceDetails();
 			trace.id = getLongAttribute("id");
-			trace.visibility = GpsTraceDetails.Visibility.valueOf(getAttribute("visibility").toUpperCase());
+			trace.visibility = GpsTraceDetails.Visibility.valueOf(getAttribute("visibility").toUpperCase(Locale.UK));
 
 			trace.name = getAttribute("name");
 			trace.userName = getAttribute("user");

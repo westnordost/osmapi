@@ -2,6 +2,7 @@ package de.westnordost.osmapi.map.changes;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
@@ -37,7 +38,7 @@ public class MapDataDiffParser extends XmlParser implements ApiResponseReader<Vo
 		if (name.equals(NODE) || name.equals(WAY) || name.equals(RELATION))
 		{
 			DiffElement e = new DiffElement();
-			e.type = Element.Type.valueOf(name.toUpperCase());
+			e.type = Element.Type.valueOf(name.toUpperCase(Locale.UK));
 			e.clientId = getLongAttribute("old_id");
 			e.serverId = getLongAttribute("new_id");
 			e.serverVersion = getIntAttribute("new_version");

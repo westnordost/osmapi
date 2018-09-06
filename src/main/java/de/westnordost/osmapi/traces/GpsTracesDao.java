@@ -2,6 +2,7 @@ package de.westnordost.osmapi.traces;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import de.westnordost.osmapi.ApiRequestWriter;
 import de.westnordost.osmapi.OsmConnection;
@@ -70,7 +71,7 @@ public class GpsTracesDao
 					addField("tags", toCommaList(tags));
 
 				addField("description", description);
-				addField("visibility", visibility.toString().toLowerCase());
+				addField("visibility", visibility.toString().toLowerCase(Locale.UK));
 			}
 		};
 		
