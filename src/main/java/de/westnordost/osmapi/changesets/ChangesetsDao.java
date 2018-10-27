@@ -117,7 +117,6 @@ public class ChangesetsDao
 	 *
 	 * @throws OsmAuthorizationException if this application is not authorized to modify the map
 	 *                                    (Permission.MODIFY_MAP)
-	 * @throws OsmConflictException the changeset has not been closed yet
 	 * @throws OsmNotFoundException if the given changeset does not exist
 	 */
 	public ChangesetInfo subscribe(long id)
@@ -130,12 +129,10 @@ public class ChangesetsDao
 			osm.makeAuthenticatedRequest(apiCall, "POST", new ChangesetParser(handler));
 			result = handler.get();
 		}
-		catch(OsmConflictException e)
+		catch(OsmConflictException ignore)
 		{
-			/* either this is because the changeset has not been closed yet or the user already
-			   subscribed to the changeset. We want to ignore the latter */
+			/* ignore this exception which occurs when the user already subscribed to the changeset */
 			result = get(id);
-			if(result.isOpen) throw e;
 		}
 		return result;
 	}
@@ -148,7 +145,6 @@ public class ChangesetsDao
 	 *
 	 * @throws OsmAuthorizationException if this application is not authorized to modify the map
 	 *                                    (Permission.MODIFY_MAP)
-	 * @throws OsmConflictException the changeset has not been closed yet
 	 * @throws OsmNotFoundException if the given changeset does not exist
 	 *
 	 */
