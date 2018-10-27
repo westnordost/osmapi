@@ -7,30 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.westnordost.osmapi.ApiResponseReader;
+import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.common.XmlParser;
 
-/** Parses information for a user (API 0.6, since 2012).
+/** Parses information for users (API 0.6, since 2012).
  *
  *  See https://github.com/openstreetmap/openstreetmap-website/blob/master/app/views/user/api_read.builder
  *  for what the user actually sends. */
-public class UserInfoParser extends XmlParser implements ApiResponseReader<UserInfo>
+public class UserInfoParser extends XmlParser implements ApiResponseReader<Void>
 {
 	private static final String USER = "user",
 	                            ROLES = "roles",
 	                            BLOCKS = "blocks";
 
 	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-	
+
 	private List<String> roles;
-	
+
+	protected Handler<UserInfo> handler;
 	protected UserInfo user;
 
+	public UserInfoParser(Handler<UserInfo> handler)
+	{
+		this.handler = handler;
+	}
+
 	@Override
-	public UserInfo parse(InputStream in) throws IOException
+	public Void parse(InputStream in) throws IOException
 	{
 		doParse(in);
-		return user;
+		return null;
 	}
 
 	protected void createUser(long id, String name)
@@ -87,7 +94,12 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<UserI
 		String name = getName();
 		String parent = getParentName();
 
-		if(ROLES.equals(name))
+		if(USER.equals(name))
+		{
+			handler.handle( user );
+			user = null;
+		}
+		else if(ROLES.equals(name))
 		{
 			user.roles = roles;
 			roles = null;

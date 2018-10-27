@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.SingleElementHandler;
+
 import junit.framework.TestCase;
 
 public class UserDetailsParserTest extends TestCase
@@ -14,7 +16,7 @@ public class UserDetailsParserTest extends TestCase
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
 				"</user>";
 
-		UserDetails user = parseDetails(xml);
+		UserDetails user = parseOneDetails(xml);
 		assertFalse(user.considersHisContributionsAsPublicDomain);
 		assertNull(user.homeLocation);
 		assertNull(user.homeZoom);
@@ -36,7 +38,7 @@ public class UserDetailsParserTest extends TestCase
 				"	<traces count=\"80\"/>" +
 				"</user>";
 
-		UserDetails user = parseDetails(xml);
+		UserDetails user = parseOneDetails(xml);
 		assertFalse(user.considersHisContributionsAsPublicDomain);
 		assertNotNull(user.homeLocation);
 		assertEquals(16.8151000, user.homeLocation.getLatitude());
@@ -49,14 +51,14 @@ public class UserDetailsParserTest extends TestCase
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
-						"	<languages>" +
-						"		<lang>de</lang>" +
-						"		<lang>en-US</lang>" +
-						"		<lang>en</lang>" +
-						"	</languages>" +
-						"</user>";
+				"	<languages>" +
+				"		<lang>de</lang>" +
+				"		<lang>en-US</lang>" +
+				"		<lang>en</lang>" +
+				"	</languages>" +
+				"</user>";
 
-		UserDetails user = parseDetails(xml);
+		UserDetails user = parseOneDetails(xml);
 		List<String> langs = user.preferredLanguages;
 		assertNotNull(langs);
 		assertEquals(3, langs.size());
@@ -75,18 +77,20 @@ public class UserDetailsParserTest extends TestCase
 						"	</messages>" +
 						"</user>";
 
-		UserDetails user = parseDetails(xml);
+		UserDetails user = parseOneDetails(xml);
 		assertEquals(24, user.inboxMessageCount);
 		assertEquals(1, user.unreadMessagesCount);
 		assertEquals(29, user.sentMessagesCount);
 	}
 
 	
-	private UserDetails parseDetails(String xml)
+	private UserDetails parseOneDetails(String xml)
 	{
 		try
 		{
-			return (UserDetails) new UserDetailsParser().parse(TestUtils.asInputStream(xml));
+			SingleElementHandler<UserInfo> handler = new SingleElementHandler<>();
+			new UserDetailsParser(handler).parse(TestUtils.asInputStream(xml));
+			return (UserDetails) handler.get();
 		}
 		catch(IOException e)
 		{

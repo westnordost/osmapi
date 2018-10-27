@@ -8,13 +8,16 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import de.westnordost.osmapi.TestUtils;
+import de.westnordost.osmapi.common.Handler;
+import de.westnordost.osmapi.common.ListHandler;
+import de.westnordost.osmapi.common.SingleElementHandler;
+import de.westnordost.osmapi.map.handler.ListOsmElementHandler;
 
 public class UserInfoParserTest extends TestCase
 {
 	public void testNoInput() throws IOException
 	{
-		UserInfo user = new UserInfoParser().parse(TestUtils.asInputStream(""));
-		assertNull(user);
+		new UserInfoParser(new FailIfCalled()).parse(TestUtils.asInputStream(""));
 	}
 
 	public void testAttributes()
@@ -23,7 +26,7 @@ public class UserInfoParserTest extends TestCase
 				"<user id=\"123\" display_name=\"mr_x\" account_created=\"2013-01-20T17:16:23Z\">" +
 				"</user>";
 
-		UserInfo user = parse(xml);
+		UserInfo user = parseOne(xml);
 		assertEquals(123, user.id);
 		assertEquals("mr_x", user.displayName);
 
@@ -38,7 +41,7 @@ public class UserInfoParserTest extends TestCase
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
 				"</user>";
 
-		UserInfo user = parse(xml);
+		UserInfo user = parseOne(xml);
 		assertNull(user.profileDescription);
 		assertFalse(user.isAdministrator());
 		assertFalse(user.isModerator());
@@ -61,7 +64,7 @@ public class UserInfoParserTest extends TestCase
 						"	</roles>" +
 						"</user>";
 
-		UserInfo user = parse(xml);
+		UserInfo user = parseOne(xml);
 
 		assertTrue(user.isAdministrator());
 		assertTrue(user.isModerator());
@@ -78,7 +81,7 @@ public class UserInfoParserTest extends TestCase
 						"	</blocks>" +
 						"</user>";
 
-		UserInfo user = parse(xml);
+		UserInfo user = parseOne(xml);
 		assertTrue(user.isBlocked);
 	}
 
@@ -91,7 +94,7 @@ public class UserInfoParserTest extends TestCase
 						"	</blocks>" +
 						"</user>";
 
-		UserInfo user = parse(xml);
+		UserInfo user = parseOne(xml);
 		assertFalse(user.isBlocked);
 	}
 
@@ -107,23 +110,45 @@ public class UserInfoParserTest extends TestCase
 				"	<traces count=\"80\"/>" +
 				"</user>";
 
-		UserInfo user = parse(xml);
+		UserInfo user = parseOne(xml);
 		assertEquals("abc", user.profileDescription);
 		assertTrue(user.hasAgreedToContributorTerms);
 		assertEquals("http://someurl.com/img.png", user.profileImageUrl);
 		assertEquals(2129, user.changesetsCount);
 		assertEquals(80, user.gpsTracesCount);
 	}
-	
-	private UserInfo parse(String xml)
+
+	public void testParseMultiple() throws IOException
+	{
+		String xml =
+				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\"/>" +
+				"<user id=\"1\" display_name=\"\" account_created=\"2015-01-20T17:16:23Z\"/>";
+
+		ListHandler<UserInfo> handler = new ListHandler<>();
+		new UserInfoParser(handler).parse(TestUtils.asInputStream(xml));
+		assertEquals(2, handler.get().size());
+	}
+
+	private UserInfo parseOne(String xml)
 	{
 		try
 		{
-			return new UserInfoParser().parse(TestUtils.asInputStream(xml));
+			SingleElementHandler<UserInfo> handler = new SingleElementHandler<>();
+			new UserInfoParser(handler).parse(TestUtils.asInputStream(xml));
+			return handler.get();
 		}
 		catch(IOException e)
 		{
 			throw new RuntimeException(e);
+		}
+	}
+
+	private static class FailIfCalled implements Handler<UserInfo>
+	{
+		@Override
+		public void handle(UserInfo tea)
+		{
+			fail();
 		}
 	}
 }

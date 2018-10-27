@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 
 /** Parses private information for a user  */
@@ -15,7 +16,12 @@ public class UserDetailsParser extends UserInfoParser
 	private List<String> languages;
 	
 	private UserDetails userDetails;
-	
+
+	public UserDetailsParser(Handler<UserInfo> handler)
+	{
+		super(handler);
+	}
+
 	@Override
 	protected void createUser(long id, String name)
 	{
@@ -71,7 +77,12 @@ public class UserDetailsParser extends UserInfoParser
 		String name = getName();
 		String parent = getParentName();
 
-		if(LANGUAGES.equals(name))
+		if(USER.equals(name))
+		{
+			handler.handle(userDetails);
+			user = userDetails = null;
+		}
+		else if(LANGUAGES.equals(name))
 		{
 			userDetails.preferredLanguages = languages;
 			languages = null;
