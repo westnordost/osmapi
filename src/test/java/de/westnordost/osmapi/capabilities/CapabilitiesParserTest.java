@@ -13,6 +13,7 @@ public class CapabilitiesParserTest extends TestCase
 				"<api>" +
 				"	<version minimum=\"0.6\" maximum=\"0.6\"/>" +
 				"	<area maximum=\"0.25\"/>" +
+				"	<note_area maximum=\"25\"/>" +
 				"	<tracepoints per_page=\"5000\"/>" +
 				"	<waynodes maximum=\"2000\"/>" +
 				"	<changesets maximum_elements=\"50000\"/>" +
@@ -24,6 +25,7 @@ public class CapabilitiesParserTest extends TestCase
 		assertEquals(0.6f,capabilities.minSupportedApiVersion);
 		assertEquals(0.6f, capabilities.maxSupportedApiVersion);
 		assertEquals(0.25f, capabilities.maxMapQueryAreaInSquareDegrees);
+		assertEquals(25f, capabilities.maxNotesQueryAreaInSquareDegrees);
 		assertEquals(5000, capabilities.maxPointsInGpsTracePerPage);
 		assertEquals(2000, capabilities.maxNodesInWay);
 		assertEquals(50000, capabilities.maxElementsPerChangeset);

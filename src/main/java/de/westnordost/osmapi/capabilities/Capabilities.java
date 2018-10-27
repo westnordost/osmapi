@@ -13,8 +13,7 @@ public class Capabilities implements Serializable
 	public float maxSupportedApiVersion;
 	
 	public float maxMapQueryAreaInSquareDegrees;
-	// the API does not give out this information yet
-	public float maxNotesQueryAreaInSquareDegrees = 25;
+	public float maxNotesQueryAreaInSquareDegrees;
 	
 	public int maxNodesInWay;
 	/** See http://wiki.openstreetmap.org/wiki/API_v0.6#Retrieving_GPS_points */

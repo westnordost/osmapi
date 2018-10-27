@@ -63,6 +63,9 @@ public class CapabilitiesParser extends XmlParser implements ApiResponseReader<C
 			case "area":
 				capabilities.maxMapQueryAreaInSquareDegrees = getFloatAttribute("maximum");
 				break;
+			case "note_area":
+				capabilities.maxNotesQueryAreaInSquareDegrees = getFloatAttribute("maximum");
+				break;
 			case "tracepoints":
 				capabilities.maxPointsInGpsTracePerPage = getIntAttribute("per_page");
 				break;
