@@ -213,7 +213,22 @@ public class NotesDao
 			throw new OsmQueryTooBigException(e);
 		}
 	}
-	
+
+	/**
+	 * Get a number of notes that match the given filters.
+	 *
+	 * @param handler The handler which is fed the incoming notes
+	 * @param filters what to search for. I.e.
+	 *                new QueryNotesFilters().byUser(123).limit(1000)
+	 *
+	 * @throws OsmAuthorizationException if not logged in
+	 */
+	public void find(Handler<Note> handler, QueryNotesFilters filters)
+	{
+		String query = filters != null ? "?" + filters.toParamString() : "";
+		osm.makeAuthenticatedRequest(NOTES+"/search"+query, null, new NotesParser(handler));
+	}
+
 	private <T> T makeSingleNoteRequest(long id, String call, String text, ApiResponseReader<T> reader)
 	{
 		String data = "";

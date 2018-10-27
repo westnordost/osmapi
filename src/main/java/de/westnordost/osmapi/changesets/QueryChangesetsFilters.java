@@ -32,7 +32,7 @@ public class QueryChangesetsFilters
 		{
 			params.put("display_name", URLEncoder.encode(displayName, CHARSET));
 		}
-		catch (UnsupportedEncodingException e) { }
+		catch (UnsupportedEncodingException ignore) { }
 		return this;
 	}
 

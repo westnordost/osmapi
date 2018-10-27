@@ -171,7 +171,7 @@ public class NotesDaoTest extends TestCase
 			privilegedDao.comment(note.id, "");
 			fail();
 		}
-		catch(IllegalArgumentException ignoree) {}
+		catch(IllegalArgumentException ignore) {}
 	}
 
 	public void testCommentNoteWithNullTextFails()
@@ -190,19 +190,19 @@ public class NotesDaoTest extends TestCase
 
 		myNote = privilegedDao.close(myNote.id, "");
 		assertEquals(2, myNote.comments.size());
-		assertEquals(null, myNote.comments.get(1).text);
+		assertNull(myNote.comments.get(1).text);
 
 		myNote = privilegedDao.reopen(myNote.id, "");
 		assertEquals(3, myNote.comments.size());
-		assertEquals(null, myNote.comments.get(2).text);
+		assertNull(myNote.comments.get(2).text);
 
 		myNote = privilegedDao.close(myNote.id);
 		assertEquals(4, myNote.comments.size());
-		assertEquals(null, myNote.comments.get(3).text);
+		assertNull(myNote.comments.get(3).text);
 
 		myNote = privilegedDao.reopen(myNote.id);
 		assertEquals(5, myNote.comments.size());
-		assertEquals(null, myNote.comments.get(4).text);
+		assertNull(myNote.comments.get(4).text);
 
 		privilegedDao.close(myNote.id);
 	}
@@ -395,6 +395,38 @@ public class NotesDaoTest extends TestCase
 		assertTrue(counter.count > 0);
 	}
 
+	public void testFindNotes()
+	{
+		Counter counter = new Counter();
+		unprivilegedDao.find(counter, null);
+		assertTrue(counter.count > 0);
+	}
+
+	public void testFindNotesWithParameters()
+	{
+		Counter counter = new Counter();
+		unprivilegedDao.find(counter,
+				new QueryNotesFilters().hideClosedNotesAfter(-1).limit(10));
+		assertTrue(counter.count > 0);
+	}
+
+	public void testFindNotesWithoutQueryDoesNotFail()
+	{
+		Counter counter = new Counter();
+		unprivilegedDao.find(counter, null);
+		assertTrue(counter.count > 0);
+	}
+
+	public void testFindNotesAsAnonymousFails()
+	{
+		try
+		{
+			anonymousDao.find(null, null);
+			fail();
+		}
+		catch(OsmAuthorizationException ignore) {}
+	}
+
 	private static class Counter implements Handler<Note>
 	{
 		int count;
@@ -411,7 +443,7 @@ public class NotesDaoTest extends TestCase
 		@Override
 		public void handle(Note tea)
 		{
-			assertTrue(false);
+			fail();
 		}
 	}
 }
