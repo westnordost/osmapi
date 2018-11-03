@@ -95,6 +95,22 @@ public class XmlWriterTest extends TestCase
 		assertEquals(xmlBlob + "<test key='value' />", result);
 	}
 
+	public void testDoubleAttributeIsNotInScienfiticNotation() throws IOException
+	{
+		String result = new TestXmlWriter()
+		{
+			@Override
+			protected void write() throws IOException
+			{
+				begin("test");
+				attribute("key", 0.0000001);
+				end();
+			}
+		}.test();
+
+		assertEquals(xmlBlob + "<test key='0.0000001' />", result);
+	}
+
 	public void testNested() throws IOException
 	{
 		String result = new TestXmlWriter()

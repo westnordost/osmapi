@@ -3,6 +3,8 @@ package de.westnordost.osmapi.common;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -18,6 +20,14 @@ public abstract class XmlWriter implements ApiRequestWriter
 	private static final String CHARSET = "UTF-8";
 	
 	private XmlSerializer xml;
+
+	private final NumberFormat numberFormat;
+
+	public XmlWriter()
+	{
+		numberFormat = NumberFormat.getNumberInstance(Locale.UK);
+		numberFormat.setMaximumFractionDigits(340);
+	}
 
 	@Override
 	public final String getContentType()
@@ -71,12 +81,12 @@ public abstract class XmlWriter implements ApiRequestWriter
 
 	protected final void attribute(String key, float value) throws IOException
 	{
-		xml.attribute(null, key, String.valueOf(value));
+		xml.attribute(null, key, numberFormat.format(value));
 	}
 	
 	protected final void attribute(String key, double value) throws IOException
 	{
-		xml.attribute(null, key, String.valueOf(value));
+		xml.attribute(null, key, numberFormat.format(value));
 	}
 	
 	protected final void attribute(String key, int value) throws IOException

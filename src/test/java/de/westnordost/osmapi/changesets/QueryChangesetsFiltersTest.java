@@ -19,7 +19,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.byBounds(new BoundingBox(0, 5, 10, 15));
 		
-		assertEquals("5.0,0.0,15.0,10.0", getParam(filters.toParamString(), "bbox"));
+		assertEquals("5,0,15,10", getParam(filters.toParamString(), "bbox"));
 	}
 	
 	public void testByChangesets()

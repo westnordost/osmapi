@@ -2,6 +2,8 @@ package de.westnordost.osmapi.notes;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
@@ -23,9 +25,13 @@ public class NotesDao
 
 	private final OsmConnection osm;
 
+	private final NumberFormat numberFormat;
+
 	public NotesDao(OsmConnection osm)
 	{
 		this.osm = osm;
+		numberFormat = NumberFormat.getNumberInstance(Locale.UK);
+		numberFormat.setMaximumFractionDigits(340);
 	}
 
 	/**
@@ -46,8 +52,10 @@ public class NotesDao
 			throw new IllegalArgumentException("Text may not be empty");
 		}
 
-		String data = "lat=" + pos.getLatitude() + "&lon=" + pos.getLongitude()
-				+ "&text=" + urlEncode(text);
+		String data =
+				"lat=" + numberFormat.format(pos.getLatitude()) +
+				"&lon=" + numberFormat.format(pos.getLongitude()) +
+				"&text=" + urlEncode(text);
 		String call = NOTES + "?" + data;
 
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();

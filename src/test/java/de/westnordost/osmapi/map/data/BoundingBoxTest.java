@@ -79,6 +79,12 @@ public class BoundingBoxTest extends TestCase
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		assertFalse(bounds1.equals(new Object()));
 	}
+
+	public void testDoesNotUseScientificNotation()
+	{
+		BoundingBox bounds1 = new BoundingBox(-0.0000001,-0.0000001,0.0000001,0.0000001);
+		assertEquals("-0.0000001,-0.0000001,0.0000001,0.0000001",bounds1.getAsLeftBottomRightTopString());
+	}
 		
 	public void testHashCode()
 	{

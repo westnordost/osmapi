@@ -1,8 +1,10 @@
 package de.westnordost.osmapi.map.data;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /** A rectangle in latitude longitude coordinates. Bounds are immutable. */
 public class BoundingBox implements Serializable
@@ -71,10 +73,15 @@ public class BoundingBox implements Serializable
 		return max.getLongitude();
 	}
 
+
+
 	public String getAsLeftBottomRightTopString()
 	{
-		return getMinLongitude() + "," + getMinLatitude() + "," +
-				getMaxLongitude() + "," + getMaxLatitude();
+		NumberFormat df = NumberFormat.getNumberInstance(Locale.UK);
+		df.setMaximumFractionDigits(340);
+
+		return df.format(getMinLongitude()) + "," + df.format(getMinLatitude()) + "," +
+				df.format(getMaxLongitude()) + "," + df.format(getMaxLatitude());
 	}
 
 	public boolean crosses180thMeridian()
