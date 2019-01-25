@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
+import org.locationtech.jts.geom.Geometry;
+
 import de.westnordost.osmapi.changesets.Changeset;
 
 public class OsmNode extends OsmElement implements Node, Serializable
@@ -64,4 +66,16 @@ public class OsmNode extends OsmElement implements Node, Serializable
 	{
 		return Type.NODE;
 	}
+
+	@Override
+	public String toWKT() {
+		return converter.convertNode(this).toText();
+	}
+
+	@Override
+	public Geometry toJTSGeometry() {
+		return converter.convertNode(this);
+	}
+	
+	
 }

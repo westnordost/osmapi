@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.locationtech.jts.geom.Geometry;
+
 import de.westnordost.osmapi.changesets.Changeset;
 
 public class OsmWay extends OsmElement implements Way, Serializable
@@ -46,6 +48,16 @@ public class OsmWay extends OsmElement implements Way, Serializable
 	public Type getType()
 	{
 		return Type.WAY;
+	}
+
+	@Override
+	public String toWKT() {
+		return converter.convertWay(this).toText();
+	}
+
+	@Override
+	public Geometry toJTSGeometry() {
+		return converter.convertWay(this);
 	}
 
 }

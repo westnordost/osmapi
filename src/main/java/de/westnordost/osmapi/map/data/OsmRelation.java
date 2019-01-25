@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.locationtech.jts.geom.Geometry;
+
 import de.westnordost.osmapi.changesets.Changeset;
 
 public class OsmRelation extends OsmElement implements Relation, Serializable
@@ -51,4 +53,15 @@ public class OsmRelation extends OsmElement implements Relation, Serializable
 		}
 		return super.isModified();
 	}
+
+	@Override
+	public String toWKT() {
+		return converter.convertRelation(this).toText();
+	}
+
+	@Override
+	public Geometry toJTSGeometry() {
+		return converter.convertRelation(this);
+	}
+
 }
