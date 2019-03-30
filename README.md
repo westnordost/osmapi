@@ -6,7 +6,7 @@ It is well tested (test coverage over 90%) and being used by [StreetComplete](ht
 
 ## Copyright and License
 
-© 2016-2018 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
+© 2016-2019 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
 
 ## Installation
 
