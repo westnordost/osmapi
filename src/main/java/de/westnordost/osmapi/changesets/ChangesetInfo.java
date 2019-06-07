@@ -21,6 +21,8 @@ public class ChangesetInfo extends Changeset implements Serializable
 	public List<ChangesetNote> discussion;
 	/** the number of notes in the changeset discussion of this changeset */
 	public int notesCount;
+	/** the number of changes in a changeset */
+	public int changesCount;
 	
 	/** the bounding box that includes all changes of this changeset. May be null if the changeset 
 	 * is empty. */

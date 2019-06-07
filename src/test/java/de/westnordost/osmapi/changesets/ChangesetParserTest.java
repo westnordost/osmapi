@@ -18,7 +18,8 @@ public class ChangesetParserTest extends TestCase
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
-						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" />";
+						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" " +
+						"changes_count=\"123\" />";
 
 		ChangesetInfo changeset = parseOne(xml);
 
@@ -33,6 +34,7 @@ public class ChangesetParserTest extends TestCase
 
 		assertEquals(true, changeset.isOpen);
 		assertEquals(0, changeset.notesCount);
+		assertEquals(123, changeset.changesCount);
 
 		assertNull(changeset.boundingBox);
 		assertNull(changeset.getChangesetComment());
@@ -47,7 +49,7 @@ public class ChangesetParserTest extends TestCase
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
-						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" "+
+						"created_at=\"2011-03-05T20:29:56Z\" changes_count=\"0\" comments_count=\"0\" "+
 						"closed_at=\"2012-03-05T20:29:56Z\" open=\"false\" min_lat=\"42.1114934\" "+
 						"min_lon=\"-4.845825\" max_lat=\"42.2143384\" max_lon=\"-4.6259554\">" +
 						"<tag k=\"comment\" v=\"dongs\" />" +
@@ -64,6 +66,7 @@ public class ChangesetParserTest extends TestCase
 
 		assertEquals(false, changeset.isOpen);
 		assertEquals(0, changeset.notesCount);
+		assertEquals(0, changeset.changesCount);
 
 		assertNotNull(changeset.boundingBox);
 
@@ -89,9 +92,9 @@ public class ChangesetParserTest extends TestCase
 	public void testMultipleElements()
 	{
 		String xml =
-				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
+				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" changes_count=\"0\" " +
 						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" />"+
-				"<changeset id=\"1655\" user=\"blub\" uid=\"123\" " +
+				"<changeset id=\"1655\" user=\"blub\" uid=\"123\" changes_count=\"0\" " +
 						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" />";
 
 		List<ChangesetInfo> changesets = parseList(xml);
@@ -104,7 +107,7 @@ public class ChangesetParserTest extends TestCase
 	public void testComments()
 	{
 		String xml =
-				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
+				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" changes_count=\"0\" " +
 						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"2\" >" +
 						"<discussion>" +
 						"     <comment date=\"2015-01-01T18:56:48Z\">" +
@@ -119,6 +122,7 @@ public class ChangesetParserTest extends TestCase
 		ChangesetInfo changeset = parseOne(xml);
 		
 		assertEquals(2, changeset.notesCount);
+		assertEquals(0, changeset.changesCount);
 		assertNotNull(changeset.discussion);
 		assertEquals(2, changeset.discussion.size());
 
@@ -141,9 +145,9 @@ public class ChangesetParserTest extends TestCase
 	public void testReuseUser()
 	{
 		String xml =
-				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
+				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" changes_count=\"0\"" +
 						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" />"+
-				"<changeset id=\"1655\" user=\"bleb\" uid=\"123\" " +
+				"<changeset id=\"1655\" user=\"bleb\" uid=\"123\" changes_count=\"0\"" +
 						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"1\" >"+
 						"<discussion>" +
 						"     <comment date=\"2015-01-01T18:56:48Z\" uid=\"123\" user=\"blub\">" +
@@ -151,7 +155,7 @@ public class ChangesetParserTest extends TestCase
 						"     </comment>" +
 						"</discussion>" +
 				"</changeset>" + 
-				"<changeset id=\"1656\" user=\"blub\" uid=\"123\" " +
+				"<changeset id=\"1656\" user=\"blub\" uid=\"123\" changes_count=\"0\"" +
 						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" />";
 
 		List<ChangesetInfo> changesets = parseList(xml);

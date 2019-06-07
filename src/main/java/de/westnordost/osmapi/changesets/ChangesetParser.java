@@ -104,6 +104,7 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 		result.boundingBox = bounds;
 		result.isOpen = getBooleanAttribute("open");
 		result.notesCount = getIntAttribute("comments_count");
+		result.changesCount = getIntAttribute("changes_count");
 		return result;
 	}
 
