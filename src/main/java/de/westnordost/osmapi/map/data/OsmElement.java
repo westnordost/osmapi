@@ -77,6 +77,11 @@ public abstract class OsmElement implements Element, Serializable
 		return modified || tags != null && tags.isModified();
 	}
 
+	public void setIsModified(boolean modified)
+	{
+		this.modified = modified;
+	}
+
 	@Override
 	public boolean isDeleted()
 	{
