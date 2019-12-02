@@ -10,11 +10,25 @@ It is well tested (test coverage over 90%) and being used by [StreetComplete](ht
 
 ## Installation
 
-Add [`de.westnordost:osmapi:3.4`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.4) as a Maven dependency or download the jar from there.
+Depending on which part of the API you use, you can only include what you need:
+
+| Class | Dependency | Description
+| ----- | ---------- | -----------
+| CapabilitiesDao | `de.westnordost:osmapi-core:1.0` | Getting server capabilities
+| PermissionsDao | `de.westnordost:osmapi-core:1.0` | Getting user permissions
+| MapDataDao | `de.westnordost:osmapi-map:1.0` | Getting map data, querying single elements and their relations toward each other and uploading changes in changesets
+| MapDataHistoryDao | `de.westnordost:osmapi-map:1.0` | Getting the history and specific versions of elements
+| NotesDao | `de.westnordost:osmapi-notes:1.0` | Getting finding, creating, commenting on and solving notes
+| GpsTracesDao | `de.westnordost:osmapi-traces:1.0` | Getting, uploading, updating and deleting GPS traces and trackpoints
+| ChangesetsDao | `de.westnordost:osmapi-changesets:1.0` | Finding changesets, changeset discussion, subscription and data
+| UserDao | `de.westnordost:osmapi-user:1.0` | Getting user information
+| UserPreferencesDao | `de.westnordost:osmapi-user:1.0` | Managing user preferences
+
+To include everything, add [`de.westnordost:osmapi:3.5`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.5) as a Maven dependency or download the jar from there.
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
-	compile ('de.westnordost:osmapi:3.4')
+	compile ('de.westnordost:osmapi:3.5')
 	{
 		exclude group: 'net.sf.kxml', module: 'kxml2' // already included in Android
 	}
@@ -32,19 +46,7 @@ If you plan to make calls that can only be made by a logged in user, such as upl
 ```
 
 You can call osm.makeRequest(...) yourself to talk with the RESTful Api and write your own ApiRequestWriter and ApiResponseReader to write/read the request.
-It is more convenient however to use the appropriate DAO to do that for you and return the data you are interested in. Currently there are the following DAOs:
-
-| Class | Description
-| ----- | -----------
-| MapDataDao | download and upload map data, query single elements and their relations toward each other
-| NotesDao | open, comment and close notes
-| MapDataHistoryDao | query the history and specific versions of elements
-| GpsTracesDao | query gps traces, upload and download traces and trackpoints
-| ChangesetsDao | query changesets, take part in changeset discussions
-| CapabilitiesDao | query the server capabilities
-| UserDao | get user infos
-| PermissionsDao | get user permissions
-| UserPreferencesDao | query and edit user preferences
+It is more convenient however to use the appropriate DAO to do that for you and return the data you are interested in. See the table above for which DAOs are available.
 
 For example...
 
@@ -57,7 +59,7 @@ For example...
 ### Comment a changeset
 
 ```java
-	ChangesetInfo changeset = new ChangesetsDao(osm).comment(id, "Cool changeset!");
+	ChangesetInfo changeset = new ChangesetsDao(osm).comment(id, "Nice work!");
 ```
 
 ### Get user info
@@ -73,7 +75,7 @@ For example...
 	mapDao.getMap(boundingBox, myMapDataHandler);
 ```
 
-myMapDataHandler implements MapDataHandler whose methods are called as the elements are parsed, think SAX parser. I.e. if you download 10MB of data, then the elements start arriving at the handler immediately so that you can process them on the fly.
+myMapDataHandler implements MapDataHandler whose methods are called as the elements are parsed, think SAX parser. I.e. if you download 10MB of data, then the elements start arriving at the handler as the data comes in so that you can process them on the fly.
 
 ```java
 	/** This class is fed the map data. */

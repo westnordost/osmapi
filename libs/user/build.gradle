@@ -1,0 +1,9 @@
+archivesBaseName = "osmapi-user"
+version = 1.0
+description = 'OSM API 0.6 for clients - Managing user preferences, getting user information'
+
+dependencies {
+    compile 'de.westnordost:osmapi-core:1.0'
+    testCompile 'junit:junit:3.8.1'
+    testCompile project(':testutils')
+}

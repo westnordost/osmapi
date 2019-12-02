@@ -1,0 +1,10 @@
+archivesBaseName = "osmapi-map"
+version = 1.0
+description = 'OSM API 0.6 for clients - Getting map data, querying single elements and their relations toward each other and uploading changes in changesets, getting the history and specific versions of elements'
+
+dependencies {
+    compile 'de.westnordost:osmapi-core:1.0'
+    testCompile 'junit:junit:3.8.1'
+    testCompile 'de.westnordost:osmapi-changesets:1.0'
+    testCompile project(':testutils')
+}

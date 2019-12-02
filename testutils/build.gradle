@@ -1,0 +1,3 @@
+dependencies {
+    compile 'de.westnordost:osmapi-core:1.0'
+}
