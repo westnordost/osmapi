@@ -26,6 +26,12 @@ public class OsmLatLon implements LatLon, Serializable
 		this.longitude = longitude;
 	}
 
+	public OsmLatLon(LatLon other)
+	{
+		this.latitude = other.getLatitude();
+		this.longitude = other.getLongitude();
+	}
+
 	public static OsmLatLon parseLatLon(String lat, String lon)
 	{
 		return new OsmLatLon(Double.parseDouble(lat), Double.parseDouble(lon));

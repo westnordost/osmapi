@@ -11,30 +11,18 @@ public class BoundingBox implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	
-	private LatLon min;
-	private LatLon max;
+	private OsmLatLon min;
+	private OsmLatLon max;
 
 	public BoundingBox(final double latMin, final double lonMin, final double latMax, final double lonMax)
 	{
-		this(createLatLon(latMin, lonMin), createLatLon(latMax, lonMax));
-	}
-	
-	private static LatLon createLatLon(final double lat, final double lon)
-	{
-		// bake the parameters into anonymous LatLons so there is no dependency on any particular LatLon implementation
-		LatLon result = new LatLon()
-		{
-			public double getLatitude() { return lat; }
-			public double getLongitude() { return lon; }
-		};
-		LatLons.checkValidity(result);
-		return result;
+		this(new OsmLatLon(latMin, lonMin), new OsmLatLon(latMax, lonMax));
 	}
 	
 	public BoundingBox(LatLon min, LatLon max)
 	{
-		this.min = min;
-		this.max = max;
+		this.min = new OsmLatLon(min);
+		this.max = new OsmLatLon(max);
 
 		if(!isValid())
 		{
@@ -101,8 +89,8 @@ public class BoundingBox implements Serializable
 		if(crosses180thMeridian())
 		{
 			return Arrays.asList(
-					new BoundingBox( min, createLatLon(max.getLatitude(), LatLons.MAX_VALUE.getLongitude()) ),
-					new BoundingBox( createLatLon(min.getLatitude(), LatLons.MIN_VALUE.getLongitude()), max )
+					new BoundingBox( min, new OsmLatLon(max.getLatitude(), LatLons.MAX_VALUE.getLongitude()) ),
+					new BoundingBox( new OsmLatLon(min.getLatitude(), LatLons.MIN_VALUE.getLongitude()), max )
 			);
 		}
 
