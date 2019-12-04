@@ -1,5 +1,5 @@
 archivesBaseName = "osmapi-map"
-version = 1.0
+version = 1.1
 description = 'OSM API 0.6 for clients - Getting map data, querying single elements and their relations toward each other and uploading changes in changesets, getting the history and specific versions of elements'
 
 dependencies {

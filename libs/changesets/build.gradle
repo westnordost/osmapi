@@ -1,10 +1,10 @@
 archivesBaseName = "osmapi-changesets"
-version = 1.0
+version = 1.1
 description = 'OSM API 0.6 for clients - Finding changesets, changeset discussion, subscription and data'
 
 dependencies {
     compile 'de.westnordost:osmapi-core:1.0'
-    compile 'de.westnordost:osmapi-map:1.0'
+    compile 'de.westnordost:osmapi-map:1.1'
     testCompile 'junit:junit:3.8.1'
     testCompile project(':testutils')
 }
