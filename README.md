@@ -4,6 +4,8 @@ osmapi is a client for the [OSM API 0.6](http://wiki.openstreetmap.org/wiki/API_
 
 It is well tested (test coverage over 90%) and being used by [StreetComplete](https://github.com/westnordost/StreetComplete), thus actively maintained.
 
+Note, the OSM API, particularly the part to download the map data, is intended only for editing the map. It's not made for pulling larger amounts of data or data analysis of certain map features. If this is what you intend to do, the [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API) is what you will want to use. I created a basic Java client for the Overpass API here, it builts upon this library: [osmapi-overpass](https://github.com/westnordost/osmapi-overpass).
+
 ## Copyright and License
 
 © 2016-2019 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
