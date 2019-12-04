@@ -1,6 +1,6 @@
 # osmapi
 
-osmapi is a complete Java implementation of the [OSM API 0.6](http://wiki.openstreetmap.org/wiki/API_v0.6) for clients.
+osmapi is a client for the [OSM API 0.6](http://wiki.openstreetmap.org/wiki/API_v0.6).
 
 It is well tested (test coverage over 90%) and being used by [StreetComplete](https://github.com/westnordost/StreetComplete), thus actively maintained.
 

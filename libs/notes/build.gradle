@@ -1,6 +1,6 @@
 archivesBaseName = "osmapi-notes"
 version = 1.0
-description = 'OSM API 0.6 for clients - Getting finding, creating, commenting on and solving notes'
+description = 'Client for the OSM API 0.6 - Getting finding, creating, commenting on and solving notes'
 
 dependencies {
     compile 'de.westnordost:osmapi-core:1.0'

@@ -1,6 +1,6 @@
 archivesBaseName = "osmapi-traces"
 version = 1.0
-description = 'OSM API 0.6 for clients - Getting, uploading, updating and deleting GPS traces and trackpoints'
+description = 'Client for the OSM API 0.6 - Getting, uploading, updating and deleting GPS traces and trackpoints'
 
 dependencies {
     compile 'de.westnordost:osmapi-core:1.0'
