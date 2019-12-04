@@ -110,7 +110,8 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 			}
 
 			id = getLongAttribute("id");
-			version = getIntAttribute("version");
+			Integer v = getIntAttribute("version");
+			version = v != null ? v : -1;
 
 			if(name.equals(NODE))
 			{

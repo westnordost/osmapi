@@ -251,6 +251,14 @@ public class MapDataParserTest extends TestCase
 		Relation relation = parseOne(xml, Relation.class);
 		assertTrue(relation.getMembers().isEmpty());
 	}
+
+	public void testElementWithoutVersion()
+	{
+		String xml = "<node id=\"5\"/>";
+		Node node = parseOne(xml, Node.class);
+		assertNotNull(node);
+		assertEquals(-1, node.getVersion());
+	}
 	
 	private List<Element> parseList(String xml)
 	{
