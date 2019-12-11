@@ -1,7 +1,7 @@
 package de.westnordost.osmapi.user;
 
 /** Simply some constants for known permissions. See
- *  https://github.com/openstreetmap/openstreetmap-website/blob/master/db/structure.sql#L856 */
+ *  https://github.com/openstreetmap/openstreetmap-website/blob/master/db/structure.sql#L1108 */
 public final class Permission
 {
 	public static final String 
