@@ -105,7 +105,7 @@ public class ModificationAwareListTest extends TestCase
 	{
 		l.addAll(Collections.<String> emptyList());
 		assertFalse(list.isModified());
-		l.addAll(Arrays.asList("c"));
+		l.addAll(Collections.singletonList("c"));
 		assertTrue(list.isModified());
 	}
 	
@@ -113,7 +113,7 @@ public class ModificationAwareListTest extends TestCase
 	{
 		l.addAll(1,Collections.<String> emptyList());
 		assertFalse(list.isModified());
-		l.addAll(1,Arrays.asList("c"));
+		l.addAll(1, Collections.singletonList("c"));
 		assertTrue(list.isModified());
 	}
 	
@@ -135,7 +135,7 @@ public class ModificationAwareListTest extends TestCase
 	{
 		l.removeAll(Collections.EMPTY_LIST);
 		assertFalse(list.isModified());
-		l.removeAll(Arrays.asList("a"));
+		l.removeAll(Collections.singletonList("a"));
 		assertTrue(list.isModified());
 	}
 	

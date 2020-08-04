@@ -80,7 +80,7 @@ public class ModificationAwareMapTest extends TestCase
 	{
 		map.values().removeAll(Collections.EMPTY_LIST);
 		assertFalse(map.isModified());
-		map.values().removeAll(Arrays.asList("value1"));
+		map.values().removeAll(Collections.singletonList("value1"));
 		assertTrue(map.isModified());
 	}
 	
@@ -110,9 +110,9 @@ public class ModificationAwareMapTest extends TestCase
 	
 	public void testModificationViaEntrySetRemoveAll()
 	{
-		map.entrySet().removeAll(Arrays.asList(makeNewEntry()));
+		map.entrySet().removeAll(Collections.singletonList(makeNewEntry()));
 		assertFalse(map.isModified());
-		map.entrySet().removeAll(Arrays.asList(makeExistingEntry()));
+		map.entrySet().removeAll(Collections.singletonList(makeExistingEntry()));
 		assertTrue(map.isModified());
 	}
 	
@@ -146,7 +146,7 @@ public class ModificationAwareMapTest extends TestCase
 	{
 		map.keySet().removeAll(Collections.EMPTY_LIST);
 		assertFalse(map.isModified());
-		map.keySet().removeAll(Arrays.asList("key1"));
+		map.keySet().removeAll(Collections.singletonList("key1"));
 		assertTrue(map.isModified());
 	}
 	

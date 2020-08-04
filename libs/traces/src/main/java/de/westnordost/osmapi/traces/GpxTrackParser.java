@@ -38,8 +38,7 @@ public class GpxTrackParser extends XmlParser implements ApiResponseReader<Void>
 	}
 
 	@Override
-	protected void onStartElement() throws ParseException
-	{
+	protected void onStartElement() {
 		String name = getName();
 		
 		if(name.equals(TRACKSEGMENT))

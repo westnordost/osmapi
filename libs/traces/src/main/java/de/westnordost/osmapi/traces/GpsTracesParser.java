@@ -70,20 +70,19 @@ public class GpsTracesParser extends XmlParser implements ApiResponseReader<Void
 	protected void onEndElement()
 	{
 		String name = getName();
-		
-		if(name.equals(GPX_FILE))
-		{
-			handler.handle(trace);
-			trace = null;
-		}
-		else if(name.equals(DESCRIPTION))
-		{
-			trace.description = getText();
-		}
-		else if(name.equals(TAG))
-		{
-			if(trace.tags == null) trace.tags = new ArrayList<String>();
-			trace.tags.add(getText());
+
+		switch (name) {
+			case GPX_FILE:
+				handler.handle(trace);
+				trace = null;
+				break;
+			case DESCRIPTION:
+				trace.description = getText();
+				break;
+			case TAG:
+				if (trace.tags == null) trace.tags = new ArrayList<>();
+				trace.tags.add(getText());
+				break;
 		}
 	}
 }

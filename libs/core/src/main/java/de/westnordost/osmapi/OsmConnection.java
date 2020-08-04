@@ -247,23 +247,11 @@ public class OsmConnection
 	{
 		connection.setDoOutput(true);
 
-		OutputStream out = null;
-		try
-		{
-			out = connection.getOutputStream();
+		try (OutputStream out = connection.getOutputStream()) {
 			writer.write(out);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			connection.disconnect();
 			throw e;
-		}
-		finally
-		{
-			if (out != null)
-			{
-				out.close();
-			}
 		}
 	}
 
@@ -313,26 +301,12 @@ public class OsmConnection
 	private <T> T handleResponse(HttpURLConnection connection, ApiResponseReader<T> reader)
 			throws IOException
 	{
-		InputStream in = null;
-		try
-		{
-			in = new BufferedInputStream(connection.getInputStream());
+		try (InputStream in = new BufferedInputStream(connection.getInputStream())) {
 			return reader.parse(in);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw e;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new OsmApiReadResponseException(e);
-		}
-		finally
-		{
-			if (in != null)
-			{
-				in.close();
-			}
 		}
 	}
 

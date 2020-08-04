@@ -167,7 +167,7 @@ public class MapDataDaoTest extends TestCase
 
 		Element node = new OsmNode(PLACEHOLDER_ID, 1, POS, null);
 		SingleElementHandler<DiffElement> handlerCreated = new SingleElementHandler<>();
-		mapDataDao.updateMap("test", "test", Arrays.asList(node), handlerCreated);
+		mapDataDao.updateMap("test", "test", Collections.singletonList(node), handlerCreated);
 		DiffElement diffCreated = handlerCreated.get();
 
 		// update id and delete again... (clean up before asserting)
@@ -175,7 +175,7 @@ public class MapDataDaoTest extends TestCase
 				null);
 		deleteNode.setDeleted(true);
 		SingleElementHandler<DiffElement> handlerDeleted = new SingleElementHandler<>();
-		mapDataDao.updateMap("clean up test", "test", Arrays.asList((Element) deleteNode),
+		mapDataDao.updateMap("clean up test", "test", Collections.singletonList((Element) deleteNode),
 				handlerDeleted);
 
 		DiffElement diffDeleted = handlerDeleted.get();
@@ -285,7 +285,7 @@ public class MapDataDaoTest extends TestCase
 		}
 		catch(OsmNotFoundException ignore) {}
 
-		List<Long> place = Arrays.asList(ElementShouldExist.NODE);
+		List<Long> place = Collections.singletonList(ElementShouldExist.NODE);
 		assertFalse(new MapDataDao(liveConnection).getNodes(place).isEmpty());
 	}
 
@@ -301,7 +301,7 @@ public class MapDataDaoTest extends TestCase
 		}
 		catch(OsmNotFoundException ignore) {}
 
-		List<Long> place = Arrays.asList(ElementShouldExist.RELATION);
+		List<Long> place = Collections.singletonList(ElementShouldExist.RELATION);
 		assertFalse(new MapDataDao(liveConnection).getRelations(place).isEmpty());
 	}
 
@@ -319,7 +319,7 @@ public class MapDataDaoTest extends TestCase
 		}
 		catch(OsmNotFoundException ignore) {}
 
-		List<Long> place = Arrays.asList(ElementShouldExist.WAY);
+		List<Long> place = Collections.singletonList(ElementShouldExist.WAY);
 		assertFalse(new MapDataDao(liveConnection).getWays(place).isEmpty());
 	}
 
@@ -380,7 +380,7 @@ public class MapDataDaoTest extends TestCase
 
 			// upload first change
 			Element node1 = new OsmNode(-33, 1, new OsmLatLon(10.42313, 65.13221), null);
-			mapDataDao.uploadChanges(changesetId, Arrays.asList(node1), null);
+			mapDataDao.uploadChanges(changesetId, Collections.singletonList(node1), null);
 
 			assertChangesetHasElementCount(changesetId,1,0,0);
 
@@ -390,7 +390,7 @@ public class MapDataDaoTest extends TestCase
 				OsmNode delNode = new OsmNode(Long.MAX_VALUE-1, 1, new OsmLatLon(0.11111, 1.565467), null);
 				delNode.setDeleted(true);
 				Element delElement = delNode;
-				mapDataDao.uploadChanges(changesetId, Arrays.asList(delElement), null);
+				mapDataDao.uploadChanges(changesetId, Collections.singletonList(delElement), null);
 				fail();
 			}
 			catch(OsmNotFoundException ignore) {}
@@ -398,7 +398,7 @@ public class MapDataDaoTest extends TestCase
 			assertChangesetHasElementCount(changesetId,1,0,0);
 
 			Element node2 = new OsmNode(-34, 1, new OsmLatLon(10.42314, 65.13220), null);
-			mapDataDao.uploadChanges(changesetId, Arrays.asList(node2), null);
+			mapDataDao.uploadChanges(changesetId, Collections.singletonList(node2), null);
 			assertChangesetHasElementCount(changesetId,2,0,0);
 		}
 		finally

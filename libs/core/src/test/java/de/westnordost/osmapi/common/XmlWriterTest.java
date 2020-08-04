@@ -128,7 +128,7 @@ public class XmlWriterTest extends TestCase
 		assertEquals(xmlBlob + "<test><a /></test>", result);
 	}
 
-	private abstract class TestXmlWriter extends XmlWriter
+	private abstract static class TestXmlWriter extends XmlWriter
 	{
 		public String test() throws IOException
 		{

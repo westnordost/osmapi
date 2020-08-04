@@ -47,7 +47,7 @@ public class MapDataChangesWriter extends XmlWriter
 		return !creations.isEmpty() || !modifications.isEmpty() || !deletions.isEmpty();
 	}
 
-	private class OrderByRelationWayNode implements Comparator<Element>
+	private static class OrderByRelationWayNode implements Comparator<Element>
 	{
 		public int compare(Element lhs, Element rhs)
 		{
@@ -55,7 +55,7 @@ public class MapDataChangesWriter extends XmlWriter
 		}
 	}
 
-	private class OrderByNodeWayRelation implements Comparator<Element>
+	private static class OrderByNodeWayRelation implements Comparator<Element>
 	{
 		public int compare(Element lhs, Element rhs)
 		{

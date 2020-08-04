@@ -67,58 +67,54 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	{
 		String name = getName();
 
-		if(name.equals("tag"))
-		{
-			if(tags == null)
-			{
-				tags = new HashMap<>();
-			}
-			tags.put(getAttribute("k"), getAttribute("v"));
-		}
-		else if(name.equals("nd"))
-		{
-			nodes.add( getLongAttribute("ref") );
-		}
-		else if(name.equals("member"))
-		{
-			members.add( factory.createRelationMember(
-					getLongAttribute("ref"),
-					getAttribute("role"),
-					Element.Type.valueOf(getAttribute("type").toUpperCase(Locale.UK))
-			));
-		}
-		else if (name.equals("bounds"))
-		{
-			BoundingBox bounds = new BoundingBox(
-					getDoubleAttribute("minlat"), getDoubleAttribute("minlon"),
-					getDoubleAttribute("maxlat"), getDoubleAttribute("maxlon"));
-			handler.handle(bounds);
-		}
-		else if (name.equals(NODE) || name.equals(WAY) || name.equals(RELATION))
-		{
-			timestamp = parseDate();
-			
-			changesetId = getLongAttribute("changeset");
-			if(changesetId != null && !changesets.containsKey(changesetId))
-			{
-				Changeset changeset = new Changeset();
-				changeset.id = changesetId;
-				changeset.date = timestamp;
-				changeset.user = parseUser();
-				
-				changesets.put( changesetId, changeset);
-			}
+        switch (name) {
+            case "tag":
+                if (tags == null) {
+                    tags = new HashMap<>();
+                }
+                tags.put(getAttribute("k"), getAttribute("v"));
+                break;
+            case "nd":
+                nodes.add(getLongAttribute("ref"));
+                break;
+            case "member":
+                members.add(factory.createRelationMember(
+                        getLongAttribute("ref"),
+                        getAttribute("role"),
+                        Element.Type.valueOf(getAttribute("type").toUpperCase(Locale.UK))
+                ));
+                break;
+            case "bounds":
+                BoundingBox bounds = new BoundingBox(
+                        getDoubleAttribute("minlat"), getDoubleAttribute("minlon"),
+                        getDoubleAttribute("maxlat"), getDoubleAttribute("maxlon"));
+                handler.handle(bounds);
+                break;
+            case NODE:
+            case WAY:
+            case RELATION:
+                timestamp = parseDate();
 
-			id = getLongAttribute("id");
-			Integer v = getIntAttribute("version");
-			version = v != null ? v : -1;
+                changesetId = getLongAttribute("changeset");
+                if (changesetId != null && !changesets.containsKey(changesetId)) {
+                    Changeset changeset = new Changeset();
+                    changeset.id = changesetId;
+                    changeset.date = timestamp;
+                    changeset.user = parseUser();
 
-			if(name.equals(NODE))
-			{
-				lat = getDoubleAttribute("lat");
-				lon = getDoubleAttribute("lon");
-			}
-		}
+                    changesets.put(changesetId, changeset);
+                }
+
+                id = getLongAttribute("id");
+                Integer v = getIntAttribute("version");
+                version = v != null ? v : -1;
+
+                if (name.equals(NODE)) {
+                    lat = getDoubleAttribute("lat");
+                    lon = getDoubleAttribute("lon");
+                }
+                break;
+        }
 	}
 
 	private Date parseDate() throws ParseException
@@ -148,25 +144,24 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	{
 		String name = getName();
 
-		if(name.equals(NODE))
-		{
-			handler.handle(
-					factory.createNode(id, version, lat, lon, tags, changesets.get(changesetId), timestamp));
-		}
-		else if(name.equals(WAY))
-		{
-			handler.handle(
-					factory.createWay(id, version, nodes, tags,changesets.get(changesetId), timestamp));
-			
-			nodes = new LinkedList<>();
-		}
-		else if(name.equals(RELATION))
-		{
-			handler.handle(
-					factory.createRelation(id, version, members, tags, changesets.get(changesetId), timestamp));
-			
-			members = new ArrayList<>();
-		}
+        switch (name) {
+            case NODE:
+                handler.handle(
+                        factory.createNode(id, version, lat, lon, tags, changesets.get(changesetId), timestamp));
+                break;
+            case WAY:
+                handler.handle(
+                        factory.createWay(id, version, nodes, tags, changesets.get(changesetId), timestamp));
+
+                nodes = new LinkedList<>();
+                break;
+            case RELATION:
+                handler.handle(
+                        factory.createRelation(id, version, members, tags, changesets.get(changesetId), timestamp));
+
+                members = new ArrayList<>();
+                break;
+        }
 
 		if (name.equals(NODE) || name.equals(WAY) || name.equals(RELATION))
 		{

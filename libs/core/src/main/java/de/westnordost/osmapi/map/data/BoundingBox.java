@@ -3,6 +3,7 @@ package de.westnordost.osmapi.map.data;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,7 +95,7 @@ public class BoundingBox implements Serializable
 			);
 		}
 
-		return Arrays.asList(this);
+		return Collections.singletonList(this);
 	}
 
 	@Override

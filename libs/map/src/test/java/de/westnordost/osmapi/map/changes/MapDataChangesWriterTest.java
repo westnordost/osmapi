@@ -2,6 +2,7 @@ package de.westnordost.osmapi.map.changes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -143,7 +144,7 @@ public class MapDataChangesWriterTest extends TestCase
 		OsmNode element = createNode(-1);
 		element.setDeleted(true);
 
-		MapDataChangesWriter writer = new MapDataChangesWriter(1, Arrays.asList((Element) element));
+		MapDataChangesWriter writer = new MapDataChangesWriter(1, Collections.singletonList((Element) element));
 		assertFalse(writer.hasChanges());
 	}
 
@@ -169,7 +170,7 @@ public class MapDataChangesWriterTest extends TestCase
 		MapDataChangesWriter writer = new MapDataChangesWriter(changesetId, elements);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		writer.write(out);
-		return new String( out.toByteArray(), "UTF-8" );
+		return new String( out.toByteArray(), StandardCharsets.UTF_8);
 	}
 
 	private static MapDataChanges parseXml(String xml)

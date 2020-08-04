@@ -93,7 +93,7 @@ public class MapDataHistoryDaoTest extends TestCase
 		assertNotNull(liveDao.getRelationVersion(ElementShouldExist.RELATION, 1));
 	}
 
-	private class NullHandler<T> implements Handler<T>
+	private static class NullHandler<T> implements Handler<T>
 	{
 		public void handle(T tea) { }
 	}

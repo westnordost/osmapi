@@ -23,17 +23,16 @@ public class MapDataChangesParser extends MapDataParser
 
 		String name = getName();
 
-		if(name.equals("create"))
-		{
-			handler.onStartCreations();
-		}
-		else if(name.equals("modify"))
-		{
-			handler.onStartModifications();
-		}
-		else if(name.equals("delete"))
-		{
-			handler.onStartDeletions();
+		switch (name) {
+			case "create":
+				handler.onStartCreations();
+				break;
+			case "modify":
+				handler.onStartModifications();
+				break;
+			case "delete":
+				handler.onStartDeletions();
+				break;
 		}
 	}
 }

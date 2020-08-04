@@ -189,7 +189,7 @@ public class XmlParserTest extends TestCase
 		}
 	}
 
-	private class TestXmlParser extends XmlParser
+	private static class TestXmlParser extends XmlParser
 	{
 		public void test(String xml)
 		{

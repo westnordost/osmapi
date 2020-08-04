@@ -37,7 +37,7 @@ public class FormDataWriterTest extends TestCase
 		info.fileName = "failname";
 		info.name = "naim";
 		info.subWriter = new PlainTextWriter("my daita");
-		checkOutput(params, Arrays.asList(info));
+		checkOutput(params, Collections.singletonList(info));
 	}
 	
 	public void testMultipleFileField() throws IOException
@@ -117,7 +117,7 @@ public class FormDataWriterTest extends TestCase
 		return expected.toString();
 	}
 	
-	private class FileFieldInfo
+	private static class FileFieldInfo
 	{
 		String name;
 		String fileName;
