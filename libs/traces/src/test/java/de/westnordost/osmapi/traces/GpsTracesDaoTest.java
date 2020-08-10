@@ -192,7 +192,8 @@ public class GpsTracesDaoTest extends TestCase
 		assertEquals("test_case", trace.name);
 		assertEquals(Visibility.PRIVATE, trace.visibility);
 		assertEquals("test case desc", trace.description);
-		assertEquals(Arrays.asList("a tag","another"), trace.tags);
+		assertTrue(trace.tags.contains("a tag"));
+		assertTrue(trace.tags.contains("another"));
 		assertEquals("osmagent-test-allow-everything", trace.userName);
 		assertTrue(Math.abs(new Date().getTime() - trace.date.getTime()) < TEN_MINUTES);
 
