@@ -81,7 +81,7 @@ public class OsmRelationMember implements RelationMember, Serializable
 		int result = 11;
 		result = 31 * result + role.hashCode();
 		result = 31 * result + type.ordinal();
-		result = 31 * result + (int) (ref ^ (ref >>> 32));
+		result = 31 * result + Long.hashCode(ref);
 		return result;
 	}
 }

@@ -53,19 +53,13 @@ public class OsmLatLon implements LatLon, Serializable
 	public boolean equals(Object obj)
 	{
 		if(obj == this) return true;
-		if(obj == null || !(obj instanceof LatLon)) return false;
+		if(!(obj instanceof LatLon)) return false;
 		LatLon other = (LatLon) obj;
 		return other.getLatitude() == getLatitude() && other.getLongitude() == getLongitude();
 	}
 
 	@Override public int hashCode()
 	{
-		return 31 * hashCode(latitude) + hashCode(longitude);
-	}
-
-	private static int hashCode(double val)
-	{
-		long longBits = Double.doubleToLongBits(val);
-		return (int) (longBits ^ (longBits >>> 32));
+		return 31 * Double.hashCode(latitude) + Double.hashCode(longitude);
 	}
 }
