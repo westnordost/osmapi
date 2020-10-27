@@ -2,6 +2,7 @@ package de.westnordost.osmapi.map.data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.westnordost.osmapi.changesets.Changeset;
@@ -31,7 +32,7 @@ public abstract class OsmElement implements Element, Serializable
 		this.id = id;
 		this.version = version;
 		this.changeset = changeset;
-		this.tags = tags != null ? new OsmTags(tags) : null;
+		this.tags = tags != null ? new OsmTags(tags) : new OsmTags(new HashMap<String, String>(0));
 		this.dateEdited = dateEdited;
 	}
 
