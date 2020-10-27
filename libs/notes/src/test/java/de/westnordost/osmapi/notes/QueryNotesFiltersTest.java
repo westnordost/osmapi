@@ -86,7 +86,7 @@ public class QueryNotesFiltersTest extends TestCase
 	public void testCreatedBefore() throws ParseException
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
-		Date validDate = dateFormat.parse("2222-11-22T22:11:00+0700");
+		Date validDate = dateFormat.parse("2222-11-22T22:11:00Z");
 		filters.createdBefore(validDate);
 
 		assertEquals(validDate, dateFormat.parse(getParam(filters.toParamString(), "to")));
@@ -95,7 +95,7 @@ public class QueryNotesFiltersTest extends TestCase
 	public void testCreatedAfter() throws ParseException
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
-		Date validDate = dateFormat.parse("2222-11-22T22:11:00+0700");
+		Date validDate = dateFormat.parse("2222-11-22T22:11:00Z");
 		filters.createdAfter(validDate);
 
 		assertEquals(validDate, dateFormat.parse(getParam(filters.toParamString(), "from")));

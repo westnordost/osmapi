@@ -57,7 +57,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 	public void testByClosedAfter() throws ParseException
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		Date validDate = dateFormat.parse("2222-11-22T22:11:00+0700");
+		Date validDate = dateFormat.parse("2222-11-22T22:11:00Z");
 		filters.byClosedAfter(validDate);
 
 		assertEquals(validDate, dateFormat.parse(getParam(filters.toParamString(), "time")));
