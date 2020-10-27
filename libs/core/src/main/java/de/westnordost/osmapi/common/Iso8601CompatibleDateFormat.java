@@ -6,8 +6,11 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Extended SimpleDateFormat with extended timezone parsing so that it is compatible to Iso 8601
+ * Extended SimpleDateFormat with extended timezone parsing so that it is compatible to Iso 8601.
+ *
+ * Since Java 7, this is not necessary anymore
  */
+@Deprecated
 public class Iso8601CompatibleDateFormat extends SimpleDateFormat
 {
 	private static final long serialVersionUID = 1L;
