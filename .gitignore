@@ -7,3 +7,4 @@ build
 gradle-app.setting
 /.idea/
 /local.properties
+*.class
