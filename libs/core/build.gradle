@@ -1,5 +1,5 @@
 archivesBaseName = "osmapi-core"
-version = 1.1
+version = core_version
 description = 'Client for the OSM API 0.6 - Core functionality, getting server capabilities, getting user permissions'
 
 dependencies {

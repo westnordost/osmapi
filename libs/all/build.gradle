@@ -1,12 +1,12 @@
 archivesBaseName = "osmapi"
-version = 3.7
+version = all_version
 description = 'Client for the OSM API 0.6'
 
 dependencies {
-    compile 'de.westnordost:osmapi-core:1.1'
-    compile 'de.westnordost:osmapi-changesets:1.2'
-    compile 'de.westnordost:osmapi-map:1.2'
-    compile 'de.westnordost:osmapi-notes:1.1'
-    compile 'de.westnordost:osmapi-traces:1.1'
-    compile 'de.westnordost:osmapi-user:1.1'
+    compile "de.westnordost:osmapi-core:$core_version"
+    compile "de.westnordost:osmapi-changesets:$changesets_version"
+    compile "de.westnordost:osmapi-map:$map_version"
+    compile "de.westnordost:osmapi-notes:$notes_version"
+    compile "de.westnordost:osmapi-traces:$traces_version"
+    compile "de.westnordost:osmapi-user:$user_version"
 }

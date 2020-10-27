@@ -1,9 +1,9 @@
 archivesBaseName = "osmapi-notes"
-version = 1.1
+version = notes_version
 description = 'Client for the OSM API 0.6 - Getting finding, creating, commenting on and solving notes'
 
 dependencies {
-    compile 'de.westnordost:osmapi-core:1.1'
+    compile "de.westnordost:osmapi-core:$core_version"
     testCompile 'junit:junit:3.8.1'
     testCompile project(':testutils')
 }

@@ -59,7 +59,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals("Yeah", node.getChangeset().user.displayName);
 		assertEquals(12503, node.getChangeset().user.id);
 
-		assertNull(node.getTags());
+		assertEquals(0, node.getTags().size());
 	}
 
 	public void testWay()
@@ -137,7 +137,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals(Element.Type.RELATION, three.getType());
 		assertEquals("", three.getRole());
 
-		assertNull(relation.getTags());
+		assertEquals(0, relation.getTags().size());
 	}
 
 	public void testOrder() throws IOException
