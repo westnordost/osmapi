@@ -8,15 +8,19 @@ import java.util.Date;
  *  time and date */
 public class NotesDateFormat
 {
-	private static final SimpleDateFormat DEFAULT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+	private final SimpleDateFormat dateFormat;
+
+	public NotesDateFormat() {
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+	}
 
 	public Date parse(String source) throws ParseException
 	{
-		return DEFAULT.parse(source);
+		return dateFormat.parse(source);
 	}
 	
 	public String format(Date date)
 	{
-		return DEFAULT.format(date);
+		return dateFormat.format(date);
 	}
 }

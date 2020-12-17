@@ -11,9 +11,11 @@ import de.westnordost.osmapi.common.OsmXmlDateFormat;
 /** Gpx timestamps can optionally include milliseconds */
 public class GpxDateFormat extends OsmXmlDateFormat
 {
-	private static final SimpleDateFormat MILLIS = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-	static {
-		MILLIS.setTimeZone(TimeZone.getTimeZone("UTC"));
+	private final SimpleDateFormat dateFormatMillis;
+	public GpxDateFormat()
+	{
+		dateFormatMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		dateFormatMillis.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	private static final Pattern MILLIS_PATTERN = Pattern.compile("\\.[0-9]{3}");
@@ -27,7 +29,7 @@ public class GpxDateFormat extends OsmXmlDateFormat
 		// optional: parse milliseconds
 		if(hasMillis(source))
 		{
-			return MILLIS.parse(source);
+			return dateFormatMillis.parse(source);
 		}
 		return super.parse(source);
 	}
@@ -36,7 +38,7 @@ public class GpxDateFormat extends OsmXmlDateFormat
 	{
 		if(date.getTime() % 1000 > 0)
 		{
-			return MILLIS.format(date);
+			return dateFormatMillis.format(date);
 		}
 		return super.format(date);
 	}
