@@ -8,6 +8,7 @@ import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
 import de.westnordost.osmapi.common.errors.OsmConflictException;
 import de.westnordost.osmapi.common.errors.OsmConnectionException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.errors.OsmPreconditionFailedException;
 import de.westnordost.osmapi.common.errors.OsmServiceUnavailableException;
 
 /** Static factory that creates the OsmApiExceptions from the HTTP response code and message */
@@ -31,6 +32,8 @@ public class OsmApiErrorFactory
 			 * 403 forbidden is returned if the user is authenticated, but does not have the 
 			 *     permission to do the action*/
 				return new OsmAuthorizationException(error, response, description);
+			case HttpURLConnection.HTTP_PRECON_FAILED:
+				return new OsmPreconditionFailedException(error, response, description);
 			case HttpURLConnection.HTTP_CONFLICT:
 				return new OsmConflictException(error, response, description);
 			case HttpURLConnection.HTTP_BAD_REQUEST:

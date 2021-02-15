@@ -14,6 +14,7 @@ import de.westnordost.osmapi.common.XmlWriter;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
+import de.westnordost.osmapi.common.errors.OsmPreconditionFailedException;
 import de.westnordost.osmapi.common.errors.OsmConflictException;
 import de.westnordost.osmapi.common.errors.OsmQueryTooBigException;
 import de.westnordost.osmapi.map.changes.DiffElement;
@@ -72,6 +73,8 @@ public class MapDataDao
 	 *
 	 * @throws OsmAuthorizationException if the application does not have permission to edit the
 	 * 	                                  map (Permission.MODIFY_MAP)
+	 * @throws OsmPreconditionFailedException if the deletion of an element was uploaded but that
+	 *                                        element is still referred to by another element
 	 *
 	 * @return id of the changeset that was created
 	 */
@@ -109,6 +112,8 @@ public class MapDataDao
 	 *                               changeset is not the same as the one uploading the change
 	 * @throws OsmAuthorizationException if the application does not have permission to edit the
 	 *                                   map (Permission.MODIFY_MAP)
+	 * @throws OsmPreconditionFailedException if the deletion of an element was uploaded but that
+	 *                                        element is still referred to by another element
 	 *  */
 	public void uploadChanges(long changesetId, Iterable<Element> elements, Handler<DiffElement> handler)
 	{
