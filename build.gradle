@@ -13,10 +13,10 @@ subprojects {
 }
 
 ext {
-    all_version = 3.10
+    all_version = 3.11
     core_version = 1.4
-    changesets_version = 1.5
-    user_version = 1.4
+    changesets_version = 1.6
+    user_version = 1.5
     traces_version = 1.4
     notes_version = 1.4
     map_version = 1.5

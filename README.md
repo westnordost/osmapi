@@ -22,16 +22,16 @@ Depending on which part of the API you use, you can only include what you need:
 <tr><td>MapDataHistoryDao</td><td><pre>de.westnordost:osmapi-map:1.5</pre></td><td>Getting the history and specific versions of elements</td></tr>
 <tr><td>NotesDao</td><td><pre>de.westnordost:osmapi-notes:1.4</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
 <tr><td>GpsTracesDao</td><td><pre>de.westnordost:osmapi-traces:1.4</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
-<tr><td>ChangesetsDao</td><td><pre>de.westnordost:osmapi-changesets:1.5</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
-<tr><td>UserDao</td><td><pre>de.westnordost:osmapi-user:1.4</pre></td><td>Getting user information</td></tr>
-<tr><td>UserPreferencesDao</td><td><pre>de.westnordost:osmapi-user:1.4</pre></td><td>Managing user preferences</td></tr>
+<tr><td>ChangesetsDao</td><td><pre>de.westnordost:osmapi-changesets:1.6</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
+<tr><td>UserDao</td><td><pre>de.westnordost:osmapi-user:1.5</pre></td><td>Getting user information</td></tr>
+<tr><td>UserPreferencesDao</td><td><pre>de.westnordost:osmapi-user:1.5</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:3.10`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.9) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:3.11`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.11) as a Maven dependency or download the jar from there.
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
-	compile ('de.westnordost:osmapi:3.10')
+	compile ('de.westnordost:osmapi:3.11')
 	{
 		exclude group: 'net.sf.kxml', module: 'kxml2' // already included in Android
 	}

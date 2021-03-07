@@ -44,30 +44,12 @@ public class UserDaoTest extends TestCase
 	{
 		assertNull(unprivilegedDao.get(0L));
 		assertNotNull(unprivilegedDao.get(1L));
-	}
-
-	public void testGetUserInfoAsAnonymousFails()
-	{
-		try
-		{
-			anonymousDao.get(0L);
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) {}
+		assertNotNull(anonymousDao.get(1L));
 	}
 
 	public void testGetUserInfos()
 	{
 		assertEquals(2,unprivilegedDao.getAll(Arrays.asList(1L, 2L)).size());
-	}
-
-	public void testGetUserInfosAsAnonymousFails()
-	{
-		try
-		{
-			anonymousDao.getAll(Arrays.asList(1L, 2L));
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) {}
+		assertEquals(2,anonymousDao.getAll(Arrays.asList(1L, 2L)).size());
 	}
 }

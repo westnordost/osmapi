@@ -30,7 +30,6 @@ public class ChangesetsDao
 	/** Get the changeset information with the given id. Always includes the changeset discussion.
 	 *
 	 * @param id changeset id
-	 * @throws OsmAuthorizationException if not logged in
 	 * @return info for the given changeset. Null if it does not exist. */
 	public ChangesetInfo get(long id)
 	{
@@ -38,7 +37,8 @@ public class ChangesetsDao
 		String query = CHANGESET + "/" + id + "?include_discussion=true";
 		try
 		{
-			osm.makeAuthenticatedRequest(query, null, new ChangesetParser(handler));
+			boolean authenticate = osm.getOAuth() != null;
+			osm.makeRequest(query, authenticate, new ChangesetParser(handler));
 		}
 		catch(OsmNotFoundException e)
 		{
@@ -59,7 +59,8 @@ public class ChangesetsDao
 		String query = filters != null ? "?" + filters.toParamString() : "";
 		try
 		{
-			osm.makeAuthenticatedRequest(CHANGESET + "s" + query, null, new ChangesetParser(handler));
+			boolean authenticate = osm.getOAuth() != null;
+			osm.makeRequest(CHANGESET + "s" + query, authenticate, new ChangesetParser(handler));
 		}
 		catch(OsmNotFoundException e)
 		{
@@ -191,13 +192,11 @@ public class ChangesetsDao
 	 * @param handler handler to feed the map data changes to
 	 * @param factory factory that creates the elements
 	 *
-	 * @throws OsmAuthorizationException if not logged in
 	 * @throws OsmNotFoundException if changeset with the given id does not exist
 	 */
 	public void getData(long id, MapDataChangesHandler handler, MapDataFactory factory)
 	{
-		osm.makeAuthenticatedRequest(CHANGESET + "/" + id + "/download", null,
-				new MapDataChangesParser(handler, factory));
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(CHANGESET + "/" + id + "/download", authenticate, new MapDataChangesParser(handler, factory));
 	}
-
 }

@@ -33,7 +33,6 @@ public class UserDao
 
 	/**
 	 * @param userId id of the user to get the user info for
-	 * @throws OsmAuthorizationException if not logged in
 	 * @return the user info of the given user. Null if the user does not exist.
 	 *  */
 	public UserInfo get(long userId)
@@ -41,7 +40,8 @@ public class UserDao
 		try
 		{
 			SingleElementHandler<UserInfo> handler = new SingleElementHandler<>();
-			osm.makeAuthenticatedRequest("user/" + userId, null, new UserInfoParser(handler));
+			boolean authenticate = osm.getOAuth() != null;
+			osm.makeRequest("user/" + userId, authenticate, new UserInfoParser(handler));
 			return handler.get();
 		}
 		catch(OsmNotFoundException e)
@@ -54,7 +54,8 @@ public class UserDao
 	{
 		if(userIds.isEmpty()) return Collections.emptyList();
 		ListHandler<UserInfo> handler = new ListHandler<>();
-		osm.makeAuthenticatedRequest("users?users=" + toCommaList(userIds), null, new UserInfoParser(handler));
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest("users?users=" + toCommaList(userIds), authenticate, new UserInfoParser(handler));
 		return handler.get();
 	}
 

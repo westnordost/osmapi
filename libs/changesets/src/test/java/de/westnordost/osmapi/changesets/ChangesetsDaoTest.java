@@ -147,6 +147,29 @@ public class ChangesetsDaoTest extends TestCase
 		try { privilegedDao.unsubscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
 	}
 
+	public void testGetAsAnonymousDoesNotFail()
+	{
+		assertNotNull(anonymousDao.get(changesetId));
+	}
+
+
+	public void testGetDataAsAnonymousDoesNotFail()
+	{
+		anonymousDao.getData(123, new SimpleMapDataChangesHandler());
+	}
+
+	public void testFindAsAnonymousDoesNotFail()
+	{
+		anonymousDao.find(new Handler<ChangesetInfo>()
+		{
+			@Override
+			public void handle(ChangesetInfo tea)
+			{
+				// nothing...
+			}
+		}, new QueryChangesetsFilters().byUser(A_USER_WITH_CHANGESETS));
+	}
+
 	public void testAnonymousFail()
 	{
 		try
@@ -166,34 +189,6 @@ public class ChangesetsDaoTest extends TestCase
 		try
 		{
 			anonymousDao.comment(changesetId, "test comment");
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-
-		try
-		{
-			anonymousDao.get(changesetId);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-
-		try
-		{
-			anonymousDao.getData(123, new SimpleMapDataChangesHandler());
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-
-		try
-		{
-			anonymousDao.find(new Handler<ChangesetInfo>()
-			{
-				@Override
-				public void handle(ChangesetInfo tea)
-				{
-					// nothing...
-				}
-			}, new QueryChangesetsFilters().byUser(A_USER_WITH_CHANGESETS));
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
