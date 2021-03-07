@@ -95,7 +95,14 @@ public class NotesDaoTest extends TestCase
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
+	}
 
+	public void testCreateNoteAsAnonymousAllowed()
+	{
+		Note note = anonymousDao.create(POINT, TEXT);
+
+		assertEquals(POINT, note.position);
+		assertEquals(TEXT, note.comments.get(0).text);
 	}
 
 	public void testCommentNoteInsufficientPrivileges()
@@ -103,6 +110,16 @@ public class NotesDaoTest extends TestCase
 		try
 		{
 			unprivilegedDao.comment(note.id, TEXT);
+			fail();
+		}
+		catch(OsmAuthorizationException ignore) {}
+	}
+
+	public void testCommentNoteAsAnonymousFails()
+	{
+		try
+		{
+			anonymousDao.comment(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -323,14 +340,9 @@ public class NotesDaoTest extends TestCase
 		assertNull(unprivilegedDao.get(0));
 	}
 
-	public void testGetNoteAsAnonymousFails()
+	public void testGetNoteAsAnonymous()
 	{
-		try
-		{
-			anonymousDao.get(note.id);
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) {}
+		assertNotNull(anonymousDao.get(note.id));
 	}
 
 	public void testQueryTooBig()
@@ -378,20 +390,10 @@ public class NotesDaoTest extends TestCase
 		assertTrue(counter.count > 0);
 	}
 
-	public void testGetNotesAsAnonymousFails()
-	{
-		try
-		{
-			anonymousDao.getAll(MY_AREA, null, 100, -1);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-	}
-
-	public void testSearchNotes()
+	public void testGetNotesAsAnonymous()
 	{
 		Counter counter = new Counter();
-		unprivilegedDao.getAll(MY_AREA, TEXT, counter, 100, -1);
+		anonymousDao.getAll(MY_AREA, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 
@@ -417,14 +419,11 @@ public class NotesDaoTest extends TestCase
 		assertTrue(counter.count > 0);
 	}
 
-	public void testFindNotesAsAnonymousFails()
+	public void testFindNotesAsAnonymous()
 	{
-		try
-		{
-			anonymousDao.find(null, null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		Counter counter = new Counter();
+		anonymousDao.find(counter, null);
+		assertTrue(counter.count > 0);
 	}
 
 	private static class Counter implements Handler<Note>

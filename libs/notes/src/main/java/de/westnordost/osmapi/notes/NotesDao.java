@@ -58,8 +58,9 @@ public class NotesDao
 				"&text=" + urlEncode(text);
 		String call = NOTES + "?" + data;
 
+		boolean authenticate = osm.getOAuth() != null;
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
-		osm.makeAuthenticatedRequest(call, "POST", new NotesParser(noteHandler));
+		osm.makeRequest(call, "POST", authenticate, null, new NotesParser(noteHandler));
 		return noteHandler.get();
 	}
 
@@ -149,8 +150,6 @@ public class NotesDao
 	/**
 	 * @param id id of the note
 	 *
-	 * @throws OsmAuthorizationException if not logged in
-	 *
 	 * @return the note with the given id. null if the note with that id does not exist (anymore).
 	 */
 	public Note get(long id)
@@ -158,7 +157,8 @@ public class NotesDao
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
 		try
 		{
-			osm.makeAuthenticatedRequest(NOTES + "/" + id, null, new NotesParser(noteHandler));
+			boolean authenticate = osm.getOAuth() != null;
+			osm.makeRequest(NOTES + "/" + id, authenticate, new NotesParser(noteHandler));
 		}
 		catch (OsmNotFoundException e)
 		{
@@ -191,7 +191,6 @@ public class NotesDao
 	 *
 	 * @throws OsmQueryTooBigException if the bounds area is too large
 	 * @throws IllegalArgumentException if the bounds cross the 180th meridian
-	 * @throws OsmAuthorizationException if not logged in
 	 */
 	public void getAll(BoundingBox bounds, String search, Handler<Note> handler, int limit,
 					   int hideClosedNoteAfter)
@@ -216,7 +215,8 @@ public class NotesDao
 
 		try
 		{
-			osm.makeAuthenticatedRequest(call, null, new NotesParser(handler));
+			boolean authenticate = osm.getOAuth() != null;
+			osm.makeRequest(call, authenticate, new NotesParser(handler));
 		}
 		catch(OsmBadUserInputException e)
 		{
@@ -231,13 +231,12 @@ public class NotesDao
 	 * @param handler The handler which is fed the incoming notes
 	 * @param filters what to search for. I.e.
 	 *                new QueryNotesFilters().byUser(123).limit(1000)
-	 *
-	 * @throws OsmAuthorizationException if not logged in
 	 */
 	public void find(Handler<Note> handler, QueryNotesFilters filters)
 	{
 		String query = filters != null ? "?" + filters.toParamString() : "";
-		osm.makeAuthenticatedRequest(NOTES+"/search"+query, null, new NotesParser(handler));
+		boolean authenticate = osm.getOAuth() != null;
+		osm.makeRequest(NOTES + "/search" + query, authenticate, new NotesParser(handler));
 	}
 
 	private <T> T makeSingleNoteRequest(long id, String call, String text, ApiResponseReader<T> reader)
