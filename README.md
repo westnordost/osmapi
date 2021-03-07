@@ -16,18 +16,18 @@ Depending on which part of the API you use, you can only include what you need:
 
 <table>
 <tr><th>Class</th><th>Dependency</th><th>Description</th></tr>
-<tr><td>CapabilitiesDao</td><td><pre>de.westnordost:osmapi-core:1.3</pre></td><td>Getting server capabilities</td></tr>
-<tr><td>PermissionsDao</td><td><pre>de.westnordost:osmapi-core:1.3</pre></td><td>Getting user permissions</td></tr>
+<tr><td>CapabilitiesDao</td><td><pre>de.westnordost:osmapi-core:1.4</pre></td><td>Getting server capabilities</td></tr>
+<tr><td>PermissionsDao</td><td><pre>de.westnordost:osmapi-core:1.4</pre></td><td>Getting user permissions</td></tr>
 <tr><td>MapDataDao</td><td><pre>de.westnordost:osmapi-map:1.5</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
 <tr><td>MapDataHistoryDao</td><td><pre>de.westnordost:osmapi-map:1.5</pre></td><td>Getting the history and specific versions of elements</td></tr>
 <tr><td>NotesDao</td><td><pre>de.westnordost:osmapi-notes:1.4</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
-<tr><td>GpsTracesDao</td><td><pre>de.westnordost:osmapi-traces:1.3</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
-<tr><td>ChangesetsDao</td><td><pre>de.westnordost:osmapi-changesets:1.4</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
-<tr><td>UserDao</td><td><pre>de.westnordost:osmapi-user:1.3</pre></td><td>Getting user information</td></tr>
-<tr><td>UserPreferencesDao</td><td><pre>de.westnordost:osmapi-user:1.3</pre></td><td>Managing user preferences</td></tr>
+<tr><td>GpsTracesDao</td><td><pre>de.westnordost:osmapi-traces:1.4</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
+<tr><td>ChangesetsDao</td><td><pre>de.westnordost:osmapi-changesets:1.5</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
+<tr><td>UserDao</td><td><pre>de.westnordost:osmapi-user:1.4</pre></td><td>Getting user information</td></tr>
+<tr><td>UserPreferencesDao</td><td><pre>de.westnordost:osmapi-user:1.4</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:3.9`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.9) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:3.10`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.9) as a Maven dependency or download the jar from there.
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
