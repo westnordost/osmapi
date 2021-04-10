@@ -27,7 +27,7 @@ Depending on which part of the API you use, you can only include what you need:
 <tr><td>UserPreferencesDao</td><td><pre>de.westnordost:osmapi-user:1.5</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:3.11`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.11) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:3.11`](https://mvnrepository.com/artifact/de.westnordost/osmapi/3.11) as a Maven dependency or download the jar from there.
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
