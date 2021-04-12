@@ -34,7 +34,7 @@ On Android, you need to exclude kxml2 from the dependencies since it is already 
 dependencies {
     implementation 'de.westnordost:osmapi:3.11'
 }
-configuration {
+configurations {
     // already included in Android
     all*.exclude group: 'net.sf.kxml', module: 'kxml2'
     
