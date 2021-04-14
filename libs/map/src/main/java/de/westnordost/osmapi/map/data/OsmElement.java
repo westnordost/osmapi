@@ -20,6 +20,7 @@ public abstract class OsmElement implements Element, Serializable
 	private Instant editedAt;
 	private OsmTags tags;
 	private boolean deleted;
+	private boolean created;
 	private boolean modified;
 
 	public OsmElement(long id, int version, Map<String,String> tags)
@@ -69,7 +70,12 @@ public abstract class OsmElement implements Element, Serializable
 	@Override
 	public boolean isNew()
 	{
-		return id < 0;
+		return id < 0 || created;
+	}
+
+	public void setNew(boolean isNew)
+	{
+		this.created = isNew;
 	}
 
 	@Override
