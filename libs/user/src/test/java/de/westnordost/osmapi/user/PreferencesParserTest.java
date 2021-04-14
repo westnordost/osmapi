@@ -1,15 +1,17 @@
 package de.westnordost.osmapi.user;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Map;
 
 import de.westnordost.osmapi.TestUtils;
 
-public class PreferencesParserTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class PreferencesParserTest
 {
-	public void testPreferencesParser() throws IOException
+	@Test public void preferencesParser() throws IOException
 	{
 		String xml =
 				"<preferences>" +

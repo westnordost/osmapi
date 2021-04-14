@@ -1,5 +1,7 @@
 package de.westnordost.osmapi.user;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -7,11 +9,11 @@ import java.util.List;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.SingleElementHandler;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class UserDetailsParserTest extends TestCase
+public class UserDetailsParserTest
 {
-	public void testOptionalElements()
+	@Test public void optionalElements()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -27,7 +29,7 @@ public class UserDetailsParserTest extends TestCase
 		assertEquals(0,user.unreadMessagesCount);
 	}
 	
-	public void testBasicElements()
+	@Test public void basicElements()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -43,13 +45,13 @@ public class UserDetailsParserTest extends TestCase
 		assertFalse(user.considersHisContributionsAsPublicDomain);
 		assertNotNull(user.homeLocation);
 		assertEquals(Instant.parse("2013-01-20T17:16:23Z"), user.createdAt);
-		assertEquals(16.8151000, user.homeLocation.getLatitude());
-		assertEquals(96.1860000, user.homeLocation.getLongitude());
+		assertEquals(16.8151000, user.homeLocation.getLatitude(), 1e-7);
+		assertEquals(96.1860000, user.homeLocation.getLongitude(), 1e-7);
 		assertNotNull(user.homeZoom);
 		assertEquals(3, (byte) user.homeZoom);
 	}
 	
-	public void testPreferredLanguages()
+	@Test public void preferredLanguages()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -69,7 +71,7 @@ public class UserDetailsParserTest extends TestCase
 		assertEquals("en", langs.get(2));
 	}
 
-	public void testMessages()
+	@Test public void messages()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +

@@ -1,13 +1,14 @@
 package de.westnordost.osmapi.notes;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-import java.text.ParseException;
 import java.time.Instant;
 
-public class QueryNotesFiltersTest extends TestCase
+import static org.junit.Assert.*;
+
+public class QueryNotesFiltersTest
 {
-	public void testByTerm()
+	@Test public void byTerm()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		filters.byTerm("hallo");
@@ -15,7 +16,7 @@ public class QueryNotesFiltersTest extends TestCase
 		assertEquals("hallo", getParam(filters.toParamString(), "q"));
 	}
 
-	public void testByUserId()
+	@Test public void byUserId()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		filters.byUser(4);
@@ -23,7 +24,7 @@ public class QueryNotesFiltersTest extends TestCase
 		assertEquals("4", getParam(filters.toParamString(), "user"));
 	}
 	
-	public void testByUserName()
+	@Test public void byUserName()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		filters.byUser("hans");
@@ -31,7 +32,7 @@ public class QueryNotesFiltersTest extends TestCase
 		assertEquals("hans", getParam(filters.toParamString(), "display_name"));
 	}
 
-	public void testIllegalUserSelection()
+	@Test public void illegalUserSelection()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		try
@@ -53,7 +54,7 @@ public class QueryNotesFiltersTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testLimit()
+	@Test public void limit()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		filters.limit(10);
@@ -61,7 +62,7 @@ public class QueryNotesFiltersTest extends TestCase
 		assertEquals("10", getParam(filters.toParamString(), "limit"));
 	}
 
-	public void testIllegalLimit()
+	@Test public void illegalLimit()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		try
@@ -79,7 +80,7 @@ public class QueryNotesFiltersTest extends TestCase
 		catch (IllegalArgumentException ignore) {}
 	}
 
-	public void testCreatedBefore()
+	@Test public void createdBefore()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		Instant validDate = Instant.parse("2222-11-22T22:11:00Z");
@@ -88,7 +89,7 @@ public class QueryNotesFiltersTest extends TestCase
 		assertEquals(validDate, Instant.parse(getParam(filters.toParamString(), "to")));
 	}
 
-	public void testCreatedAfter()
+	@Test public void createdAfter()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		Instant validDate = Instant.parse("2222-11-22T22:11:00Z");
@@ -97,7 +98,7 @@ public class QueryNotesFiltersTest extends TestCase
 		assertEquals(validDate, Instant.parse(getParam(filters.toParamString(), "from")));
 	}
 
-	public void testClosedNotesAfter()
+	@Test public void closedNotesAfter()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
 		filters.hideClosedNotesAfter(4);

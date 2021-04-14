@@ -1,21 +1,24 @@
 package de.westnordost.osmapi.map.changes;
 
+import org.junit.Test;
+
 import java.io.IOException;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.map.OsmMapDataFactory;
 
-public class MapDataChangesParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class MapDataChangesParserTest
 {
-	public void testEmptyChange()
+	@Test public void emptyChange()
 	{
 		MapDataChanges changes = parse("<osmChange></osmChange>");
 
 		assertTrue(changes.getAll().isEmpty());
 	}
 
-	public void testDeletions()
+	@Test public void deletions()
 	{
 		MapDataChanges changes =
 				parse("<osmChange><delete><node id='1' version='1' lat='1' lon='1'/></delete></osmChange>");
@@ -25,7 +28,7 @@ public class MapDataChangesParserTest extends TestCase
 		assertEquals(0, changes.getModifications().size());
 	}
 
-	public void testCreations()
+	@Test public void creations()
 	{
 		MapDataChanges changes =
 				parse("<osmChange><create><node id='1' version='1' lat='1' lon='1'/></create></osmChange>");
@@ -35,7 +38,7 @@ public class MapDataChangesParserTest extends TestCase
 		assertEquals(0, changes.getModifications().size());
 	}
 
-	public void testModifications()
+	@Test public void modifications()
 	{
 		MapDataChanges changes =
 				parse("<osmChange><modify><node id='1' version='1' lat='1' lon='1'/></modify></osmChange>");

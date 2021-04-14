@@ -1,13 +1,16 @@
 package de.westnordost.osmapi.capabilities;
 
+import org.junit.Test;
+
 import java.io.IOException;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 
-public class CapabilitiesParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class CapabilitiesParserTest
 {
-	public void testBasicFields() throws IOException
+	@Test public void basicFields() throws IOException
 	{
 		String xml =
 				"<api>" +
@@ -22,17 +25,17 @@ public class CapabilitiesParserTest extends TestCase
 				"</api>";
 
 		Capabilities capabilities = new CapabilitiesParser().parse(TestUtils.asInputStream(xml));
-		assertEquals(0.6f,capabilities.minSupportedApiVersion);
-		assertEquals(0.6f, capabilities.maxSupportedApiVersion);
-		assertEquals(0.25f, capabilities.maxMapQueryAreaInSquareDegrees);
-		assertEquals(25f, capabilities.maxNotesQueryAreaInSquareDegrees);
+		assertEquals(0.6f,capabilities.minSupportedApiVersion, 0.0);
+		assertEquals(0.6f, capabilities.maxSupportedApiVersion, 0.0);
+		assertEquals(0.25f, capabilities.maxMapQueryAreaInSquareDegrees, 0.0);
+		assertEquals(25f, capabilities.maxNotesQueryAreaInSquareDegrees, 0.0);
 		assertEquals(5000, capabilities.maxPointsInGpsTracePerPage);
 		assertEquals(2000, capabilities.maxNodesInWay);
 		assertEquals(50000, capabilities.maxElementsPerChangeset);
 		assertEquals(300, capabilities.timeoutInSeconds);
 	}
 
-	public void testApiStatus() throws IOException
+	@Test public void apiStatus() throws IOException
 	{
 		String xml =
 				"<api>" +
@@ -48,7 +51,7 @@ public class CapabilitiesParserTest extends TestCase
 		assertFalse(capabilities.isGpsTracesUploadable());
 	}
 
-	public void testPolicy() throws IOException
+	@Test public void policy() throws IOException
 	{
 		String xml =
 				"<policy>" +

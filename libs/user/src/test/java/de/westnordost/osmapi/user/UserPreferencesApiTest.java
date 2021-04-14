@@ -1,6 +1,7 @@
 package de.westnordost.osmapi.user;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,13 +9,14 @@ import java.util.Map;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 
-public class UserPreferencesApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class UserPreferencesApiTest
 {
 	private UserPreferencesApi privilegedDao;
 	private UserPreferencesApi unprivilegedDao;
 
-	@Override
-	protected void setUp()
+	@Before	public void setUp()
 	{
 		privilegedDao = new UserPreferencesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
@@ -22,7 +24,7 @@ public class UserPreferencesApiTest extends TestCase
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 
-	public void testUnprivileged()
+	@Test public void unprivileged()
 	{
 		// the unprivileged DAO may do nothing here, so lets just do it in one test case...
 
@@ -57,7 +59,7 @@ public class UserPreferencesApiTest extends TestCase
 		catch (OsmAuthorizationException ignore) { }
 	}
 
-	public void testSetGetAndDeleteUserPreference()
+	@Test public void setGetAndDeleteUserPreference()
 	{
 		privilegedDao.set("A","a");
 		assertEquals("a",privilegedDao.get("A"));
@@ -65,7 +67,7 @@ public class UserPreferencesApiTest extends TestCase
 		assertNull(privilegedDao.get("A"));
 	}
 	
-	public void testKeyTooLong()
+	@Test public void keyTooLong()
 	{
 		try
 		{
@@ -75,7 +77,7 @@ public class UserPreferencesApiTest extends TestCase
 		catch(IllegalArgumentException ignore) { }
 	}
 
-	public void testValueTooLong()
+	@Test public void valueTooLong()
 	{
 		try
 		{
@@ -92,7 +94,7 @@ public class UserPreferencesApiTest extends TestCase
 		return result;
 	}
 	
-	public void testSetAndGetUserPreferences()
+	@Test public void setAndGetUserPreferences()
 	{
 		Map<String,String> preferences = new HashMap<>();
 		preferences.put("D", "d");

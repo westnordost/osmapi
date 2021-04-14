@@ -1,25 +1,28 @@
 package de.westnordost.osmapi.traces;
 
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.ListHandler;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 
-public class GpxTrackWriterTest extends TestCase
+import static org.junit.Assert.*;
+
+public class GpxTrackWriterTest
 {
-	public void testEmpty() throws IOException
+	@Test public void empty() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
 	
-	public void testMinimal() throws IOException
+	@Test public void minimal() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
 		elements.add(new GpsTrackpoint(
@@ -30,7 +33,7 @@ public class GpxTrackWriterTest extends TestCase
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
 	
-	public void testProps() throws IOException
+	@Test public void props() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
 		elements.add(new GpsTrackpoint(
@@ -44,7 +47,7 @@ public class GpxTrackWriterTest extends TestCase
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
 	
-	public void testOneSegment() throws IOException
+	@Test public void oneSegment() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
 		elements.add( new GpsTrackpoint(new OsmLatLon(1.234, 2.345), Instant.now()));
@@ -53,7 +56,7 @@ public class GpxTrackWriterTest extends TestCase
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
 	
-	public void testTwoSegments() throws IOException
+	@Test public void twoSegments() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
 		elements.add( new GpsTrackpoint(new OsmLatLon(1.234, 2.345), Instant.now()));
@@ -66,7 +69,7 @@ public class GpxTrackWriterTest extends TestCase
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
 	
-	public void testRoundFloatsToOneDecimal() throws IOException
+	@Test public void roundFloatsToOneDecimal() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
 		elements.add(new GpsTrackpoint(
@@ -78,8 +81,8 @@ public class GpxTrackWriterTest extends TestCase
 		));
 		
 		GpsTrackpoint pointNew = writeAndRead(elements).get(0);
-		assertEquals(789.1f, pointNew.elevation);
-		assertEquals(42.2f, pointNew.horizontalDilutionOfPrecision);
+		assertEquals(789.1f, pointNew.elevation, 1e-7);
+		assertEquals(42.2f, pointNew.horizontalDilutionOfPrecision, 1e-7);
 	}
 	
 	private void checkElementsEqual(List<GpsTrackpoint> expect, List<GpsTrackpoint> actual)

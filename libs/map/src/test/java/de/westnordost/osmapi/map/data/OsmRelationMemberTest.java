@@ -1,9 +1,12 @@
 package de.westnordost.osmapi.map.data;
 
-import de.westnordost.osmapi.map.data.Element.Type;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class OsmRelationMemberTest extends TestCase
+import de.westnordost.osmapi.map.data.Element.Type;
+
+import static org.junit.Assert.*;
+
+public class OsmRelationMemberTest
 {
 	private static final String TOO_LONG = 
 			"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
@@ -11,7 +14,7 @@ public class OsmRelationMemberTest extends TestCase
 			+ "a. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gube"
 			+ "rgren, no sea takimata ";
 	
-	public void testSetTooLongRoleFails()
+	@Test public void setTooLongRoleFails()
 	{
 		try
 		{
@@ -21,7 +24,7 @@ public class OsmRelationMemberTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 	
-	public void testInitWithTooLongRoleFails()
+	@Test public void initWithTooLongRoleFails()
 	{
 		try
 		{

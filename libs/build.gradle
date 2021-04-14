@@ -25,6 +25,11 @@ subprojects {
         sign configurations.archives
     }
 
+    dependencies {
+        testCompile 'junit:junit:4.12'
+        testCompile project(':testutils')
+    }
+
     uploadArchives {
         repositories {
             mavenDeployer {

@@ -1,16 +1,19 @@
 package de.westnordost.osmapi.traces;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.time.Instant;
 
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.SingleElementHandler;
-import junit.framework.TestCase;
 
-public class GpsTracesParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class GpsTracesParserTest
 {
-	public void testFields()
+	@Test public void fields()
 	{
 		String xml =
 				"<osm>" + 
@@ -23,8 +26,8 @@ public class GpsTracesParserTest extends TestCase
 		
 		assertEquals(123, result.id);
 		assertEquals("näim", result.name);
-		assertEquals(51.68812, result.position.getLatitude());
-		assertEquals(-3.0294167, result.position.getLongitude());
+		assertEquals(51.68812, result.position.getLatitude(), 1e-7);
+		assertEquals(-3.0294167, result.position.getLongitude(), 1e-7);
 		assertEquals("testo", result.userName);
 		assertEquals(false, result.pending);
 		assertEquals(null, result.tags);
@@ -32,7 +35,7 @@ public class GpsTracesParserTest extends TestCase
 		assertEquals(null, result.createdAt);
 	}
 	
-	public void testDate()
+	@Test public void date()
 	{
 		String xml =
 				"<osm>" + 
@@ -44,7 +47,7 @@ public class GpsTracesParserTest extends TestCase
 		assertEquals(Instant.parse("2006-12-12T15:20:32Z"), result.createdAt);
 	}
 	
-	public void testParseVisibility() throws IOException
+	@Test public void parseVisibility() throws IOException
 	{
 		String xml =
 				"<osm>" + 
@@ -80,7 +83,7 @@ public class GpsTracesParserTest extends TestCase
 		new GpsTracesParser(handler).parse(TestUtils.asInputStream(xml));
 	}
 	
-	public void testTags()
+	@Test public void tags()
 	{
 		String xml =
 				"<osm>" + 
@@ -97,7 +100,7 @@ public class GpsTracesParserTest extends TestCase
 		assertEquals("hihihi",result.tags.get(1));
 	}
 	
-	public void testDescription()
+	@Test public void description()
 	{
 		String xml =
 				"<osm>" + 

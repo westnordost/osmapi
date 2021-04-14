@@ -1,6 +1,6 @@
 package de.westnordost.osmapi.user;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -10,14 +10,16 @@ import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.ListHandler;
 import de.westnordost.osmapi.common.SingleElementHandler;
 
-public class UserInfoParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class UserInfoParserTest
 {
-	public void testNoInput() throws IOException
+	@Test public void noInput() throws IOException
 	{
 		new UserInfoParser(new FailIfCalled()).parse(TestUtils.asInputStream(""));
 	}
 
-	public void testAttributes()
+	@Test public void attributes()
 	{
 		String xml =
 				"<user id=\"123\" display_name=\"mr_x\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -30,7 +32,7 @@ public class UserInfoParserTest extends TestCase
 		assertEquals(Instant.parse("2013-01-20T17:16:23Z"), user.createdAt);
 	}
 	
-	public void testOptionalElements()
+	@Test public void optionalElements()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -48,7 +50,7 @@ public class UserInfoParserTest extends TestCase
 		assertNull(user.profileImageUrl);
 	}
 
-	public void testRoles()
+	@Test public void roles()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -67,7 +69,7 @@ public class UserInfoParserTest extends TestCase
 		assertFalse(user.hasRole("Stuntman"));
 	}
 
-	public void testBlocked()
+	@Test public void blocked()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -80,7 +82,7 @@ public class UserInfoParserTest extends TestCase
 		assertTrue(user.isBlocked);
 	}
 
-	public void testNotBlocked()
+	@Test public void notBlocked()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -93,7 +95,7 @@ public class UserInfoParserTest extends TestCase
 		assertFalse(user.isBlocked);
 	}
 
-	public void testBasicElements()
+	@Test public void basicElements()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
@@ -113,7 +115,7 @@ public class UserInfoParserTest extends TestCase
 		assertEquals(80, user.gpsTracesCount);
 	}
 
-	public void testParseMultiple() throws IOException
+	@Test public void parseMultiple() throws IOException
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\"/>" +

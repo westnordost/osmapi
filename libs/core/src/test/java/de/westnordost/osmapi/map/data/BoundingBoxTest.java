@@ -1,14 +1,16 @@
 package de.westnordost.osmapi.map.data;
 
+import org.junit.Test;
+
 import java.util.List;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class BoundingBoxTest extends TestCase
+public class BoundingBoxTest
 {
 	private static final double A = 34.1234, B = 12.1234, C = 37.1237, D = 15.1254;
 	
-	public void testValidation4Doubles()
+	@Test public void validation4Doubles()
 	{
 		try
 		{
@@ -18,7 +20,7 @@ public class BoundingBoxTest extends TestCase
 		catch (IllegalArgumentException ignore) {}
 	}
 
-	public void testValidationLatLon()
+	@Test public void validationLatLon()
 	{
 		try
 		{
@@ -29,7 +31,7 @@ public class BoundingBoxTest extends TestCase
 	}
 
 	
-	public void testCross180thMeridian()
+	@Test public void cross180thMeridian()
 	{
 		BoundingBox bounds = new BoundingBox(
 				new OsmLatLon(0, 90),
@@ -41,15 +43,15 @@ public class BoundingBoxTest extends TestCase
 		BoundingBox bounds2 = boundses.get(1);
 
 		assertEquals(bounds.getMin(),bounds1.getMin());
-		assertEquals(bounds.getMax().getLatitude(), bounds1.getMax().getLatitude());
-		assertEquals(LatLons.MAX_VALUE.getLongitude(), bounds1.getMax().getLongitude());
+		assertEquals(bounds.getMax().getLatitude(), bounds1.getMax().getLatitude(), 1e-7);
+		assertEquals(LatLons.MAX_VALUE.getLongitude(), bounds1.getMax().getLongitude(), 1e-7);
 
-		assertEquals(bounds.getMin().getLatitude(), bounds2.getMin().getLatitude());
-		assertEquals(LatLons.MIN_VALUE.getLongitude(), bounds2.getMin().getLongitude());
-		assertEquals(bounds.getMax(),bounds2.getMax());
+		assertEquals(bounds.getMin().getLatitude(), bounds2.getMin().getLatitude(), 1e-7);
+		assertEquals(LatLons.MIN_VALUE.getLongitude(), bounds2.getMin().getLongitude(), 1e-7);
+		assertEquals(bounds.getMax(), bounds2.getMax());
 	}
 
-	public void testEquals()
+	@Test public void testEquals()
 	{
 		BoundingBox bounds1 = new BoundingBox(
 				OsmLatLon.parseLatLon("51.7400243", "0.2400123"),
@@ -60,7 +62,7 @@ public class BoundingBoxTest extends TestCase
 		assertEquals(bounds1, bounds2);
 	}
 	
-	public void testEqualsWithDifferentConstructors()
+	@Test public void equalsWithDifferentConstructors()
 	{
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		BoundingBox bounds2 = new BoundingBox(new OsmLatLon(A,B), new OsmLatLon(C,D));
@@ -68,32 +70,32 @@ public class BoundingBoxTest extends TestCase
 		assertEquals(bounds1, bounds2);
 	}
 	
-	public void testEqualsNull()
+	@Test public void equalsNull()
 	{
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		assertFalse(bounds1.equals(null));
 	}
 	
-	public void testEqualsOtherObject()
+	@Test public void equalsOtherObject()
 	{
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		assertFalse(bounds1.equals(new Object()));
 	}
 
-	public void testDoesNotUseScientificNotation()
+	@Test public void doesNotUseScientificNotation()
 	{
 		BoundingBox bounds1 = new BoundingBox(-0.0000001,-0.0000001,0.0000001,0.0000001);
 		assertEquals("-0.0000001,-0.0000001,0.0000001,0.0000001",bounds1.getAsLeftBottomRightTopString());
 	}
 		
-	public void testHashCode()
+	@Test public void testHashCode()
 	{
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		BoundingBox bounds2 = new BoundingBox(A,B,C,D);
 		assertEquals(bounds1.hashCode(), bounds2.hashCode());
 	}
 	
-	public void testHashCodeAlgoIsNotTooSimple()
+	@Test public void hashCodeAlgoIsNotTooSimple()
 	{
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		BoundingBox bounds2 = new BoundingBox(B,A,D,C);

@@ -1,17 +1,19 @@
 package de.westnordost.osmapi.common;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import de.westnordost.osmapi.TestUtils;
 
-public class XmlWriterTest extends TestCase
+import static org.junit.Assert.*;
+
+public class XmlWriterTest
 {
 	private static final String xmlBlob = "<?xml version='1.0' encoding='UTF-8' ?>";
 
-	public void testDidNotCloseTag() throws IOException
+	@Test public void didNotCloseTag() throws IOException
 	{
 		try
 		{
@@ -28,7 +30,7 @@ public class XmlWriterTest extends TestCase
 		catch (IllegalStateException ignore) { }
 	}
 
-	public void testDidCloseOneTagTooMany() throws IOException
+	@Test public void didCloseOneTagTooMany() throws IOException
 	{
 		try
 		{
@@ -47,7 +49,7 @@ public class XmlWriterTest extends TestCase
 		catch (IllegalStateException ignore) {}
 	}
 
-	public void testSimple() throws IOException
+	@Test public void simple() throws IOException
 	{
 		String result = new TestXmlWriter()
 		{
@@ -62,7 +64,7 @@ public class XmlWriterTest extends TestCase
 		assertEquals(xmlBlob + "<test />", result);
 	}
 
-	public void testText() throws IOException
+	@Test public void text() throws IOException
 	{
 		String result = new TestXmlWriter()
 		{
@@ -79,7 +81,7 @@ public class XmlWriterTest extends TestCase
 	}
 
 
-	public void testAttribute() throws IOException
+	@Test public void attribute() throws IOException
 	{
 		String result = new TestXmlWriter()
 		{
@@ -95,7 +97,7 @@ public class XmlWriterTest extends TestCase
 		assertEquals(xmlBlob + "<test key='value' />", result);
 	}
 
-	public void testDoubleAttributeIsNotInScienfiticNotation() throws IOException
+	@Test public void doubleAttributeIsNotInScienfiticNotation() throws IOException
 	{
 		String result = new TestXmlWriter()
 		{
@@ -111,7 +113,7 @@ public class XmlWriterTest extends TestCase
 		assertEquals(xmlBlob + "<test key='0.0000001' />", result);
 	}
 
-	public void testNested() throws IOException
+	@Test public void nested() throws IOException
 	{
 		String result = new TestXmlWriter()
 		{
@@ -128,7 +130,7 @@ public class XmlWriterTest extends TestCase
 		assertEquals(xmlBlob + "<test><a /></test>", result);
 	}
 
-	private abstract class TestXmlWriter extends XmlWriter
+	private static abstract class TestXmlWriter extends XmlWriter
 	{
 		public String test() throws IOException
 		{

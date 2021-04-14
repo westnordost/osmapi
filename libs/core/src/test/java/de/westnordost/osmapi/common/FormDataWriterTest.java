@@ -1,5 +1,7 @@
 package de.westnordost.osmapi.common;
 
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -10,18 +12,19 @@ import java.util.Map;
 
 import de.westnordost.osmapi.ApiRequestWriter;
 import de.westnordost.osmapi.TestUtils;
-import junit.framework.TestCase;
 
-public class FormDataWriterTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class FormDataWriterTest
 {
-	public void testOneField() throws IOException
+	@Test public void oneField() throws IOException
 	{
 		Map<String,String> params = new HashMap<>();
 		params.put("TestXY", "one two three");
 		checkOutput(params);
 	}
 	
-	public void testMultipleField() throws IOException
+	@Test public void multipleField() throws IOException
 	{
 		Map<String,String> params = new HashMap<>();
 		params.put("TestXY", "one two three");
@@ -29,7 +32,7 @@ public class FormDataWriterTest extends TestCase
 		checkOutput(params);
 	}
 	
-	public void testFileField() throws IOException
+	@Test public void fileField() throws IOException
 	{
 		Map<String,String> params = new HashMap<>();
 		params.put("TestXY", "one two three");
@@ -40,7 +43,7 @@ public class FormDataWriterTest extends TestCase
 		checkOutput(params, Arrays.asList(info));
 	}
 	
-	public void testMultipleFileField() throws IOException
+	@Test public void multipleFileField() throws IOException
 	{
 		Map<String,String> params = new HashMap<>();
 		params.put("TestXY", "one two three");

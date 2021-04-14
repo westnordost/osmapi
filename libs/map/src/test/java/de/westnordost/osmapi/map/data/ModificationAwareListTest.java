@@ -1,5 +1,8 @@
 package de.westnordost.osmapi.map.data;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,45 +10,45 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class ModificationAwareListTest extends TestCase
+public class ModificationAwareListTest
 {
 	private ModificationAwareList<String> list;
 	
-	public void setUp() { list = makeList(); }
+	@Before	public void setUp() { list = makeList(); }
 	
-	public void testInitiallyNoModification()	{ assertFalse(list.isModified()); }
+	@Test public void initiallyNoModification()	{ assertFalse(list.isModified()); }
 
-	public void testModificationOnAdd()			{ checkModificationOnAdd(list); }
-	public void testModificationOnAddAt()		{ checkModificationOnAddAt(list); }
-	public void testModificationOnAddAll()		{ checkModificationOnAddAll(list); }
-	public void testModificationOnAddAllAt()	{ checkModificationOnAddAllAt(list); }
-	public void testModificationOnRemove()		{ checkModificationOnRemove(list); }
-	public void testModificationOnRemoveObj()	{ checkModificationOnRemoveObj(list); }
-	public void testModificationOnRemoveAll()	{ checkModificationOnRemoveAll(list); }
-	public void testModificationOnRetainAll()	{ checkModificationOnRetainAll(list); }
-	public void testModificationOnSet()			{ checkModificationOnSet(list); }
-	public void testModificationOnClear()		{ checkModificationOnClear(list); }
+	@Test public void modificationOnAdd()		{ checkModificationOnAdd(list); }
+	@Test public void modificationOnAddAt()		{ checkModificationOnAddAt(list); }
+	@Test public void modificationOnAddAll()	{ checkModificationOnAddAll(list); }
+	@Test public void modificationOnAddAllAt()	{ checkModificationOnAddAllAt(list); }
+	@Test public void modificationOnRemove()	{ checkModificationOnRemove(list); }
+	@Test public void modificationOnRemoveObj()	{ checkModificationOnRemoveObj(list); }
+	@Test public void modificationOnRemoveAll()	{ checkModificationOnRemoveAll(list); }
+	@Test public void modificationOnRetainAll()	{ checkModificationOnRetainAll(list); }
+	@Test public void modificationOnSet()		{ checkModificationOnSet(list); }
+	@Test public void modificationOnClear()		{ checkModificationOnClear(list); }
 
 	// --------------------------- Modification via sublist() --------------------------------------
 
-	public void testModificationOnSublistAdd()			{ checkModificationOnAdd(sublist()); }
-	public void testModificationOnSublistAddAt()		{ checkModificationOnAddAt(sublist()); }
-	public void testModificationOnSublistAddAll()		{ checkModificationOnAddAll(sublist()); }
-	public void testModificationOnSublistAddAllAt()		{ checkModificationOnAddAllAt(sublist()); }
-	public void testModificationOnSublistRemove()		{ checkModificationOnRemove(sublist()); }
-	public void testModificationOnSublistRemoveObj()	{ checkModificationOnRemoveObj(sublist()); }
-	public void testModificationOnSublistRemoveAll()	{ checkModificationOnRemoveAll(sublist()); }
-	public void testModificationOnSublistRetainAll()	{ checkModificationOnRetainAll(sublist()); }
-	public void testModificationOnSublistSet()			{ checkModificationOnSet(sublist()); }
-	public void testModificationOnSublistClear()		{ checkModificationOnClear(sublist()); }
+	@Test public void modificationOnSublistAdd()		{ checkModificationOnAdd(sublist()); }
+	@Test public void modificationOnSublistAddAt()		{ checkModificationOnAddAt(sublist()); }
+	@Test public void modificationOnSublistAddAll()		{ checkModificationOnAddAll(sublist()); }
+	@Test public void modificationOnSublistAddAllAt()	{ checkModificationOnAddAllAt(sublist()); }
+	@Test public void modificationOnSublistRemove()		{ checkModificationOnRemove(sublist()); }
+	@Test public void modificationOnSublistRemoveObj()	{ checkModificationOnRemoveObj(sublist()); }
+	@Test public void modificationOnSublistRemoveAll()	{ checkModificationOnRemoveAll(sublist()); }
+	@Test public void modificationOnSublistRetainAll()	{ checkModificationOnRetainAll(sublist()); }
+	@Test public void modificationOnSublistSet()		{ checkModificationOnSet(sublist()); }
+	@Test public void modificationOnSublistClear()		{ checkModificationOnClear(sublist()); }
 	
 	private List<String> sublist() { return list.subList(0, 2); }
 	
 	// --------------------------- Modification via sublist().sublist()-----------------------------
 
-	public void testModificationOnSublistSublistClear()
+	@Test public void modificationOnSublistSublistClear()
 	{
 		checkModificationOnClear(sublist().subList(0, 1));
 	}
@@ -54,7 +57,7 @@ public class ModificationAwareListTest extends TestCase
 	
 	// --------------------------- Modification via iterator() -------------------------------------
 
-	public void testModificationViaIterator()
+	@Test public void modificationViaIterator()
 	{
 		Iterator<String> it = list.iterator();
 		it.next();
@@ -62,7 +65,7 @@ public class ModificationAwareListTest extends TestCase
 		assertTrue(list.isModified());
 	}
 	
-	public void testModificationViaListIteratorRemove()
+	@Test public void modificationViaListIteratorRemove()
 	{
 		ListIterator<String> it = list.listIterator();
 		it.next();
@@ -70,7 +73,7 @@ public class ModificationAwareListTest extends TestCase
 		assertTrue(list.isModified());
 	}
 	
-	public void testModificationViaListIteratorSet()
+	@Test public void modificationViaListIteratorSet()
 	{
 		ListIterator<String> it = list.listIterator();
 		it.next();
@@ -78,7 +81,7 @@ public class ModificationAwareListTest extends TestCase
 		assertTrue(list.isModified());
 	}
 	
-	public void testModificationViaListIteratorAdd()
+	@Test public void modificationViaListIteratorAdd()
 	{
 		ListIterator<String> it = list.listIterator();
 		it.next();

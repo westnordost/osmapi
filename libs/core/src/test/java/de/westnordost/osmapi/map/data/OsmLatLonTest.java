@@ -1,48 +1,50 @@
 package de.westnordost.osmapi.map.data;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class OsmLatLonTest extends TestCase
+import static org.junit.Assert.*;
+
+public class OsmLatLonTest
 {
 	private static final double VALID_LAT = 51.7400243;
 	private static final double VALID_LON = 0.2400123;
 	
-	public void testFixedE7()
+	@Test public void fixedE7()
 	{
 		OsmLatLon pos = new OsmLatLon(VALID_LAT, VALID_LON);
-		assertEquals(VALID_LAT, pos.getLatitude());
-		assertEquals(VALID_LON, pos.getLongitude());
+		assertEquals(VALID_LAT, pos.getLatitude(), 1e-7);
+		assertEquals(VALID_LON, pos.getLongitude(), 1e-7);
 	}
 
-	public void testNegativeFixedE7()
+	@Test public void negativeFixedE7()
 	{
 		OsmLatLon pos = new OsmLatLon(-VALID_LAT, -VALID_LON);
-		assertEquals(-VALID_LAT, pos.getLatitude());
-		assertEquals(-VALID_LON, pos.getLongitude());
+		assertEquals(-VALID_LAT, pos.getLatitude(), 1e-7);
+		assertEquals(-VALID_LON, pos.getLongitude(), 1e-7);
 	}
 
-	public void testParse()
+	@Test public void parse()
 	{
 		OsmLatLon pos = OsmLatLon.parseLatLon(String.valueOf(VALID_LAT), String.valueOf(VALID_LON));
-		assertEquals(VALID_LAT, pos.getLatitude());
-		assertEquals(VALID_LON, pos.getLongitude());
+		assertEquals(VALID_LAT, pos.getLatitude(), 1e-7);
+		assertEquals(VALID_LON, pos.getLongitude(), 1e-7);
 	}
 
-	public void testZeroSomething()
+	@Test public void zeroSomething()
 	{
 		OsmLatLon pos = new OsmLatLon(0.0000005,0.0000003);
-		assertEquals(0.0000005, pos.getLatitude());
-		assertEquals(0.0000003, pos.getLongitude());
+		assertEquals(0.0000005, pos.getLatitude(), 1e-7);
+		assertEquals(0.0000003, pos.getLongitude(), 1e-7);
 	}
 
-	public void testEquals()
+	@Test public void testEquals()
 	{
 		OsmLatLon pos1 = OsmLatLon.parseLatLon(String.valueOf(VALID_LAT), String.valueOf(VALID_LON));
 		OsmLatLon pos2 = new OsmLatLon(VALID_LAT, VALID_LON);
 		assertEquals(pos1, pos2);
 	}
 	
-	public void testEqualsWithNonOsmLatLon()
+	@Test public void equalsWithNonOsmLatLon()
 	{
 		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
 		LatLon pos2 = new LatLon()
@@ -53,33 +55,33 @@ public class OsmLatLonTest extends TestCase
 		assertEquals(pos1, pos2);
 	}
 	
-	public void testEqualsNull()
+	@Test public void equalsNull()
 	{
 		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
 		assertFalse(pos1.equals(null));
 	}
 	
-	public void testEqualsOtherObject()
+	@Test public void equalsOtherObject()
 	{
 		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
 		assertFalse(pos1.equals(new Object()));
 	}
 	
-	public void testHashCode()
+	@Test public void testHashCode()
 	{
 		OsmLatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
 		OsmLatLon pos2 = new OsmLatLon(VALID_LAT, VALID_LON);
 		assertEquals(pos1.hashCode(), pos2.hashCode());
 	}
 	
-	public void testHashCodeAlgoIsNotTooSimple()
+	@Test public void hashCodeAlgoIsNotTooSimple()
 	{
 		OsmLatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
 		OsmLatLon pos2 = new OsmLatLon(VALID_LON, VALID_LAT);
 		assertFalse(pos1.hashCode() == pos2.hashCode());
 	}
 	
-	public void testInvalidPositiveLatitude()
+	@Test public void invalidPositiveLatitude()
 	{
 		try
 		{
@@ -89,7 +91,7 @@ public class OsmLatLonTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testInvalidNegativeLatitude()
+	@Test public void invalidNegativeLatitude()
 	{
 		try
 		{
@@ -99,7 +101,7 @@ public class OsmLatLonTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testInvalidPositiveLongitude()
+	@Test public void invalidPositiveLongitude()
 	{
 		try
 		{
@@ -109,7 +111,7 @@ public class OsmLatLonTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testInvalidNegativeLongitude()
+	@Test public void invalidNegativeLongitude()
 	{
 		try
 		{
@@ -119,7 +121,7 @@ public class OsmLatLonTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 	
-	public void testInvalidNegative360Longitude()
+	@Test public void invalidNegative360Longitude()
 	{
 		try
 		{

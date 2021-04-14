@@ -1,14 +1,11 @@
 package de.westnordost.osmapi.map;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
@@ -20,23 +17,25 @@ import de.westnordost.osmapi.map.handler.ListOsmElementHandler;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
 import de.westnordost.osmapi.map.handler.SingleOsmElementHandler;
 
-public class MapDataParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class MapDataParserTest
 {
 
-	public void testBounds()
+	@Test public void bounds()
 	{
 		String xml =
 				" <bounds minlat=\"51.7400000\" minlon=\"0.2400000\" maxlat=\"51.7500000\" maxlon=\"0.2500000\"/>";
 
 		BoundingBox bounds = parseOne(xml, BoundingBox.class);
 		
-		assertEquals(51.7400000, bounds.getMinLatitude());
-		assertEquals(0.2400000, bounds.getMinLongitude());
-		assertEquals(51.7500000, bounds.getMaxLatitude());
-		assertEquals(0.2500000, bounds.getMaxLongitude());
+		assertEquals(51.7400000, bounds.getMinLatitude(), 1e-7);
+		assertEquals(0.2400000, bounds.getMinLongitude(), 1e-7);
+		assertEquals(51.7500000, bounds.getMaxLatitude(), 1e-7);
+		assertEquals(0.2500000, bounds.getMaxLongitude(), 1e-7);
 	}
 	
-	public void testNode()
+	@Test public void node()
 	{
 		String xml =
 				" <node id=\"246773347\" visible=\"true\" version=\"1\" changeset=\"80692\" " +
@@ -45,8 +44,8 @@ public class MapDataParserTest extends TestCase
 
 		Node node = parseOne(xml, Node.class);
 		
-		assertEquals(51.7463194, node.getPosition().getLatitude());
-		assertEquals(0.2428181, node.getPosition().getLongitude());
+		assertEquals(51.7463194, node.getPosition().getLatitude(), 1e-7);
+		assertEquals(0.2428181, node.getPosition().getLongitude(), 1e-7);
 		assertEquals(246773347, node.getId());
 		assertEquals(1, node.getVersion());
 		assertNotNull(node.getChangeset());
@@ -60,7 +59,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals(0, node.getTags().size());
 	}
 
-	public void testWay()
+	@Test public void way()
 	{
 		String xml =
 				"  <way id=\"22918072\" visible=\"true\" version=\"1\" changeset=\"80692\"" +
@@ -88,7 +87,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals(246773327L, (long) way.getNodeIds().get(2));
 	}
 
-	public void testRelation()
+	@Test public void relation()
 	{
 		String xml =
 				" <relation id=\"3190476\" visible=\"true\" version=\"1\" changeset=\"17738772\" " +
@@ -130,7 +129,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals(0, relation.getTags().size());
 	}
 
-	public void testOrder() throws IOException
+	@Test public void order() throws IOException
 	{
 		String xml =
 				"<bounds minlat=\"51.7400000\" minlon=\"0.2400000\" maxlat=\"51.7500000\" maxlon=\"0.2500000\"/> " +
@@ -174,7 +173,7 @@ public class MapDataParserTest extends TestCase
 		}, new OsmMapDataFactory()).parse(TestUtils.asInputStream(xml));
 	}
 
-	public void testTags()
+	@Test public void tags()
 	{
 		String xml =
 				" <relation id=\"3190476\" visible=\"true\" version=\"1\" changeset=\"17738772\" " +
@@ -199,7 +198,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals("route", relation.getTags().get("type"));
 	}
 
-	public void testReuseData()
+	@Test public void reuseData()
 	{
 		String xml =
 				" <node id=\"246773352\" visible=\"true\" version=\"1\" changeset=\"80692\" " +
@@ -216,7 +215,7 @@ public class MapDataParserTest extends TestCase
 		assertSame(elements.get(0).getChangeset().user, elements.get(1).getChangeset().user);
 	}
 
-	public void testDeletedNode()
+	@Test public void deletedNode()
 	{
 		String xml = "<node id=\"5\" visible=\"false\" version=\"4\" changeset=\"9249514\" " +
 							"timestamp=\"2011-09-08T21:13:24Z\" user=\"mattfromderby\" uid=\"15867\"/>";
@@ -225,7 +224,7 @@ public class MapDataParserTest extends TestCase
 		assertNull(node.getPosition());
 	}
 
-	public void testWayWithoutNodes()
+	@Test public void wayWithoutNodes()
 	{
 		String xml =
 				"  <way id=\"101\" visible=\"false\" version=\"7\" changeset=\"4819821\" "
@@ -234,7 +233,7 @@ public class MapDataParserTest extends TestCase
 		assertTrue(way.getNodeIds().isEmpty());
 	}
 	
-	public void testRelationWithoutMembers()
+	@Test public void relationWithoutMembers()
 	{
 		String xml = "<relation id=\"1\" visible=\"false\" version=\"2\" changeset=\"300788\" "
 				+ "timestamp=\"2008-03-10T17:21:35Z\" user=\"robx\" uid=\"17508\"/>";
@@ -242,7 +241,7 @@ public class MapDataParserTest extends TestCase
 		assertTrue(relation.getMembers().isEmpty());
 	}
 
-	public void testElementWithoutVersion()
+	@Test public void elementWithoutVersion()
 	{
 		String xml = "<node id=\"5\"/>";
 		Node node = parseOne(xml, Node.class);

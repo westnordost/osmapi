@@ -1,13 +1,13 @@
 package de.westnordost.osmapi.capabilities;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.OsmConnection;
 
-public class CapabilitiesApiTest extends TestCase
+public class CapabilitiesApiTest
 {
-	public void testCapabilities()
+	@Test public void capabilities()
 	{
 		OsmConnection c = ConnectionTestFactory.createConnection(null);
 		new CapabilitiesApi(c).get();

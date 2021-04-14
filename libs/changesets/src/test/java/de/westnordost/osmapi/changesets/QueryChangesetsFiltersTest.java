@@ -1,17 +1,18 @@
 package de.westnordost.osmapi.changesets;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-import java.text.ParseException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.westnordost.osmapi.map.data.BoundingBox;
 
-public class QueryChangesetsFiltersTest extends TestCase
+import static org.junit.Assert.*;
+
+public class QueryChangesetsFiltersTest
 {
-	public void testByBounds()
+	@Test public void byBounds()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.byBounds(new BoundingBox(0, 5, 10, 15));
@@ -19,7 +20,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals("5,0,15,10", getParam(filters.toParamString(), "bbox"));
 	}
 	
-	public void testByChangesets()
+	@Test public void byChangesets()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.byChangesets(1, 2, 3);
@@ -27,7 +28,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals("1,2,3", getParam(filters.toParamString(), "changesets"));
 	}
 	
-	public void testByUserId()
+	@Test public void byUserId()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.byUser(4);
@@ -35,7 +36,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals("4", getParam(filters.toParamString(), "user"));
 	}
 	
-	public void testOnlyClosed()
+	@Test public void onlyClosed()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.onlyClosed();
@@ -43,7 +44,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals("true", getParam(filters.toParamString(), "closed"));
 	}
 	
-	public void testOnlyOpen()
+	@Test public void onlyOpen()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.onlyOpen();
@@ -51,7 +52,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals("true", getParam(filters.toParamString(), "open"));
 	}
 	
-	public void testByClosedAfter() throws ParseException
+	@Test public void byClosedAfter()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		Instant validInstant = Instant.parse("2222-11-22T22:11:00Z");
@@ -60,7 +61,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals(validInstant, Instant.parse(getParam(filters.toParamString(), "time")));
 	}
 	
-	public void testTwoDates()
+	@Test public void twoDates()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.byOpenSomeTimeBetween(Instant.now(), Instant.now());
@@ -70,7 +71,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertTrue(getParam(result, "time").contains(","));
 	}
 	
-	public void testByChangesetIds()
+	@Test public void byChangesetIds()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		List<Long> ids = new ArrayList<>();
@@ -86,7 +87,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals("1,2,3", getParam(filters.toParamString(), "changesets"));
 	}
 	
-	public void testByUserName()
+	@Test public void byUserName()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		filters.byUser("hans");
@@ -94,7 +95,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		assertEquals("hans", getParam(filters.toParamString(), "display_name"));
 	}
 
-	public void testIllegalBounds()
+	@Test public void illegalBounds()
 	{
 		try
 		{
@@ -104,7 +105,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testIllegalUserSelection()
+	@Test public void illegalUserSelection()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
 		try
@@ -126,7 +127,7 @@ public class QueryChangesetsFiltersTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 	
-	public void testIllegalChangesetCount()
+	@Test public void illegalChangesetCount()
 	{
 		try
 		{

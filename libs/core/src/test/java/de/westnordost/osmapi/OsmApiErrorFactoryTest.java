@@ -1,8 +1,9 @@
 package de.westnordost.osmapi;
 
+import org.junit.Test;
+
 import java.net.HttpURLConnection;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.common.errors.OsmApiException;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
@@ -11,10 +12,12 @@ import de.westnordost.osmapi.common.errors.OsmConnectionException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.common.errors.OsmServiceUnavailableException;
 
-public class OsmApiErrorFactoryTest extends TestCase
+import static org.junit.Assert.*;
+
+public class OsmApiErrorFactoryTest
 {
 
-	public void testError()
+	@Test public void error()
 	{
 		for(int i = 0; i < 600; ++i)
 		{

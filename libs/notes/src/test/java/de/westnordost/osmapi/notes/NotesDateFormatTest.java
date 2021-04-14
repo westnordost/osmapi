@@ -1,16 +1,16 @@
 package de.westnordost.osmapi.notes;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-import java.text.ParseException;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
-public class NotesDateFormatTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class NotesDateFormatTest
 {
-	public void testDate() throws DateTimeParseException
+	@Test public void date() throws DateTimeParseException
 	{
 		assertEquals(
 			ZonedDateTime.of(2020, 10, 26, 19, 33, 14, 0, ZoneId.of("UTC")).toInstant(),

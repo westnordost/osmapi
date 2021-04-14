@@ -1,18 +1,21 @@
 package de.westnordost.osmapi.changesets;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.ListHandler;
 import de.westnordost.osmapi.common.SingleElementHandler;
 
-public class ChangesetParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class ChangesetParserTest
 {
-	public void testBasicElements()
+	@Test public void basicElements()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
@@ -26,7 +29,7 @@ public class ChangesetParserTest extends TestCase
 		assertEquals("blub", changeset.user.displayName);
 		assertEquals(123, changeset.user.id);
 		assertEquals(Instant.parse("2011-03-05T20:29:56Z"), changeset.createdAt);
-		assertEquals(true, changeset.isOpen);
+		assertTrue(changeset.isOpen);
 		assertEquals(0, changeset.notesCount);
 		assertEquals(123, changeset.changesCount);
 
@@ -39,7 +42,7 @@ public class ChangesetParserTest extends TestCase
 		assertNull(changeset.getSources());
 	}
 
-	public void testOptionalElements()
+	@Test public void optionalElements()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
@@ -56,16 +59,16 @@ public class ChangesetParserTest extends TestCase
 		assertNotNull(changeset.closedAt);
 		assertEquals(Instant.parse("2012-03-05T20:29:56Z"), changeset.closedAt);
 
-		assertEquals(false, changeset.isOpen);
+		assertFalse(changeset.isOpen);
 		assertEquals(0, changeset.notesCount);
 		assertEquals(0, changeset.changesCount);
 
 		assertNotNull(changeset.boundingBox);
 
-		assertEquals(42.1114934, changeset.boundingBox.getMinLatitude());
-		assertEquals(-4.8458250, changeset.boundingBox.getMinLongitude());
-		assertEquals(42.2143384, changeset.boundingBox.getMaxLatitude());
-		assertEquals(-4.6259554, changeset.boundingBox.getMaxLongitude());
+		assertEquals(42.1114934, changeset.boundingBox.getMinLatitude(), 1e-7);
+		assertEquals(-4.8458250, changeset.boundingBox.getMinLongitude(), 1e-7);
+		assertEquals(42.2143384, changeset.boundingBox.getMaxLatitude(), 1e-7);
+		assertEquals(-4.6259554, changeset.boundingBox.getMaxLongitude(), 1e-7);
 
 		assertEquals("dongs", changeset.getChangesetComment());
 		assertEquals("dings", changeset.getGenerator());
@@ -81,7 +84,7 @@ public class ChangesetParserTest extends TestCase
 	}
 
 
-	public void testMultipleElements()
+	@Test public void multipleElements()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" changes_count=\"0\" " +
@@ -96,7 +99,7 @@ public class ChangesetParserTest extends TestCase
 		assertEquals(1655,changesets.get(1).id);
 	}
 
-	public void testComments()
+	@Test public void comments()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" changes_count=\"0\" " +
@@ -130,7 +133,7 @@ public class ChangesetParserTest extends TestCase
 		assertEquals(Instant.parse("2015-01-01T18:58:03Z"), b.createdAt);
 	}
 
-	public void testReuseUser()
+	@Test public void reuseUser()
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" changes_count=\"0\"" +

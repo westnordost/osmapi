@@ -4,7 +4,5 @@ description = 'Client for the OSM API 0.6 - Getting map data, querying single el
 
 dependencies {
     compile "de.westnordost:osmapi-core:$core_version"
-    testCompile 'junit:junit:3.8.1'
     testCompile "de.westnordost:osmapi-changesets:$changesets_version"
-    testCompile project(':testutils')
 }

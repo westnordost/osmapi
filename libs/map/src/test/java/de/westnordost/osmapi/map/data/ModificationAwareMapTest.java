@@ -1,5 +1,8 @@
 package de.westnordost.osmapi.map.data;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,41 +11,41 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class ModificationAwareMapTest extends TestCase
+public class ModificationAwareMapTest
 {
 	private ModificationAwareMap<String, String> map;
 	
-	public void setUp()
+	@Before	public void setUp()
 	{
 		map = makeMap();
 	}
 	
-	public void testInitiallyNoModification()
+	@Test public void initiallyNoModification()
 	{
 		assertFalse(map.isModified());
 	}
 	
-	public void testModificationViaClear()
+	@Test public void modificationViaClear()
 	{
 		map.clear();
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaPut()
+	@Test public void modificationViaPut()
 	{
 		map.put("key3", "value3");
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaPutExistingValue()
+	@Test public void modificationViaPutExistingValue()
 	{
 		map.put("key1", "value1");
 		assertFalse(map.isModified());
 	}
 	
-	public void testModificationViaRemove()
+	@Test public void modificationViaRemove()
 	{
 		map.remove("key3");
 		assertFalse(map.isModified());
@@ -50,7 +53,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaPutAll()
+	@Test public void modificationViaPutAll()
 	{
 		map.putAll(Collections.<String, String> emptyMap());
 		assertFalse(map.isModified());
@@ -62,13 +65,13 @@ public class ModificationAwareMapTest extends TestCase
 	
 	// --------------------------- Modification via values() --------------------------------------
 
-	public void testModificationViaValuesClear()
+	@Test public void modificationViaValuesClear()
 	{
 		map.values().clear();
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaValuesRemove()
+	@Test public void modificationViaValuesRemove()
 	{
 		map.values().remove("value3");
 		assertFalse(map.isModified());
@@ -76,7 +79,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaValuesRemoveAll()
+	@Test public void modificationViaValuesRemoveAll()
 	{
 		map.values().removeAll(Collections.EMPTY_LIST);
 		assertFalse(map.isModified());
@@ -84,7 +87,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaValuesRetainAll()
+	@Test public void modificationViaValuesRetainAll()
 	{
 		map.values().retainAll(map.values());
 		assertFalse(map.isModified());
@@ -96,19 +99,19 @@ public class ModificationAwareMapTest extends TestCase
 	
 	// --------------------------- Modification via entrySet() -------------------------------------
 	
-	public void testModificationViaEntrySetClear()
+	@Test public void modificationViaEntrySetClear()
 	{
 		map.entrySet().clear();
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaEntrySetRemove()
+	@Test public void modificationViaEntrySetRemove()
 	{
 		map.entrySet().remove(makeExistingEntry());
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaEntrySetRemoveAll()
+	@Test public void modificationViaEntrySetRemoveAll()
 	{
 		map.entrySet().removeAll(Arrays.asList(makeNewEntry()));
 		assertFalse(map.isModified());
@@ -116,7 +119,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaEntrySetRetainAll()
+	@Test public void modificationViaEntrySetRetainAll()
 	{
 		map.entrySet().retainAll(map.entrySet());
 		assertFalse(map.isModified());
@@ -128,13 +131,13 @@ public class ModificationAwareMapTest extends TestCase
 	
 	// --------------------------- Modification via keySet() -------------------------------------
 	
-	public void testModificationViaKeySetClear()
+	@Test public void modificationViaKeySetClear()
 	{
 		map.keySet().clear();
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaKeySetRemove()
+	@Test public void modificationViaKeySetRemove()
 	{
 		map.keySet().remove("key3");
 		assertFalse(map.isModified());
@@ -142,7 +145,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaKeySetRemoveAll()
+	@Test public void modificationViaKeySetRemoveAll()
 	{
 		map.keySet().removeAll(Collections.EMPTY_LIST);
 		assertFalse(map.isModified());
@@ -150,7 +153,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaKeySetRetainAll()
+	@Test public void modificationViaKeySetRetainAll()
 	{
 		map.keySet().retainAll(map.keySet());
 		assertFalse(map.isModified());
@@ -162,7 +165,7 @@ public class ModificationAwareMapTest extends TestCase
 	
 	// ---------------------- Modification via entrySet().iterator() -------------------------------
 	
-	public void testModificationViaEntrySetIterator()
+	@Test public void modificationViaEntrySetIterator()
 	{
 		Iterator<Entry<String, String>> it = map.entrySet().iterator();
 		it.next();
@@ -170,7 +173,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 	
-	public void testModificationViaKeySetIterator()
+	@Test public void modificationViaKeySetIterator()
 	{
 		Iterator<String> it = map.keySet().iterator();
 		it.next();
@@ -178,7 +181,7 @@ public class ModificationAwareMapTest extends TestCase
 		assertTrue(map.isModified());
 	}
 
-	public void testModificationViaValuesIterator()
+	@Test public void modificationViaValuesIterator()
 	{
 		Iterator<String> it = map.values().iterator();
 		it.next();

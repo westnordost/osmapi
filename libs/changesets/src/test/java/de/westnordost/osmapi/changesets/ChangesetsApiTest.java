@@ -1,6 +1,7 @@
 package de.westnordost.osmapi.changesets;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -18,7 +19,9 @@ import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.map.data.OsmNode;
 import de.westnordost.osmapi.map.changes.SimpleMapDataChangesHandler;
 
-public class ChangesetsApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class ChangesetsApiTest
 {
 	private ChangesetsApi privilegedDao;
 	private ChangesetsApi anonymousDao;
@@ -36,8 +39,7 @@ public class ChangesetsApiTest extends TestCase
 	private static final int A_USER_WITH_CHANGESETS = 3630;
 	private static final int A_USER_WITHOUT_CHANGESETS = 3632;
 	
-	@Override
-	protected void setUp()
+	@Before public void setUp()
 	{
 		OsmConnection userConnection = ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING);
@@ -50,14 +52,14 @@ public class ChangesetsApiTest extends TestCase
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 
-	public void testSubscribe()
+	@Test public void subscribe()
 	{
 		ChangesetInfo info = privilegedDao.subscribe(changesetId);
 		privilegedDao.unsubscribe(changesetId);
 		assertEquals(changesetId, info.id);
 	}
 
-	public void testRead()
+	@Test public void read()
 	{
 		List<Element> elements = new ArrayList<>();
 		long myChangesetId = mapDataDao.updateMap("unit test", "", elements, null);
@@ -74,12 +76,12 @@ public class ChangesetsApiTest extends TestCase
 		assertTrue(Math.abs(now - infos.createdAt.toEpochMilli()) < TEN_MINUTES);
 	}
 
-	public void testReadInvalidReturnsNull()
+	@Test public void readInvalidReturnsNull()
 	{
 		assertNull(unprivilegedDao.get(0));
 	}
 
-	public void testComment()
+	@Test public void comment()
 	{
 		List<Element> elements = new ArrayList<>();
 		long myChangesetId = mapDataDao.updateMap("unit test", "", elements, null);
@@ -94,7 +96,7 @@ public class ChangesetsApiTest extends TestCase
 		assertEquals("test comment", comments.get(0).text);
 	}
 
-	public void testEmptyComment()
+	@Test public void emptyComment()
 	{
 		try
 		{
@@ -104,7 +106,7 @@ public class ChangesetsApiTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testAuthFail()
+	@Test public void authFail()
 	{
 		try
 		{
@@ -128,7 +130,7 @@ public class ChangesetsApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testAlreadySubscribedDoesNotFail()
+	@Test public void alreadySubscribedDoesNotFail()
 	{
 		// ...which is different from the "raw" API response
 
@@ -136,30 +138,30 @@ public class ChangesetsApiTest extends TestCase
 		assertNotNull(privilegedDao.subscribe(changesetId));
 	}
 
-	public void testNotSubscribedDoesNotFail()
+	@Test public void notSubscribedDoesNotFail()
 	{
 		// ...which is different from the "raw" API response
 		assertNotNull(privilegedDao.unsubscribe(changesetId));
 	}
 
-	public void testSubscribeNonExistingChangesetFails()
+	@Test public void subscribeNonExistingChangesetFails()
 	{
 		try { privilegedDao.subscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
 		try { privilegedDao.unsubscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
 	}
 
-	public void testGetAsAnonymousDoesNotFail()
+	@Test public void getAsAnonymousDoesNotFail()
 	{
 		assertNotNull(anonymousDao.get(changesetId));
 	}
 
 
-	public void testGetDataAsAnonymousDoesNotFail()
+	@Test public void getDataAsAnonymousDoesNotFail()
 	{
 		anonymousDao.getData(123, new SimpleMapDataChangesHandler());
 	}
 
-	public void testFindAsAnonymousDoesNotFail()
+	@Test public void findAsAnonymousDoesNotFail()
 	{
 		anonymousDao.find(new Handler<ChangesetInfo>()
 		{
@@ -171,7 +173,7 @@ public class ChangesetsApiTest extends TestCase
 		}, new QueryChangesetsFilters().byUser(A_USER_WITH_CHANGESETS));
 	}
 
-	public void testAnonymousFail()
+	@Test public void anonymousFail()
 	{
 		try
 		{
@@ -195,7 +197,7 @@ public class ChangesetsApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testGetChangesets()
+	@Test public void getChangesets()
 	{
 		unprivilegedDao.find(new Handler<ChangesetInfo>()
 		{
@@ -210,7 +212,7 @@ public class ChangesetsApiTest extends TestCase
 		// this just should not throw an exception
 	}
 
-	public void testGetChangesetsEmptyDoesNotFail()
+	@Test public void getChangesetsEmptyDoesNotFail()
 	{
 		unprivilegedDao.find(new Handler<ChangesetInfo>()
 		{
@@ -222,7 +224,7 @@ public class ChangesetsApiTest extends TestCase
 		}, new QueryChangesetsFilters().byUser(A_USER_WITHOUT_CHANGESETS));
 	}
 	
-	public void testGetChanges()
+	@Test public void getChanges()
 	{
 		Node node = new OsmNode(-1, 1, new OsmLatLon(55.12313,50.13221), null);
 		List<Element> elements = new ArrayList<>();

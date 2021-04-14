@@ -1,15 +1,17 @@
 package de.westnordost.osmapi.user;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
 
 import de.westnordost.osmapi.TestUtils;
 
-public class PermissionsParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class PermissionsParserTest
 {
-	public void testPermissionsParser() throws IOException
+	@Test public void permissionsParser() throws IOException
 	{
 		String xml =
 				"<permissions>" +

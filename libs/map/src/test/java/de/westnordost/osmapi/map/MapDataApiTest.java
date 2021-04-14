@@ -1,12 +1,14 @@
 package de.westnordost.osmapi.map;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.changesets.ChangesetsDao;
@@ -30,15 +32,16 @@ import de.westnordost.osmapi.map.handler.DefaultMapDataHandler;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
 import de.westnordost.osmapi.map.handler.OneElementTypeHandler;
 
-public class MapDataApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class MapDataApiTest
 {
 	private OsmConnection privilegedConnection;
 	private OsmConnection unprivilegedConnection;
 	private OsmConnection connection;
 	private OsmConnection liveConnection;
 
-	@Override
-	protected void setUp()
+	@Before public void setUp()
 	{
 		// Create the different connections...
 		connection = ConnectionTestFactory.createConnection(null);
@@ -53,7 +56,7 @@ public class MapDataApiTest extends TestCase
 		liveConnection = ConnectionTestFactory.createLiveConnection();
 	}
 
-	public void testGetMapTooBigBounds()
+	@Test public void getMapTooBigBounds()
 	{
 		try
 		{
@@ -67,7 +70,7 @@ public class MapDataApiTest extends TestCase
 		catch(OsmQueryTooBigException ignore) {}
 	}
 
-	public void testGetMapBoundsCross180thMeridian()
+	@Test public void getMapBoundsCross180thMeridian()
 	{
 		try
 		{
@@ -80,7 +83,7 @@ public class MapDataApiTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testGetMapBounds()
+	@Test public void getMapBounds()
 	{
 		final BoundingBox verySmallBounds = new BoundingBox(31, 31, 31.0000001, 31.0000001);
 
@@ -94,7 +97,7 @@ public class MapDataApiTest extends TestCase
 		});
 	}
 
-	public void testSomeElements()
+	@Test public void someElements()
 	{
 		// there is not so much we can test regarding the validity of the
 		// returned data, but
@@ -112,7 +115,7 @@ public class MapDataApiTest extends TestCase
 		assertTrue(counter.relations > 0);
 	}
 
-	public void testDownloadMapIsReallyStreamed()
+	@Test public void downloadMapIsReallyStreamed()
 	{
 		// should be >1MB of data
 		final BoundingBox bigHamburg = new BoundingBox(53.585, 9.945, 53.59, 9.95);
@@ -136,7 +139,7 @@ public class MapDataApiTest extends TestCase
 		 */
 	}
 
-	public void testUploadAsAnonymousFails()
+	@Test public void uploadAsAnonymousFails()
 	{
 		try
 		{
@@ -147,7 +150,7 @@ public class MapDataApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testUploadAsUnprivilegedUserFails()
+	@Test public void uploadAsUnprivilegedUserFails()
 	{
 		try
 		{
@@ -158,7 +161,7 @@ public class MapDataApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testReadDiff()
+	@Test public void readDiff()
 	{
 		MapDataApi mapDataApi = new MapDataApi(privilegedConnection);
 
@@ -191,7 +194,7 @@ public class MapDataApiTest extends TestCase
 		assertNull(diffDeleted.serverVersion);
 	}
 
-	public void testNotFound()
+	@Test public void notFound()
 	{
 		MapDataApi dao = new MapDataApi(connection);
 		MapDataHandler h = new DefaultMapDataHandler();
@@ -214,37 +217,37 @@ public class MapDataApiTest extends TestCase
 	// we do not test the validity of the data here, just they should not throw
 	// exceptions
 
-	public void testWayComplete()
+	@Test public void wayComplete()
 	{
 		new MapDataApi(liveConnection).getWayComplete(27308882, new DefaultMapDataHandler());
 	}
 
-	public void testRelationComplete()
+	@Test public void relationComplete()
 	{
 		new MapDataApi(liveConnection).getRelationComplete(3301989, new DefaultMapDataHandler());
 	}
 
-	public void testRelationsForRelation()
+	@Test public void relationsForRelation()
 	{
 		new MapDataApi(liveConnection).getRelationsForRelation(3218689);
 	}
 
-	public void testRelationsForWay()
+	@Test public void relationsForWay()
 	{
 		new MapDataApi(liveConnection).getRelationsForWay(244179625);
 	}
 
-	public void testRelationsForNode()
+	@Test public void relationsForNode()
 	{
 		new MapDataApi(liveConnection).getRelationsForNode(3375377736L);
 	}
 
-	public void testWaysForNode()
+	@Test public void waysForNode()
 	{
 		new MapDataApi(liveConnection).getWaysForNode(3668931466L);
 	}
 
-	public void testEmptySomeElementsForX()
+	@Test public void emptySomeElementsForX()
 	{
 		MapDataApi dao = new MapDataApi(connection);
 
@@ -254,25 +257,25 @@ public class MapDataApiTest extends TestCase
 		assertEquals(0, dao.getWaysForNode(Long.MAX_VALUE).size());
 	}
 
-	public void testGetNode()
+	@Test public void getNode()
 	{
 		new MapDataApi(liveConnection).getNode(ElementShouldExist.NODE);
 		assertNull(new MapDataApi(connection).getNode(Long.MAX_VALUE));
 	}
 
-	public void testGetWay()
+	@Test public void getWay()
 	{
 		new MapDataApi(liveConnection).getWay(ElementShouldExist.WAY);
 		assertNull(new MapDataApi(connection).getWay(Long.MAX_VALUE));
 	}
 
-	public void testGetRelation()
+	@Test public void getRelation()
 	{
 		new MapDataApi(liveConnection).getRelation(ElementShouldExist.RELATION);
 		assertNull(new MapDataApi(connection).getRelation(Long.MAX_VALUE));
 	}
 
-	public void testGetNodes()
+	@Test public void getNodes()
 	{
 		// test if a non-existing element does "poison the well"
 		// this test will fail if both Yangon and New York place=city nodes do
@@ -289,7 +292,7 @@ public class MapDataApiTest extends TestCase
 		assertFalse(new MapDataApi(liveConnection).getNodes(place).isEmpty());
 	}
 
-	public void testGetRelations()
+	@Test public void getRelations()
 	{
 		// test if a non-existing element does "poison the well"
 		// this test will fail if Germany type=boundary does not exist anymore
@@ -305,7 +308,7 @@ public class MapDataApiTest extends TestCase
 		assertFalse(new MapDataApi(liveConnection).getRelations(place).isEmpty());
 	}
 
-	public void testGetWays()
+	@Test public void getWays()
 	{
 		// test if a non-existing element does "poison the well"
 		// this test will fail if some harbor in Hamburg does not exist
@@ -323,7 +326,7 @@ public class MapDataApiTest extends TestCase
 		assertFalse(new MapDataApi(liveConnection).getWays(place).isEmpty());
 	}
 
-	public void testGetElementsEmpty()
+	@Test public void getElementsEmpty()
 	{
 		MapDataApi dao = new MapDataApi(connection);
 		assertTrue(dao.getWays(Collections.<Long> emptyList()).isEmpty());
@@ -331,7 +334,7 @@ public class MapDataApiTest extends TestCase
 		assertTrue(dao.getRelations(Collections.<Long> emptyList()).isEmpty());
 	}
 
-	public void testCloseUnopenedChangesetFails()
+	@Test public void closeUnopenedChangesetFails()
 	{
 		try
 		{
@@ -341,7 +344,7 @@ public class MapDataApiTest extends TestCase
 		catch(OsmNotFoundException ignore) {}
 	}
 	
-	public void testCloseClosedChangesetFails()
+	@Test public void closeClosedChangesetFails()
 	{
 		MapDataApi dao = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
@@ -357,7 +360,7 @@ public class MapDataApiTest extends TestCase
 		catch(OsmConflictException ignore) { }
 	}
 	
-	public void testMultipleChangesInChangeset()
+	@Test public void multipleChangesInChangeset()
 	{
 		MapDataApi mapDataApi = new MapDataApi(privilegedConnection);
 		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);
@@ -408,7 +411,7 @@ public class MapDataApiTest extends TestCase
 		}
 	}
 	
-	public void testUpdateClosedChangesetFails()
+	@Test public void updateClosedChangesetFails()
 	{
 		MapDataApi dao = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
@@ -426,7 +429,7 @@ public class MapDataApiTest extends TestCase
 		}
 	}
 	
-	public void testUpdateUnopenedChangesetFails()
+	@Test public void updateUnopenedChangesetFails()
 	{
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
@@ -440,7 +443,7 @@ public class MapDataApiTest extends TestCase
 		}
 	}
 
-	public void testUpdateChangesetOverwritesOldTags()
+	@Test public void updateChangesetOverwritesOldTags()
 	{
 		MapDataApi dao = new MapDataApi(privilegedConnection);
 		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);

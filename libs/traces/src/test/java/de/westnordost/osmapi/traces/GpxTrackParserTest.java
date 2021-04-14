@@ -1,24 +1,27 @@
 package de.westnordost.osmapi.traces;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.ListHandler;
 import de.westnordost.osmapi.common.SingleElementHandler;
 
-public class GpxTrackParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class GpxTrackParserTest
 {
-	public void testParseEmptyTrack()
+	@Test public void parseEmptyTrack()
 	{
 		String xml = "<gpx><trk><trkseg /></trk></gpx>";
 		assertNull(parseOne(xml));
 	}
 		
-	public void testParseSingleTrackpointWithExtras()
+	@Test public void parseSingleTrackpointWithExtras()
 	{
 		String xml =
 				"<trkseg>" +
@@ -31,15 +34,15 @@ public class GpxTrackParserTest extends TestCase
 		
 		GpsTrackpoint trackpoint = parseOne(xml);
 		assertTrue(trackpoint.isFirstPointInTrackSegment);
-		assertEquals(12.3, trackpoint.position.getLatitude());
-		assertEquals(45.6, trackpoint.position.getLongitude());
-		assertEquals(2.12f, trackpoint.horizontalDilutionOfPrecision);
-		assertEquals(789.1f, trackpoint.elevation);
+		assertEquals(12.3, trackpoint.position.getLatitude(), 1e-7);
+		assertEquals(45.6, trackpoint.position.getLongitude(), 1e-7);
+		assertEquals(2.12f, trackpoint.horizontalDilutionOfPrecision, 1e-7);
+		assertEquals(789.1f, trackpoint.elevation, 1e-7);
 
 		assertEquals(Instant.parse("2016-04-17T16:41:02Z"), trackpoint.time);
 	}
 	
-	public void testParseSingleTrackpointWithMillis()
+	@Test public void parseSingleTrackpointWithMillis()
 	{
 		String xml =
 				"<trkseg>" +
@@ -54,7 +57,7 @@ public class GpxTrackParserTest extends TestCase
 		assertEquals(654, trackpoint.time.toEpochMilli() % 1000);
 	}
 	
-	public void testParseMultipleSegments()
+	@Test public void parseMultipleSegments()
 	{
 		String xml =
 				"<trkseg>" +

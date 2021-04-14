@@ -1,22 +1,25 @@
 package de.westnordost.osmapi.map.changes;
 
+import org.junit.Test;
+
 import java.io.IOException;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.map.data.Element;
 
-public class MapDataDiffParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class MapDataDiffParserTest
 {
-	public void testEmpty()
+	@Test public void empty()
 	{
 		DiffElement e = parseOne("<diffResult></diffResult>");
 
 		assertNull(e);
 	}
 
-	public void testFields()
+	@Test public void fields()
 	{
 		DiffElement e = parseOne("<diffResult><node old_id='1' new_id='2' new_version='3'/></diffResult>");
 
@@ -25,7 +28,7 @@ public class MapDataDiffParserTest extends TestCase
 		assertEquals(3, (int) e.serverVersion);
 	}
 
-	public void testNullableFields()
+	@Test public void nullableFields()
 	{
 		DiffElement e = parseOne("<diffResult><node old_id='1'/></diffResult>");
 
@@ -34,19 +37,19 @@ public class MapDataDiffParserTest extends TestCase
 		assertNull(e.serverVersion);
 	}
 
-	public void testNode()
+	@Test public void node()
 	{
 		DiffElement e = parseOne("<diffResult><node old_id='1'/></diffResult>");
 		assertEquals(Element.Type.NODE, e.type);
 	}
 
-	public void testWay()
+	@Test public void way()
 	{
 		DiffElement e = parseOne("<diffResult><way old_id='1'/></diffResult>");
 		assertEquals(Element.Type.WAY, e.type);
 	}
 
-	public void testRelation()
+	@Test public void relation()
 	{
 		DiffElement e = parseOne("<diffResult><relation old_id='1'/></diffResult>");
 		assertEquals(Element.Type.RELATION, e.type);

@@ -1,6 +1,6 @@
 package de.westnordost.osmapi.notes;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -12,10 +12,12 @@ import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.ListHandler;
 import de.westnordost.osmapi.common.SingleElementHandler;
 
-public class NotesParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class NotesParserTest
 {
 
-	public void testParseNoteDate()
+	@Test public void parseNoteDate()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -30,7 +32,7 @@ public class NotesParserTest extends TestCase
 		);
 	}
 
-	public void testParseNoteStatus()
+	@Test public void parseNoteStatus()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -50,7 +52,7 @@ public class NotesParserTest extends TestCase
 		assertEquals(Note.Status.CLOSED, notes.get(2).status);
 	}
 
-	public void testParseNoteOptionalDate()
+	@Test public void parseNoteOptionalDate()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -65,7 +67,7 @@ public class NotesParserTest extends TestCase
 		assertNull(notes.get(1).closedAt);
 	}
 
-	public void testParseBasicNoteFields()
+	@Test public void parseBasicNoteFields()
 	{
 		String xml =
 				"<note lon=\"-0.1904556\" lat=\"51.5464626\">" +
@@ -75,11 +77,11 @@ public class NotesParserTest extends TestCase
 		Note note = parseOne(xml);
 		
 		assertEquals(123456, note.id);
-		assertEquals(-0.1904556, note.position.getLongitude());
-		assertEquals(51.5464626, note.position.getLatitude());
+		assertEquals(-0.1904556, note.position.getLongitude(), 1e-7);
+		assertEquals(51.5464626, note.position.getLatitude(), 1e-7);
 	}
 
-	public void testParseCommentDateField()
+	@Test public void parseCommentDateField()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -99,7 +101,7 @@ public class NotesParserTest extends TestCase
 		);
 	}
 
-	public void testParseCommentStatusField()
+	@Test public void parseCommentStatusField()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -133,7 +135,7 @@ public class NotesParserTest extends TestCase
 		assertEquals(NoteComment.Action.HIDDEN, comments.get(4).action);
 	}
 
-	public void testParseCommentOptionalFields()
+	@Test public void parseCommentOptionalFields()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -149,7 +151,7 @@ public class NotesParserTest extends TestCase
 		assertNull(comment.user);
 	}
 
-	public void testParseBasicCommentFields()
+	@Test public void parseBasicCommentFields()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +
@@ -174,7 +176,7 @@ public class NotesParserTest extends TestCase
 		assertEquals("Last sighted here", comment.text);
 	}
 
-	public void testReuseUserData()
+	@Test public void reuseUserData()
 	{
 		String xml =
 				"<note lon=\"0\" lat=\"0\">" +

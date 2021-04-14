@@ -4,6 +4,4 @@ description = 'Client for the OSM API 0.6 - Getting, uploading, updating and del
 
 dependencies {
     compile "de.westnordost:osmapi-core:$core_version"
-    testCompile 'junit:junit:3.8.1'
-    testCompile project(':testutils')
 }

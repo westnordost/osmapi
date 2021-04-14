@@ -1,13 +1,16 @@
 package de.westnordost.osmapi.user;
 
+import org.junit.Test;
+
 import java.util.List;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
-import junit.framework.TestCase;
 
-public class PermissionsApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class PermissionsApiTest
 {
-	public void testGetPermissions()
+	@Test public void getPermissions()
 	{
 		PermissionsApi privilegedDao = new PermissionsApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));

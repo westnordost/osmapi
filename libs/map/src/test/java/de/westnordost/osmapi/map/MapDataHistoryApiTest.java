@@ -1,6 +1,8 @@
 package de.westnordost.osmapi.map;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
@@ -8,19 +10,20 @@ import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.Relation;
 import de.westnordost.osmapi.map.data.Way;
 
-public class MapDataHistoryApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class MapDataHistoryApiTest
 {
 	private MapDataHistoryApi liveDao;
 	private MapDataHistoryApi dao;
 
-	@Override
-	protected void setUp()
+	@Before public void setUp()
 	{
 		liveDao = new MapDataHistoryApi(ConnectionTestFactory.createLiveConnection());
 		dao = new MapDataHistoryApi(ConnectionTestFactory.createConnection(null));
 	}
 
-	public void testGetUnknownNodeHistory()
+	@Test public void getUnknownNodeHistory()
 	{
 		try
 		{
@@ -32,7 +35,7 @@ public class MapDataHistoryApiTest extends TestCase
 		assertNull(dao.getNodeVersion(Long.MAX_VALUE,1));
 	}
 
-	public void testGetUnknownWayHistory()
+	@Test public void getUnknownWayHistory()
 	{
 		try
 		{
@@ -43,7 +46,7 @@ public class MapDataHistoryApiTest extends TestCase
 		assertNull(dao.getWayVersion(Long.MAX_VALUE, 1));
 	}
 
-	public void testGetUnknownRelationHistory()
+	@Test public void getUnknownRelationHistory()
 	{
 		try
 		{
@@ -54,22 +57,22 @@ public class MapDataHistoryApiTest extends TestCase
 		assertNull(dao.getRelationVersion(Long.MAX_VALUE, 1));
 	}
 
-	public void testGetUnknownNodeVersion()
+	@Test public void getUnknownNodeVersion()
 	{
 		assertNull(liveDao.getNodeVersion(ElementShouldExist.NODE, Integer.MAX_VALUE));
 	}
 
-	public void testGetUnknownWayVersion()
+	@Test public void getUnknownWayVersion()
 	{
 		assertNull(liveDao.getWayVersion(ElementShouldExist.WAY, Integer.MAX_VALUE));
 	}
 
-	public void testGetUnknownRelationVersion()
+	@Test public void getUnknownRelationVersion()
 	{
 		assertNull(liveDao.getRelationVersion(ElementShouldExist.RELATION, Integer.MAX_VALUE));
 	}
 
-	public void testGetNodeHistory()
+	@Test public void getNodeHistory()
 	{
 		CountHandler<Node> handler = new CountHandler<>();
 		liveDao.getNodeHistory(ElementShouldExist.NODE, handler);
@@ -77,7 +80,7 @@ public class MapDataHistoryApiTest extends TestCase
 		assertNotNull(liveDao.getNodeVersion(ElementShouldExist.NODE, 1));
 	}
 
-	public void testGetWayHistory()
+	@Test public void getWayHistory()
 	{
 		CountHandler<Way> handler = new CountHandler<>();
 		liveDao.getWayHistory(ElementShouldExist.WAY, handler);
@@ -85,7 +88,7 @@ public class MapDataHistoryApiTest extends TestCase
 		assertNotNull(liveDao.getWayVersion(ElementShouldExist.WAY, 1));
 	}
 
-	public void testGetRelationHistory()
+	@Test public void getRelationHistory()
 	{
 		CountHandler<Relation> handler = new CountHandler<>();
 		liveDao.getRelationHistory(ElementShouldExist.RELATION, handler);
@@ -93,7 +96,7 @@ public class MapDataHistoryApiTest extends TestCase
 		assertNotNull(liveDao.getRelationVersion(ElementShouldExist.RELATION, 1));
 	}
 
-	private class NullHandler<T> implements Handler<T>
+	private static class NullHandler<T> implements Handler<T>
 	{
 		public void handle(T tea) { }
 	}

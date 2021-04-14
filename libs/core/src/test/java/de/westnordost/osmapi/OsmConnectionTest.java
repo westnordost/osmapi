@@ -1,16 +1,19 @@
 package de.westnordost.osmapi;
 
+import org.junit.Test;
+
 import java.io.InputStream;
 
-import junit.framework.TestCase;
 import de.westnordost.osmapi.ConnectionTestFactory.User;
 import de.westnordost.osmapi.common.errors.OsmApiReadResponseException;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmConnectionException;
 
-public class OsmConnectionTest extends TestCase
+import static org.junit.Assert.*;
+
+public class OsmConnectionTest
 {
-	public void testAuthorizationException()
+	@Test public void authorizationException()
 	{
 		try
 		{
@@ -21,7 +24,7 @@ public class OsmConnectionTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 	
-	public void testAuthorizationException2()
+	@Test public void authorizationException2()
 	{
 		try
 		{
@@ -32,7 +35,7 @@ public class OsmConnectionTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 	
-	public void testConnectionException()
+	@Test public void connectionException()
 	{
 		try
 		{
@@ -43,7 +46,7 @@ public class OsmConnectionTest extends TestCase
 		catch(OsmConnectionException ignore) {}
 	}
 	
-	public void testErrorParsingApiResponse()
+	@Test public void errorParsingApiResponse()
 	{
 		try
 		{

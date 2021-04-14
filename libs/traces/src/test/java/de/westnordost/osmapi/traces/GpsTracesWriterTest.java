@@ -1,5 +1,7 @@
 package de.westnordost.osmapi.traces;
 
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,11 +9,12 @@ import java.util.List;
 
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.SingleElementHandler;
-import junit.framework.TestCase;
 
-public class GpsTracesWriterTest extends TestCase
+import static org.junit.Assert.assertEquals;
+
+public class GpsTracesWriterTest
 {
-	public void testWriteAll() throws IOException
+	@Test public void writeAll() throws IOException
 	{
 		List<String> tags = new ArrayList<>();
 		tags.add("abc");
@@ -20,7 +23,7 @@ public class GpsTracesWriterTest extends TestCase
 		writeAndReadTest(123, GpsTraceDetails.Visibility.TRACKABLE, "xyz", tags);
 	}
 	
-	public void testWriteMin() throws IOException
+	@Test public void writeMin() throws IOException
 	{
 		writeAndReadTest(456, GpsTraceDetails.Visibility.IDENTIFIABLE, null, null);
 	}

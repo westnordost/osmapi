@@ -1,20 +1,22 @@
 package de.westnordost.osmapi.user;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Arrays;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 
-public class UserApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class UserApiTest
 {
 	private UserApi privilegedDao;
 	private UserApi anonymousDao;
 	private UserApi unprivilegedDao;
 
-	@Override
-	protected void setUp()
+	@Before public void setUp()
 	{
 		anonymousDao = new UserApi(ConnectionTestFactory.createConnection(null));
 		privilegedDao = new UserApi(ConnectionTestFactory.createConnection(
@@ -23,7 +25,7 @@ public class UserApiTest extends TestCase
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 
-	public void testGetUserDetailsUnprivilegedFails()
+	@Test public void getUserDetailsUnprivilegedFails()
 	{
 		try
 		{
@@ -33,21 +35,21 @@ public class UserApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) { }
 	}
 
-	public void testGetUserDetailsPrivilegedWorks()
+	@Test public void getUserDetailsPrivilegedWorks()
 	{
 		// should just not throw any exceptions. Since the user details may change, we do not
 		// check the validity of the data here
 		assertNotNull(privilegedDao.getMine());
 	}
 
-	public void testGetUserInfo()
+	@Test public void getUserInfo()
 	{
 		assertNull(unprivilegedDao.get(0L));
 		assertNotNull(unprivilegedDao.get(1L));
 		assertNotNull(anonymousDao.get(1L));
 	}
 
-	public void testGetUserInfos()
+	@Test public void getUserInfos()
 	{
 		assertEquals(2,unprivilegedDao.getAll(Arrays.asList(1L, 2L)).size());
 		assertEquals(2,anonymousDao.getAll(Arrays.asList(1L, 2L)).size());

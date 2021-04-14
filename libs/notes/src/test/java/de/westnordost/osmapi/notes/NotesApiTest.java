@@ -1,9 +1,12 @@
 package de.westnordost.osmapi.notes;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.time.Instant;
 import java.util.List;
 
-import junit.framework.TestCase;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.common.Handler;
@@ -16,7 +19,9 @@ import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.LatLons;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 
-public class NotesApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class NotesApiTest
 {
 	private NotesApi privilegedDao;
 	private NotesApi anonymousDao;
@@ -50,8 +55,7 @@ public class NotesApiTest extends TestCase
 			OsmLatLon.parseLatLon("0", "180"),
 			OsmLatLon.parseLatLon("0.0000001", "-179.9999999"));
 
-	@Override
-	protected void setUp()
+	@Before public void setUp()
 	{
 		anonymousDao = new NotesApi(ConnectionTestFactory.createConnection(null));
 		privilegedDao = new NotesApi(ConnectionTestFactory.createConnection(
@@ -63,13 +67,12 @@ public class NotesApiTest extends TestCase
 		note = privilegedDao.create(POINT, TEXT);
 	}
 
-	@Override
-	protected void tearDown()
+	@After public void tearDown()
 	{
 		privilegedDao.close(note.id);
 	}
 
-	public void testCreateNote()
+	@Test public void createNote()
 	{
 		// was already created it in setUp
 		assertTrue(note.isOpen());
@@ -85,7 +88,7 @@ public class NotesApiTest extends TestCase
 		assertTrue(Math.abs(Instant.now().toEpochMilli() - note.createdAt.toEpochMilli()) < TEN_MINUTES);
 	}
 
-	public void testCreateNoteInsufficientPrivileges()
+	@Test public void createNoteInsufficientPrivileges()
 	{
 		try
 		{
@@ -95,7 +98,7 @@ public class NotesApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testCreateNoteAsAnonymousAllowed()
+	@Test public void createNoteAsAnonymousAllowed()
 	{
 		Note note = anonymousDao.create(POINT, TEXT);
 
@@ -103,7 +106,7 @@ public class NotesApiTest extends TestCase
 		assertEquals(TEXT, note.comments.get(0).text);
 	}
 
-	public void testCommentNoteInsufficientPrivileges()
+	@Test public void commentNoteInsufficientPrivileges()
 	{
 		try
 		{
@@ -113,7 +116,7 @@ public class NotesApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testCommentNoteAsAnonymousFails()
+	@Test public void commentNoteAsAnonymousFails()
 	{
 		try
 		{
@@ -123,7 +126,7 @@ public class NotesApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testReopenNoteInsufficientPrivileges()
+	@Test public void reopenNoteInsufficientPrivileges()
 	{
 		try
 		{
@@ -133,7 +136,7 @@ public class NotesApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testCloseNoteInsufficientPrivileges()
+	@Test public void closeNoteInsufficientPrivileges()
 	{
 		try
 		{
@@ -143,7 +146,7 @@ public class NotesApiTest extends TestCase
 		catch(OsmAuthorizationException ignore) {}
 	}
 
-	public void testReopenNoteAsAnonymousFails()
+	@Test public void reopenNoteAsAnonymousFails()
 	{
 		try
 		{
@@ -156,7 +159,7 @@ public class NotesApiTest extends TestCase
 		}
 	}
 
-	public void testCloseNoteAsAnonymousFails()
+	@Test public void closeNoteAsAnonymousFails()
 	{
 		try
 		{
@@ -169,7 +172,7 @@ public class NotesApiTest extends TestCase
 		}
 	}
 
-	public void testCreateNoteWithoutTextFails()
+	@Test public void createNoteWithoutTextFails()
 	{
 		try
 		{
@@ -179,7 +182,7 @@ public class NotesApiTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testCommentNoteWithoutTextFails()
+	@Test public void commentNoteWithoutTextFails()
 	{
 		try
 		{
@@ -189,7 +192,7 @@ public class NotesApiTest extends TestCase
 		catch(IllegalArgumentException ignore) {}
 	}
 
-	public void testCommentNoteWithNullTextFails()
+	@Test public void commentNoteWithNullTextFails()
 	{
 		try
 		{
@@ -199,7 +202,7 @@ public class NotesApiTest extends TestCase
 		catch(NullPointerException ignore) {}
 	}
 
-	public void testCloseAndReopenNoteWithoutTextDoesNotFail()
+	@Test public void closeAndReopenNoteWithoutTextDoesNotFail()
 	{
 		Note myNote = privilegedDao.create(POINT3, TEXT);
 
@@ -222,7 +225,7 @@ public class NotesApiTest extends TestCase
 		privilegedDao.close(myNote.id);
 	}
 
-	public void testCommentNote()
+	@Test public void commentNote()
 	{
 		List<NoteComment> comments;
 		long now, commentTime;
@@ -254,7 +257,7 @@ public class NotesApiTest extends TestCase
 		privilegedDao.close(myNote.id);
 	}
 
-	public void testCloseAndReopenNote()
+	@Test public void closeAndReopenNote()
 	{
 		List<NoteComment> comments;
 
@@ -288,14 +291,14 @@ public class NotesApiTest extends TestCase
 		privilegedDao.close(myNote.id);
 	}
 
-	public void testNoteNotFound()
+	@Test public void noteNotFound()
 	{
 		try { privilegedDao.comment(0, TEXT); fail(); } catch(OsmNotFoundException ignore) {}
 		try { privilegedDao.reopen(0); fail(); } catch(OsmNotFoundException ignore) {}
 		try { privilegedDao.close(0); fail(); } catch(OsmNotFoundException ignore) {}
 	}
 
-	public void testConflict()
+	@Test public void conflict()
 	{
 		Note myNote = privilegedDao.create(POINT6, TEXT);
 
@@ -323,7 +326,7 @@ public class NotesApiTest extends TestCase
 		catch(OsmConflictException ignore) {}
 	}
 
-	public void testGetNote()
+	@Test public void getNote()
 	{
 		Note note2 = unprivilegedDao.get(note.id);
 		assertEquals(note.id, note2.id);
@@ -333,17 +336,17 @@ public class NotesApiTest extends TestCase
 		assertEquals(note.position, note2.position);
 	}
 
-	public void testGetNoNote()
+	@Test public void getNoNote()
 	{
 		assertNull(unprivilegedDao.get(0));
 	}
 
-	public void testGetNoteAsAnonymous()
+	@Test public void getNoteAsAnonymous()
 	{
 		assertNotNull(anonymousDao.get(note.id));
 	}
 
-	public void testQueryTooBig()
+	@Test public void queryTooBig()
 	{
 		try
 		{
@@ -354,7 +357,7 @@ public class NotesApiTest extends TestCase
 		catch (OsmQueryTooBigException ignore) {}
 	}
 
-	public void testWrongLimit()
+	@Test public void wrongLimit()
 	{
 		try
 		{
@@ -371,7 +374,7 @@ public class NotesApiTest extends TestCase
 		catch (IllegalArgumentException ignore) {}
 	}
 
-	public void testCrosses180thMeridian()
+	@Test public void crosses180thMeridian()
 	{
 		try
 		{
@@ -381,28 +384,28 @@ public class NotesApiTest extends TestCase
 		catch (IllegalArgumentException ignore) {}
 	}
 
-	public void testGetNotes()
+	@Test public void getNotes()
 	{
 		Counter counter = new Counter();
 		unprivilegedDao.getAll(MY_AREA, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 
-	public void testGetNotesAsAnonymous()
+	@Test public void getNotesAsAnonymous()
 	{
 		Counter counter = new Counter();
 		anonymousDao.getAll(MY_AREA, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 
-	public void testFindNotes()
+	@Test public void findNotes()
 	{
 		Counter counter = new Counter();
 		unprivilegedDao.find(counter, null);
 		assertTrue(counter.count > 0);
 	}
 
-	public void testFindNotesWithParameters()
+	@Test public void findNotesWithParameters()
 	{
 		Counter counter = new Counter();
 		unprivilegedDao.find(counter,
@@ -410,14 +413,14 @@ public class NotesApiTest extends TestCase
 		assertTrue(counter.count > 0);
 	}
 
-	public void testFindNotesWithoutQueryDoesNotFail()
+	@Test public void findNotesWithoutQueryDoesNotFail()
 	{
 		Counter counter = new Counter();
 		unprivilegedDao.find(counter, null);
 		assertTrue(counter.count > 0);
 	}
 
-	public void testFindNotesAsAnonymous()
+	@Test public void findNotesAsAnonymous()
 	{
 		Counter counter = new Counter();
 		anonymousDao.find(counter, null);

@@ -1,5 +1,8 @@
 package de.westnordost.osmapi.traces;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +14,10 @@ import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.traces.GpsTraceDetails.Visibility;
-import junit.framework.TestCase;
 
-public class GpsTracesApiTest extends TestCase
+import static org.junit.Assert.*;
+
+public class GpsTracesApiTest
 {
 	/* the time is chosen relatively arbitrary. Basically, if it is off by more than half an hour,
 	   there might be a problem with parsing the correct timezone. But ten minutes is suspicious
@@ -29,8 +33,7 @@ public class GpsTracesApiTest extends TestCase
 	private GpsTracesApi privilegedDao;
 	private GpsTracesApi unprivilegedDao;
 	
-	@Override
-	protected void setUp()
+	@Before public void setUp()
 	{
 		privilegedDao = new GpsTracesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
@@ -38,7 +41,7 @@ public class GpsTracesApiTest extends TestCase
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 	
-	public void testAccessPrivateTraceOfOtherUserResultsInFailure()
+	@Test public void accessPrivateTraceOfOtherUserResultsInFailure()
 	{
 		try
 		{
@@ -68,8 +71,8 @@ public class GpsTracesApiTest extends TestCase
 		}
 		catch(OsmAuthorizationException ignore) { }
 	}
-	
-	public void testAccessTraceWithoutPrivilegesResultsInFailure()
+
+	@Test public void accessTraceWithoutPrivilegesResultsInFailure()
 	{
 		try
 		{
@@ -115,7 +118,7 @@ public class GpsTracesApiTest extends TestCase
 	}
 	
 	
-	public void testAccessNonexistingTraceFails()
+	@Test public void accessNonexistingTraceFails()
 	{
 		try
 		{
@@ -132,12 +135,12 @@ public class GpsTracesApiTest extends TestCase
 		catch(OsmNotFoundException ignore) {}
 	}
 	
-	public void testGetNonexistingTrace()
+	@Test public void getNonexistingTrace()
 	{
 		assertNull(privilegedDao.get(NONEXISTING_TRACE));
 	}
 	
-	public void testTooLongDescription()
+	@Test public void tooLongDescription()
 	{
 		try
 		{
@@ -155,7 +158,7 @@ public class GpsTracesApiTest extends TestCase
 		catch(IllegalArgumentException ignore) { }
 	}
 	
-	public void testTooLongTags()
+	@Test public void tooLongTags()
 	{
 		List<String> tags = new ArrayList<>();
 		tags.add("abc");
@@ -177,7 +180,7 @@ public class GpsTracesApiTest extends TestCase
 		catch(IllegalArgumentException ignore) { }
 	}
 	
-	public void testCreateGetUpdateDelete()
+	@Test public void createGetUpdateDelete()
 	{
 		List<String> tags = new ArrayList<>();
 		tags.add("a tag, another");

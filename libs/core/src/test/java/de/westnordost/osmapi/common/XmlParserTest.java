@@ -1,15 +1,18 @@
 package de.westnordost.osmapi.common;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.errors.XmlParserException;
-import junit.framework.TestCase;
 
-public class XmlParserTest extends TestCase
+import static org.junit.Assert.*;
+
+public class XmlParserTest
 {
-	public void testGetParentName()
+	@Test public void getParentName()
 	{
 		String xml = "<a><b><c></c></b><d></d></a>";
 		final String[] parents = {null, "a", "b", "b", "a", "a", "a", null };
@@ -33,7 +36,7 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testGetText()
+	@Test public void getText()
 	{
 		String xml = "<a>hi</a><b>ha<c>ho</c><d/>he</b>";
 		// "ha" is ignored
@@ -58,7 +61,7 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testGetName()
+	@Test public void getName()
 	{
 		String xml = "<a><b><c></c></b><d></d></a>";
 		final String[] names = {"a","b","c","c","b","d","d","a"};
@@ -82,7 +85,7 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testGetAttribute()
+	@Test public void getAttribute()
 	{
 		String xml = "<a x='hi' y='ho' /><b/>";
 
@@ -115,7 +118,7 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 
-	public void testConvenienceAttributeGetters()
+	@Test public void convenienceAttributeGetters()
 	{
 		String xml = "<a a_float='123.456' a_int='122' a_bool='true' />";
 		
@@ -124,12 +127,12 @@ public class XmlParserTest extends TestCase
 			@Override
 			protected void onStartElement()
 			{
-				assertEquals(123.456f, getFloatAttribute("a_float"));
-				assertEquals(123.456d, getDoubleAttribute("a_float"));
+				assertEquals(123.456f, getFloatAttribute("a_float"), 0.0f);
+				assertEquals(123.456d, getDoubleAttribute("a_float"), 0.0f);
 				assertEquals(122L, (long) getLongAttribute("a_int"));
 				assertEquals(122, (int) getIntAttribute("a_int"));
 				assertEquals(122, (byte) getByteAttribute("a_int"));
-				assertEquals(true, (boolean) getBooleanAttribute("a_bool"));
+				assertEquals(true, getBooleanAttribute("a_bool"));
 				
 				assertNull(getFloatAttribute("does_not_exist"));
 				assertNull(getDoubleAttribute("does_not_exist"));
@@ -142,7 +145,7 @@ public class XmlParserTest extends TestCase
 		parser.test(xml);
 	}
 	
-	public void testException()
+	@Test public void exception()
 	{
 		String xml = "<a x='hi'/>";
 
@@ -167,7 +170,7 @@ public class XmlParserTest extends TestCase
 		}
 	}
 	
-	public void testIOExceptionIsNotWrappedIntoXmlParserException()
+	@Test public void ioExceptionIsNotWrappedIntoXmlParserException()
 	{
 		InputStream exceptionStream = new InputStream() {
 
@@ -189,7 +192,7 @@ public class XmlParserTest extends TestCase
 		}
 	}
 
-	private class TestXmlParser extends XmlParser
+	private static class TestXmlParser extends XmlParser
 	{
 		public void test(String xml)
 		{
@@ -203,7 +206,7 @@ public class XmlParserTest extends TestCase
 			}
 		}
 
-		public void testStream(InputStream is) throws IOException
+		@Test public void testStream(InputStream is) throws IOException
 		{
 			doParse(is);
 		}
