@@ -30,7 +30,7 @@ import de.westnordost.osmapi.map.handler.DefaultMapDataHandler;
 import de.westnordost.osmapi.map.handler.MapDataHandler;
 import de.westnordost.osmapi.map.handler.OneElementTypeHandler;
 
-public class MapDataDaoTest extends TestCase
+public class MapDataApiTest extends TestCase
 {
 	private OsmConnection privilegedConnection;
 	private OsmConnection unprivilegedConnection;
@@ -59,7 +59,7 @@ public class MapDataDaoTest extends TestCase
 		{
 			// this must surely be too big, regardless of the server preferences
 			// - it's the whole world!
-			new MapDataDao(connection).getMap(
+			new MapDataApi(connection).getMap(
 					new BoundingBox(LatLons.MIN_VALUE, LatLons.MAX_VALUE),
 					new DefaultMapDataHandler());
 			fail();
@@ -73,7 +73,7 @@ public class MapDataDaoTest extends TestCase
 		{
 			// using here the smallest possible query area, so it cannot be too
 			// big
-			new MapDataDao(connection).getMap(new BoundingBox(0, 180, 0.0000001, -179.9999999),
+			new MapDataApi(connection).getMap(new BoundingBox(0, 180, 0.0000001, -179.9999999),
 					new DefaultMapDataHandler());
 			fail();
 		}
@@ -84,7 +84,7 @@ public class MapDataDaoTest extends TestCase
 	{
 		final BoundingBox verySmallBounds = new BoundingBox(31, 31, 31.0000001, 31.0000001);
 
-		new MapDataDao(connection).getMap(verySmallBounds, new DefaultMapDataHandler()
+		new MapDataApi(connection).getMap(verySmallBounds, new DefaultMapDataHandler()
 		{
 			@Override
 			public void handle(BoundingBox bounds)
@@ -104,7 +104,7 @@ public class MapDataDaoTest extends TestCase
 		final BoundingBox hamburg = new BoundingBox(53.579, 9.939, 53.580, 9.940);
 
 		CountMapDataHandler counter = new CountMapDataHandler();
-		new MapDataDao(liveConnection).getMap(hamburg, counter);
+		new MapDataApi(liveConnection).getMap(hamburg, counter);
 
 		assertEquals(1, counter.bounds);
 		assertTrue(counter.ways > 0);
@@ -120,7 +120,7 @@ public class MapDataDaoTest extends TestCase
 		CheckFirstHandleCallHandler handler = new CheckFirstHandleCallHandler();
 
 		long startTime = System.currentTimeMillis();
-		new MapDataDao(liveConnection).getMap(bigHamburg, handler);
+		new MapDataApi(liveConnection).getMap(bigHamburg, handler);
 		long timeToFirstData = handler.firstCallTime - startTime;
 		long totalTime = System.currentTimeMillis() - startTime;
 
@@ -140,7 +140,7 @@ public class MapDataDaoTest extends TestCase
 	{
 		try
 		{
-			new MapDataDao(connection).updateMap("test", "test", Collections.<Element> emptyList(),
+			new MapDataApi(connection).updateMap("test", "test", Collections.<Element> emptyList(),
 					null);
 			fail();
 		}
@@ -151,7 +151,7 @@ public class MapDataDaoTest extends TestCase
 	{
 		try
 		{
-			new MapDataDao(unprivilegedConnection).updateMap("test", "test",
+			new MapDataApi(unprivilegedConnection).updateMap("test", "test",
 					Collections.<Element> emptyList(), null);
 			fail();
 		}
@@ -160,14 +160,14 @@ public class MapDataDaoTest extends TestCase
 
 	public void testReadDiff()
 	{
-		MapDataDao mapDataDao = new MapDataDao(privilegedConnection);
+		MapDataApi mapDataApi = new MapDataApi(privilegedConnection);
 
 		final LatLon POS = new OsmLatLon(55.42313, 50.13221);
 		final long PLACEHOLDER_ID = -33;
 
 		Element node = new OsmNode(PLACEHOLDER_ID, 1, POS, null);
 		SingleElementHandler<DiffElement> handlerCreated = new SingleElementHandler<>();
-		mapDataDao.updateMap("test", "test", Arrays.asList(node), handlerCreated);
+		mapDataApi.updateMap("test", "test", Arrays.asList(node), handlerCreated);
 		DiffElement diffCreated = handlerCreated.get();
 
 		// update id and delete again... (clean up before asserting)
@@ -175,7 +175,7 @@ public class MapDataDaoTest extends TestCase
 				null);
 		deleteNode.setDeleted(true);
 		SingleElementHandler<DiffElement> handlerDeleted = new SingleElementHandler<>();
-		mapDataDao.updateMap("clean up test", "test", Arrays.asList((Element) deleteNode),
+		mapDataApi.updateMap("clean up test", "test", Arrays.asList((Element) deleteNode),
 				handlerDeleted);
 
 		DiffElement diffDeleted = handlerDeleted.get();
@@ -193,7 +193,7 @@ public class MapDataDaoTest extends TestCase
 
 	public void testNotFound()
 	{
-		MapDataDao dao = new MapDataDao(connection);
+		MapDataApi dao = new MapDataApi(connection);
 		MapDataHandler h = new DefaultMapDataHandler();
 
 		try
@@ -216,37 +216,37 @@ public class MapDataDaoTest extends TestCase
 
 	public void testWayComplete()
 	{
-		new MapDataDao(liveConnection).getWayComplete(27308882, new DefaultMapDataHandler());
+		new MapDataApi(liveConnection).getWayComplete(27308882, new DefaultMapDataHandler());
 	}
 
 	public void testRelationComplete()
 	{
-		new MapDataDao(liveConnection).getRelationComplete(3301989, new DefaultMapDataHandler());
+		new MapDataApi(liveConnection).getRelationComplete(3301989, new DefaultMapDataHandler());
 	}
 
 	public void testRelationsForRelation()
 	{
-		new MapDataDao(liveConnection).getRelationsForRelation(3218689);
+		new MapDataApi(liveConnection).getRelationsForRelation(3218689);
 	}
 
 	public void testRelationsForWay()
 	{
-		new MapDataDao(liveConnection).getRelationsForWay(244179625);
+		new MapDataApi(liveConnection).getRelationsForWay(244179625);
 	}
 
 	public void testRelationsForNode()
 	{
-		new MapDataDao(liveConnection).getRelationsForNode(3375377736L);
+		new MapDataApi(liveConnection).getRelationsForNode(3375377736L);
 	}
 
 	public void testWaysForNode()
 	{
-		new MapDataDao(liveConnection).getWaysForNode(3668931466L);
+		new MapDataApi(liveConnection).getWaysForNode(3668931466L);
 	}
 
 	public void testEmptySomeElementsForX()
 	{
-		MapDataDao dao = new MapDataDao(connection);
+		MapDataApi dao = new MapDataApi(connection);
 
 		assertEquals(0, dao.getRelationsForRelation(Long.MAX_VALUE).size());
 		assertEquals(0, dao.getRelationsForNode(Long.MAX_VALUE).size());
@@ -256,20 +256,20 @@ public class MapDataDaoTest extends TestCase
 
 	public void testGetNode()
 	{
-		new MapDataDao(liveConnection).getNode(ElementShouldExist.NODE);
-		assertNull(new MapDataDao(connection).getNode(Long.MAX_VALUE));
+		new MapDataApi(liveConnection).getNode(ElementShouldExist.NODE);
+		assertNull(new MapDataApi(connection).getNode(Long.MAX_VALUE));
 	}
 
 	public void testGetWay()
 	{
-		new MapDataDao(liveConnection).getWay(ElementShouldExist.WAY);
-		assertNull(new MapDataDao(connection).getWay(Long.MAX_VALUE));
+		new MapDataApi(liveConnection).getWay(ElementShouldExist.WAY);
+		assertNull(new MapDataApi(connection).getWay(Long.MAX_VALUE));
 	}
 
 	public void testGetRelation()
 	{
-		new MapDataDao(liveConnection).getRelation(ElementShouldExist.RELATION);
-		assertNull(new MapDataDao(connection).getRelation(Long.MAX_VALUE));
+		new MapDataApi(liveConnection).getRelation(ElementShouldExist.RELATION);
+		assertNull(new MapDataApi(connection).getRelation(Long.MAX_VALUE));
 	}
 
 	public void testGetNodes()
@@ -280,13 +280,13 @@ public class MapDataDaoTest extends TestCase
 		try
 		{
 			List<Long> places = Arrays.asList(ElementShouldExist.NODE, Long.MAX_VALUE);
-			new MapDataDao(liveConnection).getNodes(places);
+			new MapDataApi(liveConnection).getNodes(places);
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
 
 		List<Long> place = Arrays.asList(ElementShouldExist.NODE);
-		assertFalse(new MapDataDao(liveConnection).getNodes(place).isEmpty());
+		assertFalse(new MapDataApi(liveConnection).getNodes(place).isEmpty());
 	}
 
 	public void testGetRelations()
@@ -296,13 +296,13 @@ public class MapDataDaoTest extends TestCase
 		try
 		{
 			List<Long> places = Arrays.asList(ElementShouldExist.RELATION, Long.MAX_VALUE);
-			new MapDataDao(liveConnection).getRelations(places);
+			new MapDataApi(liveConnection).getRelations(places);
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
 
 		List<Long> place = Arrays.asList(ElementShouldExist.RELATION);
-		assertFalse(new MapDataDao(liveConnection).getRelations(place).isEmpty());
+		assertFalse(new MapDataApi(liveConnection).getRelations(place).isEmpty());
 	}
 
 	public void testGetWays()
@@ -313,19 +313,19 @@ public class MapDataDaoTest extends TestCase
 		try
 		{
 			List<Long> places = Arrays.asList(ElementShouldExist.WAY, Long.MAX_VALUE);
-			List<Way> ways = new MapDataDao(liveConnection).getWays(places);
+			List<Way> ways = new MapDataApi(liveConnection).getWays(places);
 			ways.isEmpty();
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
 
 		List<Long> place = Arrays.asList(ElementShouldExist.WAY);
-		assertFalse(new MapDataDao(liveConnection).getWays(place).isEmpty());
+		assertFalse(new MapDataApi(liveConnection).getWays(place).isEmpty());
 	}
 
 	public void testGetElementsEmpty()
 	{
-		MapDataDao dao = new MapDataDao(connection);
+		MapDataApi dao = new MapDataApi(connection);
 		assertTrue(dao.getWays(Collections.<Long> emptyList()).isEmpty());
 		assertTrue(dao.getNodes(Collections.<Long> emptyList()).isEmpty());
 		assertTrue(dao.getRelations(Collections.<Long> emptyList()).isEmpty());
@@ -335,7 +335,7 @@ public class MapDataDaoTest extends TestCase
 	{
 		try
 		{
-			new MapDataDao(privilegedConnection).closeChangeset(Long.MAX_VALUE-1);
+			new MapDataApi(privilegedConnection).closeChangeset(Long.MAX_VALUE-1);
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
@@ -343,7 +343,7 @@ public class MapDataDaoTest extends TestCase
 	
 	public void testCloseClosedChangesetFails()
 	{
-		MapDataDao dao = new MapDataDao(privilegedConnection);
+		MapDataApi dao = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
 		long changesetId = dao.openChangeset(tags);
@@ -359,13 +359,13 @@ public class MapDataDaoTest extends TestCase
 	
 	public void testMultipleChangesInChangeset()
 	{
-		MapDataDao mapDataDao = new MapDataDao(privilegedConnection);
+		MapDataApi mapDataApi = new MapDataApi(privilegedConnection);
 		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);
 
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
 
-		long changesetId = mapDataDao.openChangeset(tags);
+		long changesetId = mapDataApi.openChangeset(tags);
 		try
 		{
 			assertEquals(true, changesetDao.get(changesetId).isOpen);
@@ -380,7 +380,7 @@ public class MapDataDaoTest extends TestCase
 
 			// upload first change
 			Element node1 = new OsmNode(-33, 1, new OsmLatLon(10.42313, 65.13221), null);
-			mapDataDao.uploadChanges(changesetId, Arrays.asList(node1), null);
+			mapDataApi.uploadChanges(changesetId, Arrays.asList(node1), null);
 
 			assertChangesetHasElementCount(changesetId,1,0,0);
 
@@ -390,7 +390,7 @@ public class MapDataDaoTest extends TestCase
 				OsmNode delNode = new OsmNode(Long.MAX_VALUE-1, 1, new OsmLatLon(0.11111, 1.565467), null);
 				delNode.setDeleted(true);
 				Element delElement = delNode;
-				mapDataDao.uploadChanges(changesetId, Arrays.asList(delElement), null);
+				mapDataApi.uploadChanges(changesetId, Arrays.asList(delElement), null);
 				fail();
 			}
 			catch(OsmNotFoundException ignore) {}
@@ -398,19 +398,19 @@ public class MapDataDaoTest extends TestCase
 			assertChangesetHasElementCount(changesetId,1,0,0);
 
 			Element node2 = new OsmNode(-34, 1, new OsmLatLon(10.42314, 65.13220), null);
-			mapDataDao.uploadChanges(changesetId, Arrays.asList(node2), null);
+			mapDataApi.uploadChanges(changesetId, Arrays.asList(node2), null);
 			assertChangesetHasElementCount(changesetId,2,0,0);
 		}
 		finally
 		{
-			mapDataDao.closeChangeset(changesetId);
+			mapDataApi.closeChangeset(changesetId);
 			assertEquals(false, changesetDao.get(changesetId).isOpen);
 		}
 	}
 	
 	public void testUpdateClosedChangesetFails()
 	{
-		MapDataDao dao = new MapDataDao(privilegedConnection);
+		MapDataApi dao = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
 		long changesetId = dao.openChangeset(tags);
@@ -432,7 +432,7 @@ public class MapDataDaoTest extends TestCase
 		tags.put("comment", "test case");
 		try
 		{
-			new MapDataDao(privilegedConnection).updateChangeset(Long.MAX_VALUE-1, tags);
+			new MapDataApi(privilegedConnection).updateChangeset(Long.MAX_VALUE-1, tags);
 			fail();
 		}
 		catch(OsmNotFoundException ignore)
@@ -442,7 +442,7 @@ public class MapDataDaoTest extends TestCase
 
 	public void testUpdateChangesetOverwritesOldTags()
 	{
-		MapDataDao dao = new MapDataDao(privilegedConnection);
+		MapDataApi dao = new MapDataApi(privilegedConnection);
 		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);
 
 		Map<String,String> tags1 = new HashMap<>();

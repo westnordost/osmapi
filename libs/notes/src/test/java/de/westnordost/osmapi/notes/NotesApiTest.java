@@ -16,11 +16,11 @@ import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.LatLons;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 
-public class NotesDaoTest extends TestCase
+public class NotesApiTest extends TestCase
 {
-	private NotesDao privilegedDao;
-	private NotesDao anonymousDao;
-	private NotesDao unprivilegedDao;
+	private NotesApi privilegedDao;
+	private NotesApi anonymousDao;
+	private NotesApi unprivilegedDao;
 
 	private Note note;
 
@@ -53,10 +53,10 @@ public class NotesDaoTest extends TestCase
 	@Override
 	protected void setUp()
 	{
-		anonymousDao = new NotesDao(ConnectionTestFactory.createConnection(null));
-		privilegedDao = new NotesDao(ConnectionTestFactory.createConnection(
+		anonymousDao = new NotesApi(ConnectionTestFactory.createConnection(null));
+		privilegedDao = new NotesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
-		unprivilegedDao = new NotesDao(ConnectionTestFactory.createConnection(
+		unprivilegedDao = new NotesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 
 		// create one note to work with...

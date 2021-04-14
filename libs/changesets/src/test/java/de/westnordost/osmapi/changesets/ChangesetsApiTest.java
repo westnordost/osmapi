@@ -18,11 +18,11 @@ import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.map.data.OsmNode;
 import de.westnordost.osmapi.map.changes.SimpleMapDataChangesHandler;
 
-public class ChangesetsDaoTest extends TestCase
+public class ChangesetsApiTest extends TestCase
 {
-	private ChangesetsDao privilegedDao;
-	private ChangesetsDao anonymousDao;
-	private ChangesetsDao unprivilegedDao;
+	private ChangesetsApi privilegedDao;
+	private ChangesetsApi anonymousDao;
+	private ChangesetsApi unprivilegedDao;
 
 	private MapDataDao mapDataDao;
 
@@ -44,9 +44,9 @@ public class ChangesetsDaoTest extends TestCase
 
 		mapDataDao = new MapDataDao(userConnection);
 
-		anonymousDao = new ChangesetsDao(ConnectionTestFactory.createConnection(null));
-		privilegedDao = new ChangesetsDao(userConnection);
-		unprivilegedDao = new ChangesetsDao(ConnectionTestFactory.createConnection(
+		anonymousDao = new ChangesetsApi(ConnectionTestFactory.createConnection(null));
+		privilegedDao = new ChangesetsApi(userConnection);
+		unprivilegedDao = new ChangesetsApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 

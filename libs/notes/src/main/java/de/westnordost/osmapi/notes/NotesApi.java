@@ -19,7 +19,7 @@ import de.westnordost.osmapi.map.data.LatLon;
 
 /** Creates, comments, closes, reopens and search for notes
  *  All interactions with this class require an OsmConnection with a logged in user. */
-public class NotesDao
+public class NotesApi
 {
 	private static final String NOTES = "notes";
 
@@ -27,7 +27,7 @@ public class NotesDao
 
 	private final NumberFormat numberFormat;
 
-	public NotesDao(OsmConnection osm)
+	public NotesApi(OsmConnection osm)
 	{
 		this.osm = osm;
 		numberFormat = NumberFormat.getNumberInstance(Locale.UK);

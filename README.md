@@ -16,15 +16,15 @@ Depending on which part of the API you use, you can only include what you need:
 
 <table>
 <tr><th>Class</th><th>Dependency</th><th>Description</th></tr>
-<tr><td>CapabilitiesDao</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting server capabilities</td></tr>
-<tr><td>PermissionsDao</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting user permissions</td></tr>
-<tr><td>MapDataDao</td><td><pre>de.westnordost:osmapi-map:2.0</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
-<tr><td>MapDataHistoryDao</td><td><pre>de.westnordost:osmapi-map:2.0</pre></td><td>Getting the history and specific versions of elements</td></tr>
-<tr><td>NotesDao</td><td><pre>de.westnordost:osmapi-notes:2.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
-<tr><td>GpsTracesDao</td><td><pre>de.westnordost:osmapi-traces:2.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
-<tr><td>ChangesetsDao</td><td><pre>de.westnordost:osmapi-changesets:2.0</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
-<tr><td>UserDao</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Getting user information</td></tr>
-<tr><td>UserPreferencesDao</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Managing user preferences</td></tr>
+<tr><td>CapabilitiesApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting server capabilities</td></tr>
+<tr><td>PermissionsApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting user permissions</td></tr>
+<tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:2.0</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
+<tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:2.0</pre></td><td>Getting the history and specific versions of elements</td></tr>
+<tr><td>NotesApi</td><td><pre>de.westnordost:osmapi-notes:2.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
+<tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:2.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
+<tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:2.0</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
+<tr><td>UserApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Getting user information</td></tr>
+<tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Managing user preferences</td></tr>
 </table>
 
 To include everything, add [`de.westnordost:osmapi:4.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
@@ -61,33 +61,33 @@ If you plan to make calls that can only be made by a logged in user, such as upl
 ```
 
 You can call osm.makeRequest(...) yourself to talk with the RESTful Api and write your own ApiRequestWriter and ApiResponseReader to write/read the request.
-It is more convenient however to use the appropriate DAO to do that for you and return the data you are interested in. See the table above for which DAOs are available.
+It is more convenient however to use the appropriate class to do that for you and return the data you are interested in. See the table above for which classes are available.
 
 For example...
 
 ### Create a note
 
 ```java
-	Note myNote = new NotesDao(osm).create(position, "My first note");
+	Note myNote = new NotesApi(osm).create(position, "My first note");
 ```
 
 ### Comment a changeset
 
 ```java
-	ChangesetInfo changeset = new ChangesetsDao(osm).comment(id, "Nice work!");
+	ChangesetInfo changeset = new ChangesetsApi(osm).comment(id, "Nice work!");
 ```
 
 ### Get user info
 
 ```java
-	UserInfo user = new UserDao(osm).get(id);
+	UserInfo user = new UserApi(osm).get(id);
 ```
 
 ### Download map data
 
 ```java
-	MapDataDao mapDao = new MapDataDao(osm);
-	mapDao.getMap(boundingBox, myMapDataHandler);
+	MapDataApi mapApi = new MapDataApi(osm);
+	mapApi.getMap(boundingBox, myMapDataHandler);
 ```
 
 myMapDataHandler implements MapDataHandler whose methods are called as the elements are parsed, think SAX parser. I.e. if you download 10MB of data, then the elements start arriving at the handler as the data comes in so that you can process them on the fly.

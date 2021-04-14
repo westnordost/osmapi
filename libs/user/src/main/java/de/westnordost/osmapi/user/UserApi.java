@@ -12,11 +12,11 @@ import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 
 /** Get user infos and details.
  *  All interactions with this class require an OsmConnection with a logged in user. */
-public class UserDao
+public class UserApi
 {
 	private final OsmConnection osm;
 
-	public UserDao(OsmConnection osm)
+	public UserApi(OsmConnection osm)
 	{
 		this.osm = osm;
 	}
