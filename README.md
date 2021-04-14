@@ -27,14 +27,25 @@ Depending on which part of the API you use, you can only include what you need:
 <tr><td>UserPreferencesDao</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:4.0`](https://maven-repository.com/artifact/de.westnordost/osmapi/3.11) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:4.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
+
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
-	compile ('de.westnordost:osmapi:3.11')
-	{
-		exclude group: 'net.sf.kxml', module: 'kxml2' // already included in Android
-	}
+dependencies {
+    implementation 'de.westnordost:osmapi:4.0'
+}
+
+configurations {
+    // already included in Android
+    all*.exclude group: 'net.sf.kxml', module: 'kxml2'
+    
+    // @NonNull etc annotations are also already included in Android
+    cleanedAnnotations
+    compile.exclude group: 'org.jetbrains', module:'annotations'
+    compile.exclude group: 'com.intellij', module:'annotations'
+    compile.exclude group: 'org.intellij', module:'annotations'
+}
 ```
 
 ## Basic Usage
