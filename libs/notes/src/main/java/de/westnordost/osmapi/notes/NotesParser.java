@@ -21,12 +21,12 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 			NOTE = "note",
 			COMMENT = "comment";
 
-	private NotesDateFormat dateFormat = new NotesDateFormat();
-	
+	private static final NotesDateFormat FORMATTER = new NotesDateFormat();
+
 	/* temporary map so we do not parse and hold many times the same user */
 	private Map<Long, User> users;
 
-	private Handler<Note> handler;
+	private final Handler<Note> handler;
 	private Note currentNote;
 	private NoteComment currentComment;
 
@@ -113,10 +113,10 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 				currentNote.status = Note.Status.valueOf(txt.toUpperCase(Locale.UK));
 				break;
 			case "date_created":
-				currentNote.dateCreated = dateFormat.parse(txt);
+				currentNote.createdAt = FORMATTER.parse(txt);
 				break;
 			case "date_closed":
-				currentNote.dateClosed = dateFormat.parse(txt);
+				currentNote.closedAt = FORMATTER.parse(txt);
 				break;
 		}
 	}
@@ -126,7 +126,7 @@ public class NotesParser extends XmlParser implements ApiResponseReader<Void>
 		switch (name)
 		{
 			case "date":
-				currentComment.date = dateFormat.parse(txt);
+				currentComment.date = FORMATTER.parse(txt);
 				break;
 			case "user":
 				userName = txt;

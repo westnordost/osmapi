@@ -9,7 +9,7 @@ import de.westnordost.osmapi.map.data.LatLon;
  *  information is only available to the current user. */
 public class UserDetails extends UserInfo implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	public UserDetails(long id, String displayName)
 	{

@@ -1,6 +1,8 @@
 package de.westnordost.osmapi.map;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -49,11 +51,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals(1, node.getVersion());
 		assertNotNull(node.getChangeset());
 		assertEquals(80692, node.getChangeset().id);
-
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2008, Calendar.FEBRUARY, 9, 10, 59, 23);
-		assertEquals(c.getTimeInMillis() / 1000, node.getDateEdited().getTime() / 1000);
-		assertEquals(c.getTimeInMillis() / 1000, node.getChangeset().date.getTime() / 1000);
+		assertEquals(Instant.parse("2008-02-09T10:59:23Z"), node.getEditedAt());
 
 		assertNotNull(node.getChangeset().user);
 		assertEquals("Yeah", node.getChangeset().user.displayName);
@@ -78,11 +76,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals(1, way.getVersion());
 		assertNotNull(way.getChangeset());
 		assertEquals(80692, way.getChangeset().id);
-
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2008, Calendar.FEBRUARY, 9, 10, 59, 2);
-		assertEquals(c.getTimeInMillis() / 1000, way.getDateEdited().getTime() / 1000);
-		assertEquals(c.getTimeInMillis() / 1000, way.getChangeset().date.getTime() / 1000);
+		assertEquals(Instant.parse("2008-02-09T10:59:02Z"), way.getEditedAt());
 
 		assertNotNull(way.getChangeset().user);
 		assertEquals("Yeah", way.getChangeset().user.displayName);
@@ -110,11 +104,7 @@ public class MapDataParserTest extends TestCase
 		assertEquals(1, relation.getVersion());
 		assertNotNull(relation.getChangeset());
 		assertEquals(17738772, relation.getChangeset().id);
-
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2013, Calendar.SEPTEMBER, 8, 19, 26, 52);
-		assertEquals(c.getTimeInMillis() / 1000, relation.getDateEdited().getTime() / 1000);
-		assertEquals(c.getTimeInMillis() / 1000, relation.getChangeset().date.getTime() / 1000);
+		assertEquals(Instant.parse("2013-09-08T19:26:52Z"), relation.getEditedAt());
 
 		assertNotNull(relation.getChangeset().user);
 		assertEquals("Blub", relation.getChangeset().user.displayName);

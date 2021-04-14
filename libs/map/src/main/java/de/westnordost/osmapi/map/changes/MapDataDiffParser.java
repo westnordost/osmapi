@@ -16,7 +16,7 @@ public class MapDataDiffParser extends XmlParser implements ApiResponseReader<Vo
 	                            WAY = "way",
 	                            RELATION = "relation";
 
-	private Handler<DiffElement> handler;
+	private final Handler<DiffElement> handler;
 
 	public MapDataDiffParser(Handler<DiffElement> handler)
 	{

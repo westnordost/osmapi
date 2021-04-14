@@ -11,7 +11,7 @@ public class ModificationAwareList<T> implements List<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private List<T> list;
+	private final List<T> list;
 	private boolean modified;
 
 	public ModificationAwareList(List<T> list)

@@ -2,20 +2,20 @@ package de.westnordost.osmapi.changesets;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.map.data.BoundingBox;
 
 public class QueryChangesetsFilters
 {
 	private static final String CHARSET = "UTF-8";
 
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-	
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
+
 	private Map<String, String> params = new HashMap<>();
 
 	/**
@@ -131,27 +131,27 @@ public class QueryChangesetsFilters
 	}
 
 	/**
-	 * @param closedAfter limit search to changesets that have been closed after this date
+	 * @param closedAfter limit search to changesets that have been closed after this instant
 	 *
 	 * @return this
 	 */
-	public QueryChangesetsFilters byClosedAfter(Date closedAfter)
+	public QueryChangesetsFilters byClosedAfter(Instant closedAfter)
 	{
-		params.put("time", dateFormat.format(closedAfter));
+		params.put("time", FORMATTER.format(closedAfter));
 		return this;
 	}
 
 	/**
 	 * Filter by changesets that have at one time been open during the given time range
 	 * 
-	 * @param closedAfter limit search to changesets that have been closed after this date
-	 * @param createdBefore limit search to changesets that have been created before this date
+	 * @param closedAfter limit search to changesets that have been closed after this instant
+	 * @param createdBefore limit search to changesets that have been created before this instant
 	 *
 	 * @return this
 	 */
-	public QueryChangesetsFilters byOpenSomeTimeBetween(Date createdBefore, Date closedAfter)
+	public QueryChangesetsFilters byOpenSomeTimeBetween(Instant createdBefore, Instant closedAfter)
 	{
-		params.put("time", dateFormat.format(closedAfter) + "," + dateFormat.format(createdBefore));
+		params.put("time", FORMATTER.format(closedAfter) + "," + FORMATTER.format(createdBefore));
 		return this;
 	}
 

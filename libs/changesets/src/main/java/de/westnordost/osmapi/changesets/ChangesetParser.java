@@ -3,15 +3,14 @@ package de.westnordost.osmapi.changesets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.OsmLatLon;
@@ -23,14 +22,15 @@ import de.westnordost.osmapi.user.User;
  */
 public class ChangesetParser extends XmlParser implements ApiResponseReader<Void>
 {
-	private static final String TAG = "tag", CHANGESET = "changeset", COMMENT = "comment",
-			TEXT = "text";
+	private static final String
+		TAG = "tag",
+		CHANGESET = "changeset",
+		COMMENT = "comment",
+		TEXT = "text";
 
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-	
 	private Map<Long, User> users;
 
-	private Handler<ChangesetInfo> handler;
+	private final Handler<ChangesetInfo> handler;
 
 	private ChangesetInfo currentChangesetInfo;
 	private ChangesetNote currentComment;
@@ -85,10 +85,10 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 		}
 
 		String closedAtStr = getAttribute("closed_at");
-		Date closedAt = null;
+		Instant closedAt = null;
 		if(closedAtStr != null)
 		{
-			closedAt = dateFormat.parse(closedAtStr);
+			closedAt = Instant.parse(closedAtStr);
 		}
 
 		User user = parseUser();
@@ -98,8 +98,8 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 
 		ChangesetInfo result = new ChangesetInfo();
 		result.id = getLongAttribute("id");
-		result.date = result.dateCreated = dateFormat.parse(getAttribute("created_at"));
-		result.dateClosed = closedAt;
+		result.createdAt = Instant.parse(getAttribute("created_at"));
+		result.closedAt = closedAt;
 		result.user = user;
 		result.boundingBox = bounds;
 		result.isOpen = getBooleanAttribute("open");
@@ -112,7 +112,7 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 	{
 		ChangesetNote comment = new ChangesetNote();
 		comment.user = parseUser();
-		comment.date = dateFormat.parse(getAttribute("date"));
+		comment.createdAt = Instant.parse(getAttribute("date"));
 		return comment;
 	}
 

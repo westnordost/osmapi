@@ -11,9 +11,9 @@ import de.westnordost.osmapi.map.data.Way;
 
 public class SimpleMapDataChangesHandler implements MapDataChangesHandler, MapDataChanges
 {
-	private List<Element> creations;
-	private List<Element> modifications;
-	private List<Element> deletions;
+	private final List<Element> creations;
+	private final List<Element> modifications;
+	private final List<Element> deletions;
 	private Mode mode;
 	private enum Mode
 	{

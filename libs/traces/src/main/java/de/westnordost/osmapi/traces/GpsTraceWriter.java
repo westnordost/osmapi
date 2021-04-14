@@ -10,10 +10,10 @@ import de.westnordost.osmapi.common.XmlWriter;
  *  It does not write everything, like i.e. the creation date. */
 public class GpsTraceWriter extends XmlWriter
 {
-	private long id;
-	private GpsTraceDetails.Visibility visibility;
-	private String description;
-	private List<String> tags;
+	private final long id;
+	private final GpsTraceDetails.Visibility visibility;
+	private final String description;
+	private final List<String> tags;
 	
 	public GpsTraceWriter(long id, GpsTraceDetails.Visibility visibility, String description, List<String> tags)
 	{

@@ -5,7 +5,7 @@ import de.westnordost.osmapi.common.Handler;
 /** Wraps a Handler in a MapDataHandler */
 public class WrapperOsmElementHandler<T> extends OneElementTypeHandler<T>
 {
-	private Handler<T> handler;
+	private final Handler<T> handler;
 
 	public WrapperOsmElementHandler(Class<T> tClass, Handler<T> handler)
 	{

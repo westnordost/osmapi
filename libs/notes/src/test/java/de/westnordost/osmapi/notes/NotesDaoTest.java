@@ -1,6 +1,6 @@
 package de.westnordost.osmapi.notes;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -82,9 +82,7 @@ public class NotesDaoTest extends TestCase
 		assertEquals(NoteComment.Action.OPENED, firstComment.action);
 		assertFalse(firstComment.isAnonymous());
 
-		long now = new Date().getTime();
-		long creationTime = note.dateCreated.getTime();
-		assertTrue(Math.abs(now - creationTime) < TEN_MINUTES);
+		assertTrue(Math.abs(Instant.now().toEpochMilli() - note.createdAt.toEpochMilli()) < TEN_MINUTES);
 	}
 
 	public void testCreateNoteInsufficientPrivileges()
@@ -238,8 +236,8 @@ public class NotesDaoTest extends TestCase
 		assertNotNull(comments.get(1).user);
 		assertFalse(comments.get(1).isAnonymous());
 
-		now = new Date().getTime();
-		commentTime = comments.get(1).date.getTime();
+		now = Instant.now().toEpochMilli();
+		commentTime = comments.get(1).date.toEpochMilli();
 		assertTrue(Math.abs(now - commentTime) < TEN_MINUTES);
 
 		comments = privilegedDao.comment(myNote.id, TEXT + 2).comments;
@@ -249,8 +247,8 @@ public class NotesDaoTest extends TestCase
 		assertNotNull(comments.get(2).user);
 		assertFalse(comments.get(2).isAnonymous());
 
-		now = new Date().getTime();
-		commentTime = comments.get(2).date.getTime();
+		now = Instant.now().toEpochMilli();
+		commentTime = comments.get(2).date.toEpochMilli();
 		assertTrue(Math.abs(now - commentTime) < TEN_MINUTES);
 
 		privilegedDao.close(myNote.id);
@@ -264,9 +262,9 @@ public class NotesDaoTest extends TestCase
 
 		myNote = privilegedDao.close(myNote.id, TEXT + 1);
 
-		assertNotNull(myNote.dateClosed);
-		long now = new Date().getTime();
-		long closedDate = myNote.dateClosed.getTime();
+		assertNotNull(myNote.closedAt);
+		long now = Instant.now().toEpochMilli();
+		long closedDate = myNote.closedAt.toEpochMilli();
 		assertTrue(Math.abs(now - closedDate) < TEN_MINUTES);
 
 		comments = myNote.comments;
@@ -278,7 +276,7 @@ public class NotesDaoTest extends TestCase
 
 		myNote = privilegedDao.reopen(myNote.id, TEXT + 2);
 
-		assertNull(myNote.dateClosed);
+		assertNull(myNote.closedAt);
 
 		comments = myNote.comments;
 		assertEquals(3, comments.size());
@@ -331,7 +329,7 @@ public class NotesDaoTest extends TestCase
 		assertEquals(note.id, note2.id);
 		assertEquals(note.status, note2.status);
 		assertEquals(note.comments.size(), note2.comments.size());
-		assertEquals(note.dateCreated, note2.dateCreated);
+		assertEquals(note.createdAt, note2.createdAt);
 		assertEquals(note.position, note2.position);
 	}
 

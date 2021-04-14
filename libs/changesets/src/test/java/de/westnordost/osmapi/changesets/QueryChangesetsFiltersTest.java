@@ -3,17 +3,14 @@ package de.westnordost.osmapi.changesets;
 import junit.framework.TestCase;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.map.data.BoundingBox;
 
 public class QueryChangesetsFiltersTest extends TestCase
 {
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-	
 	public void testByBounds()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
@@ -57,16 +54,16 @@ public class QueryChangesetsFiltersTest extends TestCase
 	public void testByClosedAfter() throws ParseException
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		Date validDate = dateFormat.parse("2222-11-22T22:11:00Z");
-		filters.byClosedAfter(validDate);
+		Instant validInstant = Instant.parse("2222-11-22T22:11:00Z");
+		filters.byClosedAfter(validInstant);
 
-		assertEquals(validDate, dateFormat.parse(getParam(filters.toParamString(), "time")));
+		assertEquals(validInstant, Instant.parse(getParam(filters.toParamString(), "time")));
 	}
 	
 	public void testTwoDates()
 	{
 		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		filters.byOpenSomeTimeBetween(new Date(), new Date());
+		filters.byOpenSomeTimeBetween(Instant.now(), Instant.now());
 
 		String result = filters.toParamString();
 

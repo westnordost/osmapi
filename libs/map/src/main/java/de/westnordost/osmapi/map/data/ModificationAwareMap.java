@@ -13,7 +13,7 @@ public class ModificationAwareMap<K,V> implements Map<K,V>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private Map<K,V> map;
+	private final Map<K,V> map;
 	private boolean modified;
 
 	public ModificationAwareMap(Map<K, V> map)

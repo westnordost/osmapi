@@ -3,12 +3,12 @@ package de.westnordost.osmapi.traces;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Locale;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 
@@ -20,10 +20,8 @@ public class GpsTracesParser extends XmlParser implements ApiResponseReader<Void
 			GPX_FILE = "gpx_file",
 			TAG = "tag",
 			DESCRIPTION = "description";
-	
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-	
-	private Handler<GpsTraceDetails> handler;
+
+	private final Handler<GpsTraceDetails> handler;
 	private GpsTraceDetails trace;
 
 	public GpsTracesParser(Handler<GpsTraceDetails> handler)
@@ -62,7 +60,7 @@ public class GpsTracesParser extends XmlParser implements ApiResponseReader<Void
 			
 			String timestamp = getAttribute("timestamp");
 			if(timestamp != null)
-			trace.date = dateFormat.parse(timestamp);
+			trace.createdAt = Instant.parse(timestamp);
 		}
 	}
 
@@ -82,7 +80,7 @@ public class GpsTracesParser extends XmlParser implements ApiResponseReader<Void
 		}
 		else if(name.equals(TAG))
 		{
-			if(trace.tags == null) trace.tags = new ArrayList<String>();
+			if(trace.tags == null) trace.tags = new ArrayList<>();
 			trace.tags.add(getText());
 		}
 	}

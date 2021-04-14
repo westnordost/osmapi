@@ -3,6 +3,7 @@ package de.westnordost.osmapi.traces;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.time.Instant;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
@@ -17,9 +18,7 @@ public class GpxTrackParser extends XmlParser implements ApiResponseReader<Void>
 	private static final String
 	  TRACKPOINT = "trkpt",
 	  TRACKSEGMENT = "trkseg";
-	
-	private final GpxDateFormat dateFormat = new GpxDateFormat();
-	
+
 	private Handler<GpsTrackpoint> handler;
 	
 	private boolean first;
@@ -71,7 +70,7 @@ public class GpxTrackParser extends XmlParser implements ApiResponseReader<Void>
 		else if(TRACKPOINT.equals(getParentName()))
 		{
 			if(name.equals("time"))
-				trackpoint.time = dateFormat.parse(getText());
+				trackpoint.time = Instant.parse(getText());
 			if(name.equals("ele"))
 				trackpoint.elevation = Float.valueOf(getText());
 			if(name.equals("hdop"))

@@ -1,6 +1,6 @@
 package de.westnordost.osmapi.map;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +20,10 @@ public interface MapDataFactory
 	 *  @param lon longitude position of the node
 	 *  @param tags tags of the node. May be null.
 	 *  @param changeset changeset in which the node was last updated. May be null.
-	 *  @param dateEdited time at which the node was last updated. May be null.
+	 *  @param editedAt time at which the node was last updated. May be null.
 	 *  @return the node */
 	Node createNode(long id, int version, Double lat, Double lon, Map<String,String> tags,
-			Changeset changeset, Date dateEdited);
+			Changeset changeset, Instant editedAt);
 
 	/** Create a way from the given data
 	 * @param id id of the wy
@@ -31,11 +31,11 @@ public interface MapDataFactory
 	 * @param nodes list of nodes this way consists of
 	 * @param tags tags of the way. May be null.
 	 * @param changeset changeset in which the way was last updated. May be null.
-	 * @param dateEdited time at which the way was last updated. May be null.
+	 * @param editedAt time at which the way was last updated. May be null.
 	 * @return the way
 	 */
 	Way createWay(long id, int version, List<Long> nodes, Map<String,String> tags, 
-			Changeset changeset, Date dateEdited);
+			Changeset changeset, Instant editedAt);
 	
 	/** Create a relation from the given data
 	 * @param id id of the relation
@@ -43,10 +43,10 @@ public interface MapDataFactory
 	 * @param members list of members this relation consists of
 	 * @param tags tags of the relation. May be null.
 	 * @param changeset changeset in which the relation was last updated. May be null.
-	 * @param dateEdited time at which the relation was last updated. May be null.
+	 * @param editedAt time at which the relation was last updated. May be null.
 	 * @return the relation */
 	Relation createRelation(long id, int version, List<RelationMember> members, 
-			Map<String,String> tags, Changeset changeset, Date dateEdited);
+			Map<String,String> tags, Changeset changeset, Instant editedAt);
 	
 	/** Create a relation member from the given data
 	 * @param ref id of the member node, way or relation

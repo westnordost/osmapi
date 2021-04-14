@@ -1,13 +1,13 @@
 package de.westnordost.osmapi.traces;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import de.westnordost.osmapi.map.data.LatLon;
 
 public class GpsTrackpoint implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	public GpsTrackpoint(LatLon position)
 	{
@@ -21,7 +21,7 @@ public class GpsTrackpoint implements Serializable
 	
 	/** null if unknown. The time is only specified in tracks uploaded with the visibility
 	 *  identifiable or trackable (see GpsTraceDetails) */
-	public Date time;
+	public Instant time;
 	
 	public Float horizontalDilutionOfPrecision;
 	public Float elevation;

@@ -3,14 +3,10 @@ package de.westnordost.osmapi.notes;
 import junit.framework.TestCase;
 
 import java.text.ParseException;
-import java.util.Date;
-
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
+import java.time.Instant;
 
 public class QueryNotesFiltersTest extends TestCase
 {
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-
 	public void testByTerm()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
@@ -83,22 +79,22 @@ public class QueryNotesFiltersTest extends TestCase
 		catch (IllegalArgumentException ignore) {}
 	}
 
-	public void testCreatedBefore() throws ParseException
+	public void testCreatedBefore()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
-		Date validDate = dateFormat.parse("2222-11-22T22:11:00Z");
+		Instant validDate = Instant.parse("2222-11-22T22:11:00Z");
 		filters.createdBefore(validDate);
 
-		assertEquals(validDate, dateFormat.parse(getParam(filters.toParamString(), "to")));
+		assertEquals(validDate, Instant.parse(getParam(filters.toParamString(), "to")));
 	}
 
-	public void testCreatedAfter() throws ParseException
+	public void testCreatedAfter()
 	{
 		QueryNotesFilters filters = new QueryNotesFilters();
-		Date validDate = dateFormat.parse("2222-11-22T22:11:00Z");
+		Instant validDate = Instant.parse("2222-11-22T22:11:00Z");
 		filters.createdAfter(validDate);
 
-		assertEquals(validDate, dateFormat.parse(getParam(filters.toParamString(), "from")));
+		assertEquals(validDate, Instant.parse(getParam(filters.toParamString(), "from")));
 	}
 
 	public void testClosedNotesAfter()

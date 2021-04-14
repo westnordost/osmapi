@@ -1,10 +1,8 @@
 package de.westnordost.osmapi.changesets;
 
 import java.io.IOException;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
@@ -18,8 +16,8 @@ public class ChangesetParserTest extends TestCase
 	{
 		String xml =
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" " +
-						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" " +
-						"changes_count=\"123\" />";
+					"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"0\" " +
+					"changes_count=\"123\" />";
 
 		ChangesetInfo changeset = parseOne(xml);
 
@@ -27,18 +25,14 @@ public class ChangesetParserTest extends TestCase
 		assertNotNull(changeset.user);
 		assertEquals("blub", changeset.user.displayName);
 		assertEquals(123, changeset.user.id);
-		assertEquals(changeset.date, changeset.dateCreated);
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2011, Calendar.MARCH, 5, 20, 29, 56);
-		assertEquals(c.getTimeInMillis() / 1000, changeset.date.getTime() / 1000);
-
+		assertEquals(Instant.parse("2011-03-05T20:29:56Z"), changeset.createdAt);
 		assertEquals(true, changeset.isOpen);
 		assertEquals(0, changeset.notesCount);
 		assertEquals(123, changeset.changesCount);
 
 		assertNull(changeset.boundingBox);
 		assertNull(changeset.getChangesetComment());
-		assertNull(changeset.dateClosed);
+		assertNull(changeset.closedAt);
 		assertNull(changeset.discussion);
 		assertNull(changeset.getGenerator());
 		assertNull(changeset.tags);
@@ -59,10 +53,8 @@ public class ChangesetParserTest extends TestCase
 		
 		ChangesetInfo changeset = parseOne(xml);
 
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2012, Calendar.MARCH, 5, 20, 29, 56);
-		assertNotNull(changeset.dateClosed);
-		assertEquals(c.getTimeInMillis() / 1000, changeset.dateClosed.getTime() / 1000);
+		assertNotNull(changeset.closedAt);
+		assertEquals(Instant.parse("2012-03-05T20:29:56Z"), changeset.closedAt);
 
 		assertEquals(false, changeset.isOpen);
 		assertEquals(0, changeset.notesCount);
@@ -128,18 +120,14 @@ public class ChangesetParserTest extends TestCase
 
 		ChangesetNote a = changeset.discussion.get(0);
 		assertNull(a.user);
-
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2015, Calendar.JANUARY, 1, 18, 56, 48);
-		assertEquals(c.getTimeInMillis() / 1000, a.date.getTime() / 1000);
+		assertEquals(Instant.parse("2015-01-01T18:56:48Z"), a.createdAt);
 
 		ChangesetNote b = changeset.discussion.get(1);
 
 		assertNotNull(b.user);
 		assertEquals(234, b.user.id);
 		assertEquals("fred", b.user.displayName);
-		c.set(2015, Calendar.JANUARY, 1, 18, 58, 3);
-		assertEquals(c.getTimeInMillis() / 1000, b.date.getTime() / 1000);
+		assertEquals(Instant.parse("2015-01-01T18:58:03Z"), b.createdAt);
 	}
 
 	public void testReuseUser()

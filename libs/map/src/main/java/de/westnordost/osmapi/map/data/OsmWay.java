@@ -1,7 +1,7 @@
 package de.westnordost.osmapi.map.data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -9,14 +9,14 @@ import de.westnordost.osmapi.changesets.Changeset;
 
 public class OsmWay extends OsmElement implements Way, Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
-	private ModificationAwareList<Long> nodes;
+	private final ModificationAwareList<Long> nodes;
 
 	public OsmWay(long id, int version, List<Long> nodes,
-				  Map<String, String> tags, Changeset changeset, Date dateEdited)
+				  Map<String, String> tags, Changeset changeset, Instant editedAt)
 	{
-		super(id, version, tags, changeset, dateEdited);
+		super(id, version, tags, changeset, editedAt);
 		this.nodes = new ModificationAwareList<>(nodes);
 	}
 

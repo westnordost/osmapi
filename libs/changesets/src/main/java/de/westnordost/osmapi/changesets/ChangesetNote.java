@@ -2,7 +2,7 @@ package de.westnordost.osmapi.changesets;
 
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import de.westnordost.osmapi.user.User;
 
@@ -10,9 +10,9 @@ import de.westnordost.osmapi.user.User;
  *  is already what the "commit message" is called in editors */
 public class ChangesetNote implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
-	public Date date;
+	public Instant createdAt;
 	public User user;
 	public String text;
 }

@@ -3,12 +3,12 @@ package de.westnordost.osmapi.user;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.common.XmlParser;
 
 /** Parses information for users (API 0.6, since 2012).
@@ -20,8 +20,6 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<Void>
 	private static final String USER = "user",
 	                            ROLES = "roles",
 	                            BLOCKS = "blocks";
-
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
 
 	private List<String> roles;
 
@@ -54,7 +52,7 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<Void>
 		if(USER.equals(name))
 		{
 			createUser(getLongAttribute("id"),getAttribute("display_name"));
-			user.createdDate = dateFormat.parse(getAttribute("account_created"));
+			user.createdAt = Instant.parse(getAttribute("account_created"));
 		}
 		
 		if(USER.equals(parent))

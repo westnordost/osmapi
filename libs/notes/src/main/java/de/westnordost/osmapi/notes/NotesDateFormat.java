@@ -1,26 +1,23 @@
 package de.westnordost.osmapi.notes;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /** The date format for the notes API is a little different: The 'T' literal is missing between 
  *  time and date */
 public class NotesDateFormat
 {
-	private final SimpleDateFormat dateFormat;
+	private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss z");
 
-	public NotesDateFormat() {
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-	}
-
-	public Date parse(String source) throws ParseException
+	public Instant parse(String source) throws DateTimeParseException
 	{
-		return dateFormat.parse(source);
+		return ZonedDateTime.parse(source, FORMATTER).toInstant();
 	}
 	
-	public String format(Date date)
+	public String format(Instant instant)
 	{
-		return dateFormat.format(date);
+		return FORMATTER.format(instant);
 	}
 }

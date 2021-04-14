@@ -1,9 +1,8 @@
 package de.westnordost.osmapi.traces;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
@@ -195,7 +194,7 @@ public class GpsTracesDaoTest extends TestCase
 		assertTrue(trace.tags.contains("a tag"));
 		assertTrue(trace.tags.contains("another"));
 		assertEquals("osmagent-test-allow-everything", trace.userName);
-		assertTrue(Math.abs(new Date().getTime() - trace.date.getTime()) < TEN_MINUTES);
+		assertTrue(Math.abs(Instant.now().toEpochMilli() - trace.createdAt.toEpochMilli()) < TEN_MINUTES);
 
 		privilegedDao.update(id, Visibility.TRACKABLE, "desc", null);
 		trace = privilegedDao.get(id);

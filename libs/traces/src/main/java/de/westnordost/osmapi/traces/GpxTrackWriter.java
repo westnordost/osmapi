@@ -1,15 +1,16 @@
 package de.westnordost.osmapi.traces;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 import de.westnordost.osmapi.common.XmlWriter;
 
 public class GpxTrackWriter extends XmlWriter
-{	
-	private final GpxDateFormat dateFormat = new GpxDateFormat();
-	
-	private String userAgent;
-	private Iterable<GpsTrackpoint> trackpoints;
+{
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
+
+	private final String userAgent;
+	private final Iterable<GpsTrackpoint> trackpoints;
 	
 	public GpxTrackWriter(String userAgent, Iterable<GpsTrackpoint> trackpoints)
 	{
@@ -70,7 +71,7 @@ public class GpxTrackWriter extends XmlWriter
 		if(trackpoint.time != null)
 		{
 			begin("time");
-			text(dateFormat.format(trackpoint.time));
+			text(FORMATTER.format(trackpoint.time));
 			end();
 		}
 		if(trackpoint.elevation != null)

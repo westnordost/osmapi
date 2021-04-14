@@ -2,7 +2,6 @@ package de.westnordost.osmapi.map;
 
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.changesets.Changeset;
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
 import de.westnordost.osmapi.common.XmlParser;
 import de.westnordost.osmapi.map.data.BoundingBox;
 import de.westnordost.osmapi.map.data.Element;
@@ -13,6 +12,7 @@ import de.westnordost.osmapi.user.User;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.*;
 
 /** Parses the map data. It parses the XML naively, i.e. it does not care where in the XML the map
@@ -23,10 +23,8 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	                            WAY = "way",
 	                            RELATION = "relation";
 
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-	
-	private MapDataHandler handler;
-	private MapDataFactory factory;
+	private final MapDataHandler handler;
+	private final MapDataFactory factory;
 
 	/* temporary maps so we do not parse and hold many times the same user and changeset */
 	private Map<Long, User> users;
@@ -35,7 +33,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 	private long id = -1;
 	private int version = 0;
 	private Long changesetId;
-	private Date timestamp;
+	private Instant timestamp;
 
 	private Double lat;
 	private Double lon;
@@ -96,14 +94,13 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		}
 		else if (name.equals(NODE) || name.equals(WAY) || name.equals(RELATION))
 		{
-			timestamp = parseDate();
+			timestamp = parseTimestamp();
 			
 			changesetId = getLongAttribute("changeset");
 			if(changesetId != null && !changesets.containsKey(changesetId))
 			{
 				Changeset changeset = new Changeset();
 				changeset.id = changesetId;
-				changeset.date = timestamp;
 				changeset.user = parseUser();
 				
 				changesets.put( changesetId, changeset);
@@ -121,12 +118,12 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		}
 	}
 
-	private Date parseDate() throws ParseException
+	private Instant parseTimestamp()
 	{
 		String timestamp = getAttribute("timestamp");
 		if(timestamp == null) return null;
 
-		return dateFormat.parse(timestamp);
+		return Instant.parse(timestamp);
 	}
 
 	private User parseUser()
@@ -156,7 +153,7 @@ public class MapDataParser extends XmlParser implements ApiResponseReader<Void>
 		else if(name.equals(WAY))
 		{
 			handler.handle(
-					factory.createWay(id, version, nodes, tags,changesets.get(changesetId), timestamp));
+					factory.createWay(id, version, nodes, tags, changesets.get(changesetId), timestamp));
 			
 			nodes = new LinkedList<>();
 		}

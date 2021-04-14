@@ -1,9 +1,7 @@
 package de.westnordost.osmapi.traces;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.time.Instant;
 
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.Handler;
@@ -31,7 +29,7 @@ public class GpsTracesParserTest extends TestCase
 		assertEquals(false, result.pending);
 		assertEquals(null, result.tags);
 		assertEquals(null, result.description);
-		assertEquals(null, result.date);
+		assertEquals(null, result.createdAt);
 	}
 	
 	public void testDate()
@@ -43,9 +41,7 @@ public class GpsTracesParserTest extends TestCase
 				"</osm>";
 		
 		GpsTraceDetails result = parseOne(xml);
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2006, Calendar.DECEMBER, 12, 15, 20, 32);
-		assertEquals(c.getTimeInMillis() / 1000, result.date.getTime() / 1000);
+		assertEquals(Instant.parse("2006-12-12T15:20:32Z"), result.createdAt);
 	}
 	
 	public void testParseVisibility() throws IOException

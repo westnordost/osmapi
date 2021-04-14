@@ -9,7 +9,7 @@ public class OsmRelationMember implements RelationMember, Serializable
 	private boolean modified;
 
 	private final long ref;
-	private Element.Type type;
+	private final Element.Type type;
 
 	private String role;
 

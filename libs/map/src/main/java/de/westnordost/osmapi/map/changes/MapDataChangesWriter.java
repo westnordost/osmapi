@@ -9,10 +9,10 @@ import java.util.*;
 /** Writes elements into a osmChange format */
 public class MapDataChangesWriter extends XmlWriter
 {
-	private long changesetId;
-	private List<Element> creations;
-	private List<Element> modifications;
-	private List<Element> deletions;
+	private final long changesetId;
+	private final List<Element> creations;
+	private final List<Element> modifications;
+	private final List<Element> deletions;
 
 	public MapDataChangesWriter(long changesetId, Iterable<Element> elements)
 	{

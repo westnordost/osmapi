@@ -1,31 +1,31 @@
 package de.westnordost.osmapi.map.data;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 import de.westnordost.osmapi.changesets.Changeset;
 
 public class OsmNode extends OsmElement implements Node, Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	private boolean modified;
 	private LatLon pos;
 
 	public OsmNode(long id, int version, Double lat, Double lon,
-			   Map<String, String> tags, Changeset changeset, Date dateEdited)
+			   Map<String, String> tags, Changeset changeset, Instant editedAt)
 	{
-		super(id, version, tags, changeset, dateEdited);
+		super(id, version, tags, changeset, editedAt);
 		if (lat != null && lon != null) {
 			this.pos = new OsmLatLon(lat, lon);
 		}
 	}
 	
 	public OsmNode(long id, int version, LatLon pos,
-				   Map<String, String> tags, Changeset changeset, Date dateEdited)
+				   Map<String, String> tags, Changeset changeset, Instant editedAt)
 	{
-		super(id, version, tags, changeset, dateEdited);
+		super(id, version, tags, changeset, editedAt);
 		this.pos = pos;
 	}
 

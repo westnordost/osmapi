@@ -2,8 +2,8 @@ package de.westnordost.osmapi.traces;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -34,7 +34,7 @@ public class GpxTrackWriterTest extends TestCase
 		GpsTrackpoint point = new GpsTrackpoint(new OsmLatLon(1.234, 2.345));
 		point.elevation = 789.1f;
 		point.horizontalDilutionOfPrecision = 42.1f;
-		point.time = new Date();
+		point.time = Instant.now();
 		point.isFirstPointInTrackSegment = false; // will be ignored and set to true
 		elements.add(point);
 		
@@ -88,7 +88,7 @@ public class GpxTrackWriterTest extends TestCase
 			assertEquals(e.position, a.position);
 			assertEquals(e.horizontalDilutionOfPrecision, a.horizontalDilutionOfPrecision);
 			assertEquals(e.elevation, a.elevation);
-			checkTimeEqual(e.time, a.time);
+			assertEquals(e.time, a.time);
 			// first point in actual is always set to isFirstPointInTrackSegment=true
 			if(i > 0)
 				assertEquals(e.isFirstPointInTrackSegment, a.isFirstPointInTrackSegment);
@@ -96,15 +96,7 @@ public class GpxTrackWriterTest extends TestCase
 				assertTrue(a.isFirstPointInTrackSegment);
 		}
 	}
-	
-	private void checkTimeEqual(Date e, Date a)
-	{
-		if(e != null)
-			assertEquals(e.getTime()/1000, a.getTime()/1000);
-		else
-			assertEquals(null, a);
-	}
-	
+
 	private List<GpsTrackpoint> writeAndRead(Iterable<GpsTrackpoint> elements)
 			throws IOException
 	{

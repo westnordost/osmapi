@@ -1,20 +1,20 @@
 package de.westnordost.osmapi.user;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /** Non-private info of a user queried through the user-API */
 public class UserInfo extends User implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	public UserInfo(long id, String displayName)
 	{
 		super(id, displayName);
 	}
 	
-	public Date createdDate;
+	public Instant createdAt;
 	
 	/** aka the number of edits */
 	public int changesetsCount;

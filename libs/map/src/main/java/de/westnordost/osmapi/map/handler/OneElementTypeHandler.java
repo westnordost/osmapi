@@ -8,7 +8,7 @@ import de.westnordost.osmapi.map.data.Way;
 /** Handles one OsmElement type (Node, Way, Relation, Bounds) and ignores everything else */
 public abstract class OneElementTypeHandler<T> implements MapDataHandler
 {
-	private Class<T> tClass;
+	private final Class<T> tClass;
 
 	public OneElementTypeHandler(Class<T> tClass)
 	{

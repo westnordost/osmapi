@@ -8,7 +8,7 @@ import de.westnordost.osmapi.map.MapDataParser;
 /** Parses a xml in &lt;osmChange&gt; format */
 public class MapDataChangesParser extends MapDataParser
 {
-	private MapDataChangesHandler handler;
+	private final MapDataChangesHandler handler;
 
 	public MapDataChangesParser(MapDataChangesHandler handler, MapDataFactory factory)
 	{

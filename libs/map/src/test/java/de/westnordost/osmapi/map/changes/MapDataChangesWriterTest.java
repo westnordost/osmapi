@@ -189,10 +189,10 @@ public class MapDataChangesWriterTest extends TestCase
 		}
 	}
 
-	private static LatLon pos = new OsmLatLon(5,6);
-	private static Map<String,String> tags = createTags();
-	private static List<Long> nodes = createNodes();
-	private static List<RelationMember> relationMembers = createMembers();
+	private static final LatLon pos = new OsmLatLon(5,6);
+	private static final Map<String,String> tags = createTags();
+	private static final List<Long> nodes = createNodes();
+	private static final List<RelationMember> relationMembers = createMembers();
 
 	private static Map<String,String> createTags()
 	{

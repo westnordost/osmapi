@@ -1,6 +1,7 @@
 package de.westnordost.osmapi.user;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 
 import de.westnordost.osmapi.TestUtils;
@@ -41,6 +42,7 @@ public class UserDetailsParserTest extends TestCase
 		UserDetails user = parseOneDetails(xml);
 		assertFalse(user.considersHisContributionsAsPublicDomain);
 		assertNotNull(user.homeLocation);
+		assertEquals(Instant.parse("2013-01-20T17:16:23Z"), user.createdAt);
 		assertEquals(16.8151000, user.homeLocation.getLatitude());
 		assertEquals(96.1860000, user.homeLocation.getLongitude());
 		assertNotNull(user.homeZoom);

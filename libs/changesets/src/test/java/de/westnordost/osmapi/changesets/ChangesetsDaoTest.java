@@ -2,8 +2,8 @@ package de.westnordost.osmapi.changesets;
 
 import junit.framework.TestCase;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
@@ -68,10 +68,10 @@ public class ChangesetsDaoTest extends TestCase
 		assertEquals("unit test",infos.getChangesetComment());
 		assertNull(infos.boundingBox);
 		assertFalse(infos.isOpen);
-		assertEquals(infos.date, infos.dateCreated);
-		assertNotNull(infos.dateClosed);
-		assertTrue(Math.abs(new Date().getTime() - infos.dateClosed.getTime()) < TEN_MINUTES);
-		assertTrue(Math.abs(new Date().getTime() - infos.dateCreated.getTime()) < TEN_MINUTES);
+		assertNotNull(infos.closedAt);
+		long now = Instant.now().toEpochMilli();
+		assertTrue(Math.abs(now - infos.closedAt.toEpochMilli()) < TEN_MINUTES);
+		assertTrue(Math.abs(now - infos.createdAt.toEpochMilli()) < TEN_MINUTES);
 	}
 
 	public void testReadInvalidReturnsNull()
@@ -89,7 +89,8 @@ public class ChangesetsDaoTest extends TestCase
 
 		List<ChangesetNote> comments = privilegedDao.get(myChangesetId).discussion;
 		assertNotNull(comments);
-		assertTrue(Math.abs(new Date().getTime() - comments.get(0).date.getTime()) < TEN_MINUTES);
+		long now = Instant.now().toEpochMilli();
+		assertTrue(Math.abs(now - comments.get(0).createdAt.toEpochMilli()) < TEN_MINUTES);
 		assertEquals("test comment", comments.get(0).text);
 	}
 

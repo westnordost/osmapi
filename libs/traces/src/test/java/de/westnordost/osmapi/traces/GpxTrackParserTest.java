@@ -1,10 +1,8 @@
 package de.westnordost.osmapi.traces;
 
 import java.io.IOException;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import junit.framework.TestCase;
 import de.westnordost.osmapi.TestUtils;
@@ -37,10 +35,8 @@ public class GpxTrackParserTest extends TestCase
 		assertEquals(45.6, trackpoint.position.getLongitude());
 		assertEquals(2.12f, trackpoint.horizontalDilutionOfPrecision);
 		assertEquals(789.1f, trackpoint.elevation);
-		
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2016, Calendar.APRIL, 17, 16, 41, 2);
-		assertEquals(c.getTimeInMillis() / 1000, trackpoint.time.getTime() / 1000);
+
+		assertEquals(Instant.parse("2016-04-17T16:41:02Z"), trackpoint.time);
 	}
 	
 	public void testParseSingleTrackpointWithMillis()
@@ -53,12 +49,9 @@ public class GpxTrackParserTest extends TestCase
 				"</trkseg>";
 		
 		GpsTrackpoint trackpoint = parseOne(xml);
-		
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2016, Calendar.APRIL, 17, 16, 41, 2);
-		// I cannot set the milliseconds with the calendar.... :-(
-		assertEquals(c.getTimeInMillis() / 1000, trackpoint.time.getTime() / 1000);
-		assertEquals(654, trackpoint.time.getTime() % 1000);
+
+		assertEquals(Instant.parse("2016-04-17T16:41:02.654Z"), trackpoint.time);
+		assertEquals(654, trackpoint.time.toEpochMilli() % 1000);
 	}
 	
 	public void testParseMultipleSegments()

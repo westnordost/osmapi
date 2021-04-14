@@ -10,7 +10,7 @@ public class ElementWithoutTagsTest extends TestCase
 {
     public void testElementWithoutTags()
     {
-        OsmNode node = new OsmNode(1, 1, new OsmLatLon(1, 1), null, null, new Date());
+        OsmNode node = new OsmNode(1, 1, new OsmLatLon(1, 1), null, null, null);
         assertEquals(node.getTags().size(), 0);
     }
 }

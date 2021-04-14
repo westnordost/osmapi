@@ -3,10 +3,9 @@ package de.westnordost.osmapi.notes;
 import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.util.Calendar;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.Handler;
@@ -25,9 +24,10 @@ public class NotesParserTest extends TestCase
 
 		Note note = parseOne(xml);
 
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2015, Calendar.DECEMBER, 20, 22, 52, 30);
-		assertEquals(c.getTimeInMillis() / 1000, note.dateCreated.getTime() / 1000);
+		assertEquals(
+				ZonedDateTime.of(2015, 12, 20, 22, 52, 30, 0, ZoneId.of("UTC")).toInstant(),
+				note.createdAt
+		);
 	}
 
 	public void testParseNoteStatus()
@@ -61,8 +61,8 @@ public class NotesParserTest extends TestCase
 
 		List<Note> notes = parseList(xml);
 		
-		assertNotNull(notes.get(0).dateClosed);
-		assertNull(notes.get(1).dateClosed);
+		assertNotNull(notes.get(0).closedAt);
+		assertNull(notes.get(1).closedAt);
 	}
 
 	public void testParseBasicNoteFields()
@@ -91,11 +91,12 @@ public class NotesParserTest extends TestCase
 				"</note>";
 
 		Note note = parseOne(xml);
-		
 		NoteComment comment = note.comments.get(0);
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2015, Calendar.DECEMBER, 22, 22, 52, 40);
-		assertEquals(c.getTimeInMillis() / 1000, comment.date.getTime() / 1000);
+
+		assertEquals(
+			ZonedDateTime.of(2015, 12, 22, 22, 52, 40, 0, ZoneId.of("UTC")).toInstant(),
+			comment.date
+		);
 	}
 
 	public void testParseCommentStatusField()

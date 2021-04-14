@@ -3,9 +3,7 @@ package de.westnordost.osmapi.user;
 import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.time.Instant;
 
 import de.westnordost.osmapi.TestUtils;
 import de.westnordost.osmapi.common.Handler;
@@ -29,9 +27,7 @@ public class UserInfoParserTest extends TestCase
 		assertEquals(123, user.id);
 		assertEquals("mr_x", user.displayName);
 
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.UK);
-		c.set(2013, Calendar.JANUARY, 20, 17, 16, 23);
-		assertEquals(c.getTimeInMillis() / 1000, user.createdDate.getTime() / 1000);
+		assertEquals(Instant.parse("2013-01-20T17:16:23Z"), user.createdAt);
 	}
 	
 	public void testOptionalElements()

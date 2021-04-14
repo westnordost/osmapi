@@ -2,19 +2,18 @@ package de.westnordost.osmapi.notes;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-
-import de.westnordost.osmapi.common.OsmXmlDateFormat;
 
 public class QueryNotesFilters
 {
 	private static final String CHARSET = "UTF-8";
 
-	private final OsmXmlDateFormat dateFormat = new OsmXmlDateFormat();
-	
-	private Map<String, String> params = new HashMap<>();
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
+
+	private final Map<String, String> params = new HashMap<>();
 
 	/**
 	 * @param term search for a certain string
@@ -60,18 +59,18 @@ public class QueryNotesFilters
 	/**
 	 * @param date include notes only created after the given date
 	 */
-	public QueryNotesFilters createdAfter(Date date)
+	public QueryNotesFilters createdAfter(Instant date)
 	{
-		params.put("from", dateFormat.format(date));
+		params.put("from", FORMATTER.format(date));
 		return this;
 	}
 
 	/**
 	 * @param date include notes only created after the given date. If not specified, now
 	 */
-	public QueryNotesFilters createdBefore(Date date)
+	public QueryNotesFilters createdBefore(Instant date)
 	{
-		params.put("to", dateFormat.format(date));
+		params.put("to", FORMATTER.format(date));
 		return this;
 	}
 

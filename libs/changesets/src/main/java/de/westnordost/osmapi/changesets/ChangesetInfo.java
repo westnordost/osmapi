@@ -1,7 +1,7 @@
 package de.westnordost.osmapi.changesets;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import de.westnordost.osmapi.map.data.BoundingBox;
  */
 public class ChangesetInfo extends Changeset implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	/** map of tags associated with this changeset. May be null if there are no tags at all. */
 	public Map<String, String> tags;
@@ -31,10 +31,10 @@ public class ChangesetInfo extends Changeset implements Serializable
 	public boolean isOpen;
 	
 	/** the date the changeset was closed. Null if the changeset is still open  */
-	public Date dateClosed;
+	public Instant closedAt;
 	
 	/** the date the changeset was created. Null if the changeset is still open  */
-	public Date dateCreated;
+	public Instant createdAt;
 	
 	/** A shortcut to getTags().get("comment")
 	 * @return the "commit comment" of the changeset which should include information about what was
