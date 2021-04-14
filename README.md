@@ -29,6 +29,8 @@ Depending on which part of the API you use, you can only include what you need:
 
 To include everything, add [`de.westnordost:osmapi:4.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
 
+### Android
+
 On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
 
 ```gradle
@@ -47,6 +49,13 @@ configurations {
     compile.exclude group: 'org.intellij', module:'annotations'
 }
 ```
+
+Also, starting with v4.0 (or v2.0 of the modularized version respectively), this library uses the classes from the Java 8 time API, like [`Instant`](https://developer.android.com/reference/java/time/Instant) etc. instead of `Date` which [leads to about 50% faster parsing times](https://github.com/streetcomplete/StreetComplete/discussions/2740) when receiving a result.
+
+If your app supports Android API levels below 26, you have two options:
+
+1. Either stick to using version 3.x (or v1.x of the modularized version respectively) of this library...
+2. ...or enable [Java 8+ API desugaring support](https://developer.android.com/studio/write/java8-support#library-desugaring) for your app
 
 ## Basic Usage
 
