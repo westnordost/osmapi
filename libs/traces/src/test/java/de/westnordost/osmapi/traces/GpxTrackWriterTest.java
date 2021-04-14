@@ -22,8 +22,10 @@ public class GpxTrackWriterTest extends TestCase
 	public void testMinimal() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
-		GpsTrackpoint point = new GpsTrackpoint(new OsmLatLon(1.234, 2.345));
-		elements.add(point);
+		elements.add(new GpsTrackpoint(
+			new OsmLatLon(1.234, 2.345),
+			Instant.now()
+		));
 		
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
@@ -31,12 +33,13 @@ public class GpxTrackWriterTest extends TestCase
 	public void testProps() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
-		GpsTrackpoint point = new GpsTrackpoint(new OsmLatLon(1.234, 2.345));
-		point.elevation = 789.1f;
-		point.horizontalDilutionOfPrecision = 42.1f;
-		point.time = Instant.now();
-		point.isFirstPointInTrackSegment = false; // will be ignored and set to true
-		elements.add(point);
+		elements.add(new GpsTrackpoint(
+			new OsmLatLon(1.234, 2.345),
+			Instant.now(),
+			false,
+			42.1f,
+			789.1f
+		));
 		
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
@@ -44,8 +47,8 @@ public class GpxTrackWriterTest extends TestCase
 	public void testOneSegment() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
-		elements.add( new GpsTrackpoint(new OsmLatLon(1.234, 2.345)));
-		elements.add( new GpsTrackpoint(new OsmLatLon(2.234, 3.567)));
+		elements.add( new GpsTrackpoint(new OsmLatLon(1.234, 2.345), Instant.now()));
+		elements.add( new GpsTrackpoint(new OsmLatLon(2.234, 3.567), Instant.now()));
 		
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
@@ -53,13 +56,12 @@ public class GpxTrackWriterTest extends TestCase
 	public void testTwoSegments() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
-		elements.add( new GpsTrackpoint(new OsmLatLon(1.234, 2.345)));
-		elements.add( new GpsTrackpoint(new OsmLatLon(2.234, 3.567)));
+		elements.add( new GpsTrackpoint(new OsmLatLon(1.234, 2.345), Instant.now()));
+		elements.add( new GpsTrackpoint(new OsmLatLon(2.234, 3.567), Instant.now()));
 		
-		GpsTrackpoint newSegmentPoint = new GpsTrackpoint(new OsmLatLon(3.234, 4.567));
-		newSegmentPoint.isFirstPointInTrackSegment = true;
-		
-		elements.add( newSegmentPoint );
+		GpsTrackpoint newSegmentPoint = new GpsTrackpoint(new OsmLatLon(3.234, 4.567), Instant.now(), true, null, null);
+
+		elements.add( newSegmentPoint);
 		
 		checkElementsEqual(elements, writeAndRead(elements));
 	}
@@ -67,10 +69,13 @@ public class GpxTrackWriterTest extends TestCase
 	public void testRoundFloatsToOneDecimal() throws IOException
 	{
 		List<GpsTrackpoint> elements = new ArrayList<>();
-		GpsTrackpoint point = new GpsTrackpoint(new OsmLatLon(1.234, 2.345));
-		point.elevation = 789.113524654646f;
-		point.horizontalDilutionOfPrecision = 42.191655223465f;
-		elements.add(point);
+		elements.add(new GpsTrackpoint(
+			new OsmLatLon(1.234, 2.345),
+			Instant.now(),
+			false,
+			42.191655223465f,
+			789.113524654646f
+		));
 		
 		GpsTrackpoint pointNew = writeAndRead(elements).get(0);
 		assertEquals(789.1f, pointNew.elevation);

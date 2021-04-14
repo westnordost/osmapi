@@ -182,7 +182,7 @@ public class GpsTracesApiTest extends TestCase
 		List<String> tags = new ArrayList<>();
 		tags.add("a tag, another");
 		List<GpsTrackpoint> points = new ArrayList<>();
-		points.add(new GpsTrackpoint(new OsmLatLon(1.23,3.45)));
+		points.add(new GpsTrackpoint(new OsmLatLon(1.23,3.45), Instant.now()));
 
 		long id = privilegedDao.create("test case", Visibility.PRIVATE, "test case desc", tags,
 				points);

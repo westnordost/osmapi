@@ -9,20 +9,29 @@ public class GpsTrackpoint implements Serializable
 {
 	private static final long serialVersionUID = 2L;
 
-	public GpsTrackpoint(LatLon position)
+	public GpsTrackpoint(LatLon position, Instant time)
+	{
+		this(position, time, false, null, null);
+	}
+
+	public GpsTrackpoint(
+			LatLon position, Instant time, boolean isFirstPointInTrackSegment,
+			Float horizontalDilutionOfPrecision, Float elevation
+	)
 	{
 		this.position = position;
+		this.time = time;
+		this.isFirstPointInTrackSegment = isFirstPointInTrackSegment;
+		this.horizontalDilutionOfPrecision = horizontalDilutionOfPrecision;
+		this.elevation = elevation;
 	}
 	
 	/** whether this trackpoint is the first point in a new segment/track (no differentiation made) */
-	public boolean isFirstPointInTrackSegment;
+	public final boolean isFirstPointInTrackSegment;
 	
-	public LatLon position;
+	public final LatLon position;
+	public final Instant time;
 	
-	/** null if unknown. The time is only specified in tracks uploaded with the visibility
-	 *  identifiable or trackable (see GpsTraceDetails) */
-	public Instant time;
-	
-	public Float horizontalDilutionOfPrecision;
-	public Float elevation;
+	public final Float horizontalDilutionOfPrecision;
+	public final Float elevation;
 }

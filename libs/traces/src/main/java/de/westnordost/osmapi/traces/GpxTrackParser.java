@@ -8,6 +8,7 @@ import java.time.Instant;
 import de.westnordost.osmapi.ApiResponseReader;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.XmlParser;
+import de.westnordost.osmapi.map.data.LatLon;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 
 /** Parses the trackpoints from response of the osm api (API 0.6). the osm api response is in the 
@@ -19,10 +20,15 @@ public class GpxTrackParser extends XmlParser implements ApiResponseReader<Void>
 	  TRACKPOINT = "trkpt",
 	  TRACKSEGMENT = "trkseg";
 
-	private Handler<GpsTrackpoint> handler;
+	private final Handler<GpsTrackpoint> handler;
 	
-	private boolean first;
-	private GpsTrackpoint trackpoint;
+	private boolean isFirstPointInTrackSegment = false;
+
+	private LatLon position;
+	private Instant time;
+
+	private Float horizontalDilutionOfPrecision;
+	private Float elevation;
 
 	public GpxTrackParser(Handler<GpsTrackpoint> handler)
 	{
@@ -43,17 +49,11 @@ public class GpxTrackParser extends XmlParser implements ApiResponseReader<Void>
 		
 		if(name.equals(TRACKSEGMENT))
 		{
-			first = true;
+			isFirstPointInTrackSegment = true;
 		}
 		else if(name.equals(TRACKPOINT))
 		{
-			trackpoint = new GpsTrackpoint(
-					OsmLatLon.parseLatLon(getAttribute("lat"), getAttribute("lon")));
-			if(first)
-			{
-				trackpoint.isFirstPointInTrackSegment = first;
-				first = false;
-			}
+			position = OsmLatLon.parseLatLon(getAttribute("lat"), getAttribute("lon"));
 		}
 	}
 
@@ -64,17 +64,20 @@ public class GpxTrackParser extends XmlParser implements ApiResponseReader<Void>
 		
 		if(TRACKPOINT.equals(name))
 		{
-			handler.handle(trackpoint);
-			trackpoint = null;
+			handler.handle(new GpsTrackpoint(
+				position, time, isFirstPointInTrackSegment, horizontalDilutionOfPrecision, elevation
+			));
+			position = null;
+			time = null;
+			isFirstPointInTrackSegment = false;
+			horizontalDilutionOfPrecision = null;
+			elevation = null;
 		}
 		else if(TRACKPOINT.equals(getParentName()))
 		{
-			if(name.equals("time"))
-				trackpoint.time = Instant.parse(getText());
-			if(name.equals("ele"))
-				trackpoint.elevation = Float.valueOf(getText());
-			if(name.equals("hdop"))
-				trackpoint.horizontalDilutionOfPrecision = Float.valueOf(getText());
+			if(name.equals("time"))	time = Instant.parse(getText());
+			if(name.equals("ele")) elevation = Float.valueOf(getText());
+			if(name.equals("hdop"))	horizontalDilutionOfPrecision = Float.valueOf(getText());
 		}
 	}
 }

@@ -67,13 +67,11 @@ public class GpxTrackWriter extends XmlWriter
 		begin("trkpt");
 		attribute("lat", trackpoint.position.getLatitude());
 		attribute("lon", trackpoint.position.getLongitude());
-		
-		if(trackpoint.time != null)
-		{
-			begin("time");
-			text(FORMATTER.format(trackpoint.time));
-			end();
-		}
+
+		begin("time");
+		text(FORMATTER.format(trackpoint.time));
+		end();
+
 		if(trackpoint.elevation != null)
 		{
 			begin("ele");
