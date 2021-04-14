@@ -13,47 +13,47 @@ import static org.junit.Assert.*;
 
 public class UserPreferencesApiTest
 {
-	private UserPreferencesApi privilegedDao;
-	private UserPreferencesApi unprivilegedDao;
+	private UserPreferencesApi privilegedApi;
+	private UserPreferencesApi unprivilegedApi;
 
 	@Before	public void setUp()
 	{
-		privilegedDao = new UserPreferencesApi(ConnectionTestFactory.createConnection(
+		privilegedApi = new UserPreferencesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
-		unprivilegedDao = new UserPreferencesApi(ConnectionTestFactory.createConnection(
+		unprivilegedApi = new UserPreferencesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 
 	@Test public void unprivileged()
 	{
-		// the unprivileged DAO may do nothing here, so lets just do it in one test case...
+		// the unprivileged api may do nothing here, so lets just do it in one test case...
 
 		try {
-			unprivilegedDao.delete("A");
+			unprivilegedApi.delete("A");
 			fail();
 		}
 		catch (OsmAuthorizationException ignore) { }
 
 		try {
-			unprivilegedDao.get("A");
+			unprivilegedApi.get("A");
 			fail();
 		}
 		catch (OsmAuthorizationException ignore) { }
 
 		try {
-			unprivilegedDao.getAll();
+			unprivilegedApi.getAll();
 			fail();
 		}
 		catch (OsmAuthorizationException ignore) { }
 
 		try {
-			unprivilegedDao.set("A","a");
+			unprivilegedApi.set("A","a");
 			fail();
 		}
 		catch (OsmAuthorizationException ignore) { }
 
 		try {
-			unprivilegedDao.setAll(new HashMap<String, String>());
+			unprivilegedApi.setAll(new HashMap<String, String>());
 			fail();
 		}
 		catch (OsmAuthorizationException ignore) { }
@@ -61,17 +61,17 @@ public class UserPreferencesApiTest
 
 	@Test public void setGetAndDeleteUserPreference()
 	{
-		privilegedDao.set("A","a");
-		assertEquals("a",privilegedDao.get("A"));
-		privilegedDao.delete("A");
-		assertNull(privilegedDao.get("A"));
+		privilegedApi.set("A","a");
+		assertEquals("a",privilegedApi.get("A"));
+		privilegedApi.delete("A");
+		assertNull(privilegedApi.get("A"));
 	}
 	
 	@Test public void keyTooLong()
 	{
 		try
 		{
-			privilegedDao.set(tooLong(), "jo");
+			privilegedApi.set(tooLong(), "jo");
 			fail();
 		}
 		catch(IllegalArgumentException ignore) { }
@@ -81,7 +81,7 @@ public class UserPreferencesApiTest
 	{
 		try
 		{
-			privilegedDao.set("jo", tooLong());
+			privilegedApi.set("jo", tooLong());
 			fail();
 		}
 		catch(IllegalArgumentException ignore) { }
@@ -100,15 +100,15 @@ public class UserPreferencesApiTest
 		preferences.put("D", "d");
 		preferences.put("E", "e");
 
-		privilegedDao.setAll(preferences);
-		Map<String,String> updatedPreferences = privilegedDao.getAll();
+		privilegedApi.setAll(preferences);
+		Map<String,String> updatedPreferences = privilegedApi.getAll();
 		assertEquals(preferences, updatedPreferences);
 
 		// deleting a previously set user preferences by omitting it
 		preferences.remove("D");
 
-		privilegedDao.setAll(preferences);
-		updatedPreferences = privilegedDao.getAll();
+		privilegedApi.setAll(preferences);
+		updatedPreferences = privilegedApi.getAll();
 		assertEquals(preferences, updatedPreferences);
 	}
 }

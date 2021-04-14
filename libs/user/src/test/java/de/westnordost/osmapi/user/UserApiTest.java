@@ -12,16 +12,16 @@ import static org.junit.Assert.*;
 
 public class UserApiTest
 {
-	private UserApi privilegedDao;
-	private UserApi anonymousDao;
-	private UserApi unprivilegedDao;
+	private UserApi privilegedApi;
+	private UserApi anonymousApi;
+	private UserApi unprivilegedApi;
 
 	@Before public void setUp()
 	{
-		anonymousDao = new UserApi(ConnectionTestFactory.createConnection(null));
-		privilegedDao = new UserApi(ConnectionTestFactory.createConnection(
+		anonymousApi = new UserApi(ConnectionTestFactory.createConnection(null));
+		privilegedApi = new UserApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
-		unprivilegedDao = new UserApi(ConnectionTestFactory.createConnection(
+		unprivilegedApi = new UserApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 
@@ -29,7 +29,7 @@ public class UserApiTest
 	{
 		try
 		{
-			unprivilegedDao.getMine();
+			unprivilegedApi.getMine();
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
@@ -39,19 +39,19 @@ public class UserApiTest
 	{
 		// should just not throw any exceptions. Since the user details may change, we do not
 		// check the validity of the data here
-		assertNotNull(privilegedDao.getMine());
+		assertNotNull(privilegedApi.getMine());
 	}
 
 	@Test public void getUserInfo()
 	{
-		assertNull(unprivilegedDao.get(0L));
-		assertNotNull(unprivilegedDao.get(1L));
-		assertNotNull(anonymousDao.get(1L));
+		assertNull(unprivilegedApi.get(0L));
+		assertNotNull(unprivilegedApi.get(1L));
+		assertNotNull(anonymousApi.get(1L));
 	}
 
 	@Test public void getUserInfos()
 	{
-		assertEquals(2,unprivilegedDao.getAll(Arrays.asList(1L, 2L)).size());
-		assertEquals(2,anonymousDao.getAll(Arrays.asList(1L, 2L)).size());
+		assertEquals(2,unprivilegedApi.getAll(Arrays.asList(1L, 2L)).size());
+		assertEquals(2,anonymousApi.getAll(Arrays.asList(1L, 2L)).size());
 	}
 }

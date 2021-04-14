@@ -23,9 +23,9 @@ import static org.junit.Assert.*;
 
 public class NotesApiTest
 {
-	private NotesApi privilegedDao;
-	private NotesApi anonymousDao;
-	private NotesApi unprivilegedDao;
+	private NotesApi privilegedApi;
+	private NotesApi anonymousApi;
+	private NotesApi unprivilegedApi;
 
 	private Note note;
 
@@ -57,19 +57,19 @@ public class NotesApiTest
 
 	@Before public void setUp()
 	{
-		anonymousDao = new NotesApi(ConnectionTestFactory.createConnection(null));
-		privilegedDao = new NotesApi(ConnectionTestFactory.createConnection(
+		anonymousApi = new NotesApi(ConnectionTestFactory.createConnection(null));
+		privilegedApi = new NotesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
-		unprivilegedDao = new NotesApi(ConnectionTestFactory.createConnection(
+		unprivilegedApi = new NotesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 
 		// create one note to work with...
-		note = privilegedDao.create(POINT, TEXT);
+		note = privilegedApi.create(POINT, TEXT);
 	}
 
 	@After public void tearDown()
 	{
-		privilegedDao.close(note.id);
+		privilegedApi.close(note.id);
 	}
 
 	@Test public void createNote()
@@ -92,7 +92,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			unprivilegedDao.create(POINT, TEXT);
+			unprivilegedApi.create(POINT, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -100,7 +100,7 @@ public class NotesApiTest
 
 	@Test public void createNoteAsAnonymousAllowed()
 	{
-		Note note = anonymousDao.create(POINT, TEXT);
+		Note note = anonymousApi.create(POINT, TEXT);
 
 		assertEquals(POINT, note.position);
 		assertEquals(TEXT, note.comments.get(0).text);
@@ -110,7 +110,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			unprivilegedDao.comment(note.id, TEXT);
+			unprivilegedApi.comment(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -120,7 +120,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			anonymousDao.comment(note.id, TEXT);
+			anonymousApi.comment(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -130,7 +130,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			unprivilegedDao.reopen(note.id, TEXT);
+			unprivilegedApi.reopen(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -140,7 +140,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			unprivilegedDao.close(note.id, TEXT);
+			unprivilegedApi.close(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -150,7 +150,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			anonymousDao.reopen(note.id, TEXT);
+			anonymousApi.reopen(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e)
@@ -163,7 +163,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			anonymousDao.close(note.id, TEXT);
+			anonymousApi.close(note.id, TEXT);
 			fail();
 		}
 		catch(OsmAuthorizationException e)
@@ -176,7 +176,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			privilegedDao.create(POINT, "");
+			privilegedApi.create(POINT, "");
 			fail();
 		}
 		catch(IllegalArgumentException ignore) {}
@@ -186,7 +186,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			privilegedDao.comment(note.id, "");
+			privilegedApi.comment(note.id, "");
 			fail();
 		}
 		catch(IllegalArgumentException ignore) {}
@@ -196,7 +196,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			privilegedDao.comment(note.id, null);
+			privilegedApi.comment(note.id, null);
 			fail();
 		}
 		catch(NullPointerException ignore) {}
@@ -204,25 +204,25 @@ public class NotesApiTest
 
 	@Test public void closeAndReopenNoteWithoutTextDoesNotFail()
 	{
-		Note myNote = privilegedDao.create(POINT3, TEXT);
+		Note myNote = privilegedApi.create(POINT3, TEXT);
 
-		myNote = privilegedDao.close(myNote.id, "");
+		myNote = privilegedApi.close(myNote.id, "");
 		assertEquals(2, myNote.comments.size());
 		assertNull(myNote.comments.get(1).text);
 
-		myNote = privilegedDao.reopen(myNote.id, "");
+		myNote = privilegedApi.reopen(myNote.id, "");
 		assertEquals(3, myNote.comments.size());
 		assertNull(myNote.comments.get(2).text);
 
-		myNote = privilegedDao.close(myNote.id);
+		myNote = privilegedApi.close(myNote.id);
 		assertEquals(4, myNote.comments.size());
 		assertNull(myNote.comments.get(3).text);
 
-		myNote = privilegedDao.reopen(myNote.id);
+		myNote = privilegedApi.reopen(myNote.id);
 		assertEquals(5, myNote.comments.size());
 		assertNull(myNote.comments.get(4).text);
 
-		privilegedDao.close(myNote.id);
+		privilegedApi.close(myNote.id);
 	}
 
 	@Test public void commentNote()
@@ -230,9 +230,9 @@ public class NotesApiTest
 		List<NoteComment> comments;
 		long now, commentTime;
 
-		Note myNote = privilegedDao.create(POINT4, TEXT);
+		Note myNote = privilegedApi.create(POINT4, TEXT);
 
-		comments = privilegedDao.comment(myNote.id, TEXT + 1).comments;
+		comments = privilegedApi.comment(myNote.id, TEXT + 1).comments;
 		assertEquals(2, comments.size());
 		assertEquals(TEXT + 1, comments.get(1).text);
 		assertEquals(NoteComment.Action.COMMENTED, comments.get(1).action);
@@ -243,7 +243,7 @@ public class NotesApiTest
 		commentTime = comments.get(1).date.toEpochMilli();
 		assertTrue(Math.abs(now - commentTime) < TEN_MINUTES);
 
-		comments = privilegedDao.comment(myNote.id, TEXT + 2).comments;
+		comments = privilegedApi.comment(myNote.id, TEXT + 2).comments;
 		assertEquals(3, comments.size());
 		assertEquals(TEXT + 2, comments.get(2).text);
 		assertEquals(NoteComment.Action.COMMENTED, comments.get(2).action);
@@ -254,16 +254,16 @@ public class NotesApiTest
 		commentTime = comments.get(2).date.toEpochMilli();
 		assertTrue(Math.abs(now - commentTime) < TEN_MINUTES);
 
-		privilegedDao.close(myNote.id);
+		privilegedApi.close(myNote.id);
 	}
 
 	@Test public void closeAndReopenNote()
 	{
 		List<NoteComment> comments;
 
-		Note myNote = privilegedDao.create(POINT5, TEXT);
+		Note myNote = privilegedApi.create(POINT5, TEXT);
 
-		myNote = privilegedDao.close(myNote.id, TEXT + 1);
+		myNote = privilegedApi.close(myNote.id, TEXT + 1);
 
 		assertNotNull(myNote.closedAt);
 		long now = Instant.now().toEpochMilli();
@@ -277,7 +277,7 @@ public class NotesApiTest
 		assertNotNull(comments.get(1).user);
 		assertFalse(comments.get(1).isAnonymous());
 
-		myNote = privilegedDao.reopen(myNote.id, TEXT + 2);
+		myNote = privilegedApi.reopen(myNote.id, TEXT + 2);
 
 		assertNull(myNote.closedAt);
 
@@ -288,39 +288,39 @@ public class NotesApiTest
 		assertNotNull(comments.get(2).user);
 		assertFalse(comments.get(2).isAnonymous());
 
-		privilegedDao.close(myNote.id);
+		privilegedApi.close(myNote.id);
 	}
 
 	@Test public void noteNotFound()
 	{
-		try { privilegedDao.comment(0, TEXT); fail(); } catch(OsmNotFoundException ignore) {}
-		try { privilegedDao.reopen(0); fail(); } catch(OsmNotFoundException ignore) {}
-		try { privilegedDao.close(0); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedApi.comment(0, TEXT); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedApi.reopen(0); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedApi.close(0); fail(); } catch(OsmNotFoundException ignore) {}
 	}
 
 	@Test public void conflict()
 	{
-		Note myNote = privilegedDao.create(POINT6, TEXT);
+		Note myNote = privilegedApi.create(POINT6, TEXT);
 
 		try
 		{
-			privilegedDao.reopen(myNote.id);
+			privilegedApi.reopen(myNote.id);
 			fail();
 		}
 		catch(OsmConflictException ignore) {}
 
-		privilegedDao.close(myNote.id);
+		privilegedApi.close(myNote.id);
 
 		try
 		{
-			privilegedDao.close(myNote.id);
+			privilegedApi.close(myNote.id);
 			fail();
 		}
 		catch(OsmConflictException ignore) {}
 
 		try
 		{
-			privilegedDao.comment(myNote.id, TEXT);
+			privilegedApi.comment(myNote.id, TEXT);
 			fail();
 		}
 		catch(OsmConflictException ignore) {}
@@ -328,7 +328,7 @@ public class NotesApiTest
 
 	@Test public void getNote()
 	{
-		Note note2 = unprivilegedDao.get(note.id);
+		Note note2 = unprivilegedApi.get(note.id);
 		assertEquals(note.id, note2.id);
 		assertEquals(note.status, note2.status);
 		assertEquals(note.comments.size(), note2.comments.size());
@@ -338,12 +338,12 @@ public class NotesApiTest
 
 	@Test public void getNoNote()
 	{
-		assertNull(unprivilegedDao.get(0));
+		assertNull(unprivilegedApi.get(0));
 	}
 
 	@Test public void getNoteAsAnonymous()
 	{
-		assertNotNull(anonymousDao.get(note.id));
+		assertNotNull(anonymousApi.get(note.id));
 	}
 
 	@Test public void queryTooBig()
@@ -351,7 +351,7 @@ public class NotesApiTest
 		try
 		{
 			// try to download the whole world...
-			unprivilegedDao.getAll(WHOLE_WORLD, new FailIfCalled(), 10000, -1);
+			unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 10000, -1);
 			fail();
 		}
 		catch (OsmQueryTooBigException ignore) {}
@@ -361,14 +361,14 @@ public class NotesApiTest
 	{
 		try
 		{
-			unprivilegedDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, -1);
+			unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 0, -1);
 			fail();
 		}
 		catch (IllegalArgumentException ignore) {}
 
 		try
 		{
-			unprivilegedDao.getAll(WHOLE_WORLD, new FailIfCalled(), 0, 10001);
+			unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 0, 10001);
 			fail();
 		}
 		catch (IllegalArgumentException ignore) {}
@@ -378,7 +378,7 @@ public class NotesApiTest
 	{
 		try
 		{
-			unprivilegedDao.getAll(CROSS_180TH_MERIDIAN, new FailIfCalled(), 10000, -1);
+			unprivilegedApi.getAll(CROSS_180TH_MERIDIAN, new FailIfCalled(), 10000, -1);
 			fail();
 		}
 		catch (IllegalArgumentException ignore) {}
@@ -387,28 +387,28 @@ public class NotesApiTest
 	@Test public void getNotes()
 	{
 		Counter counter = new Counter();
-		unprivilegedDao.getAll(MY_AREA, counter, 100, -1);
+		unprivilegedApi.getAll(MY_AREA, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 
 	@Test public void getNotesAsAnonymous()
 	{
 		Counter counter = new Counter();
-		anonymousDao.getAll(MY_AREA, counter, 100, -1);
+		anonymousApi.getAll(MY_AREA, counter, 100, -1);
 		assertTrue(counter.count > 0);
 	}
 
 	@Test public void findNotes()
 	{
 		Counter counter = new Counter();
-		unprivilegedDao.find(counter, null);
+		unprivilegedApi.find(counter, null);
 		assertTrue(counter.count > 0);
 	}
 
 	@Test public void findNotesWithParameters()
 	{
 		Counter counter = new Counter();
-		unprivilegedDao.find(counter,
+		unprivilegedApi.find(counter,
 				new QueryNotesFilters().hideClosedNotesAfter(-1).limit(10));
 		assertTrue(counter.count > 0);
 	}
@@ -416,14 +416,14 @@ public class NotesApiTest
 	@Test public void findNotesWithoutQueryDoesNotFail()
 	{
 		Counter counter = new Counter();
-		unprivilegedDao.find(counter, null);
+		unprivilegedApi.find(counter, null);
 		assertTrue(counter.count > 0);
 	}
 
 	@Test public void findNotesAsAnonymous()
 	{
 		Counter counter = new Counter();
-		anonymousDao.find(counter, null);
+		anonymousApi.find(counter, null);
 		assertTrue(counter.count > 0);
 	}
 

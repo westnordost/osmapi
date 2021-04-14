@@ -11,7 +11,7 @@ import java.util.Map;
 
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.OsmConnection;
-import de.westnordost.osmapi.changesets.ChangesetsDao;
+import de.westnordost.osmapi.changesets.ChangesetsApi;
 import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmConflictException;
@@ -196,19 +196,19 @@ public class MapDataApiTest
 
 	@Test public void notFound()
 	{
-		MapDataApi dao = new MapDataApi(connection);
+		MapDataApi api = new MapDataApi(connection);
 		MapDataHandler h = new DefaultMapDataHandler();
 
 		try
 		{
-			dao.getWayComplete(Long.MAX_VALUE, h);
+			api.getWayComplete(Long.MAX_VALUE, h);
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
 
 		try
 		{
-			dao.getRelationComplete(Long.MAX_VALUE, h);
+			api.getRelationComplete(Long.MAX_VALUE, h);
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
@@ -249,12 +249,12 @@ public class MapDataApiTest
 
 	@Test public void emptySomeElementsForX()
 	{
-		MapDataApi dao = new MapDataApi(connection);
+		MapDataApi api = new MapDataApi(connection);
 
-		assertEquals(0, dao.getRelationsForRelation(Long.MAX_VALUE).size());
-		assertEquals(0, dao.getRelationsForNode(Long.MAX_VALUE).size());
-		assertEquals(0, dao.getRelationsForWay(Long.MAX_VALUE).size());
-		assertEquals(0, dao.getWaysForNode(Long.MAX_VALUE).size());
+		assertEquals(0, api.getRelationsForRelation(Long.MAX_VALUE).size());
+		assertEquals(0, api.getRelationsForNode(Long.MAX_VALUE).size());
+		assertEquals(0, api.getRelationsForWay(Long.MAX_VALUE).size());
+		assertEquals(0, api.getWaysForNode(Long.MAX_VALUE).size());
 	}
 
 	@Test public void getNode()
@@ -328,10 +328,10 @@ public class MapDataApiTest
 
 	@Test public void getElementsEmpty()
 	{
-		MapDataApi dao = new MapDataApi(connection);
-		assertTrue(dao.getWays(Collections.<Long> emptyList()).isEmpty());
-		assertTrue(dao.getNodes(Collections.<Long> emptyList()).isEmpty());
-		assertTrue(dao.getRelations(Collections.<Long> emptyList()).isEmpty());
+		MapDataApi api = new MapDataApi(connection);
+		assertTrue(api.getWays(Collections.<Long> emptyList()).isEmpty());
+		assertTrue(api.getNodes(Collections.<Long> emptyList()).isEmpty());
+		assertTrue(api.getRelations(Collections.<Long> emptyList()).isEmpty());
 	}
 
 	@Test public void closeUnopenedChangesetFails()
@@ -346,15 +346,15 @@ public class MapDataApiTest
 	
 	@Test public void closeClosedChangesetFails()
 	{
-		MapDataApi dao = new MapDataApi(privilegedConnection);
+		MapDataApi api = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
-		long changesetId = dao.openChangeset(tags);
-		dao.closeChangeset(changesetId);
+		long changesetId = api.openChangeset(tags);
+		api.closeChangeset(changesetId);
 		
 		try
 		{
-			dao.closeChangeset(changesetId);
+			api.closeChangeset(changesetId);
 			fail();
 		}
 		catch(OsmConflictException ignore) { }
@@ -363,7 +363,7 @@ public class MapDataApiTest
 	@Test public void multipleChangesInChangeset()
 	{
 		MapDataApi mapDataApi = new MapDataApi(privilegedConnection);
-		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);
+		ChangesetsApi changesetApi = new ChangesetsApi(privilegedConnection);
 
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
@@ -371,12 +371,12 @@ public class MapDataApiTest
 		long changesetId = mapDataApi.openChangeset(tags);
 		try
 		{
-			assertEquals(true, changesetDao.get(changesetId).isOpen);
+			assertEquals(true, changesetApi.get(changesetId).isOpen);
 			assertChangesetHasElementCount(changesetId, 0,0,0);
 
 			try
 			{
-				changesetDao.comment(changesetId, "Trying to comment on a non-closed changeset");
+				changesetApi.comment(changesetId, "Trying to comment on a non-closed changeset");
 				fail();
 			}
 			catch(OsmConflictException ignore) {}
@@ -407,21 +407,21 @@ public class MapDataApiTest
 		finally
 		{
 			mapDataApi.closeChangeset(changesetId);
-			assertEquals(false, changesetDao.get(changesetId).isOpen);
+			assertEquals(false, changesetApi.get(changesetId).isOpen);
 		}
 	}
 	
 	@Test public void updateClosedChangesetFails()
 	{
-		MapDataApi dao = new MapDataApi(privilegedConnection);
+		MapDataApi api = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
-		long changesetId = dao.openChangeset(tags);
-		dao.closeChangeset(changesetId);
+		long changesetId = api.openChangeset(tags);
+		api.closeChangeset(changesetId);
 		
 		try
 		{
-			dao.updateChangeset(changesetId, tags);
+			api.updateChangeset(changesetId, tags);
 			fail();
 		}
 		catch(OsmConflictException ignore)
@@ -445,31 +445,31 @@ public class MapDataApiTest
 
 	@Test public void updateChangesetOverwritesOldTags()
 	{
-		MapDataApi dao = new MapDataApi(privilegedConnection);
-		ChangesetsDao changesetDao = new ChangesetsDao(privilegedConnection);
+		MapDataApi api = new MapDataApi(privilegedConnection);
+		ChangesetsApi changesetApi = new ChangesetsApi(privilegedConnection);
 
 		Map<String,String> tags1 = new HashMap<>();
 		tags1.put("comment", "test case");
-		long changesetId = dao.openChangeset(tags1);
+		long changesetId = api.openChangeset(tags1);
 
-		assertEquals(tags1, changesetDao.get(changesetId).tags);
+		assertEquals(tags1, changesetApi.get(changesetId).tags);
 
 		Map<String,String> tags2 = new HashMap<>();
 		tags2.put("comment2", "test case2");
 
-		dao.updateChangeset(changesetId, tags2);
+		api.updateChangeset(changesetId, tags2);
 
-		assertEquals(tags2, changesetDao.get(changesetId).tags);
+		assertEquals(tags2, changesetApi.get(changesetId).tags);
 
 		// just cleaning up
-		dao.closeChangeset(changesetId);
+		api.closeChangeset(changesetId);
 	}
 
 	private void assertChangesetHasElementCount(long changesetId, int creations, int modifications, int deletions)
 	{
-		ChangesetsDao changesetDao = new ChangesetsDao(unprivilegedConnection);
+		ChangesetsApi changesetApi = new ChangesetsApi(unprivilegedConnection);
 		SimpleMapDataChangesHandler h = new SimpleMapDataChangesHandler();
-		changesetDao.getData(changesetId, h);
+		changesetApi.getData(changesetId, h);
 		assertEquals(creations, h.getCreations().size());
 		assertEquals(modifications, h.getModifications().size());
 		assertEquals(deletions, h.getDeletions().size());

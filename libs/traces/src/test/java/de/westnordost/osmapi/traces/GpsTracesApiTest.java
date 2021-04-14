@@ -30,14 +30,14 @@ public class GpsTracesApiTest
 	private static final int PUBLIC_TRACE = 927;
 
 	
-	private GpsTracesApi privilegedDao;
-	private GpsTracesApi unprivilegedDao;
+	private GpsTracesApi privilegedApi;
+	private GpsTracesApi unprivilegedApi;
 	
 	@Before public void setUp()
 	{
-		privilegedDao = new GpsTracesApi(ConnectionTestFactory.createConnection(
+		privilegedApi = new GpsTracesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING));
-		unprivilegedDao = new GpsTracesApi(ConnectionTestFactory.createConnection(
+		unprivilegedApi = new GpsTracesApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 	
@@ -45,28 +45,28 @@ public class GpsTracesApiTest
 	{
 		try
 		{
-			privilegedDao.get(PRIVATE_TRACE_OF_OTHER_USER);
+			privilegedApi.get(PRIVATE_TRACE_OF_OTHER_USER);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 
 		try
 		{
-			privilegedDao.delete(PRIVATE_TRACE_OF_OTHER_USER);
+			privilegedApi.delete(PRIVATE_TRACE_OF_OTHER_USER);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 
 		try
 		{
-			privilegedDao.getData(PRIVATE_TRACE_OF_OTHER_USER, null);
+			privilegedApi.getData(PRIVATE_TRACE_OF_OTHER_USER, null);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 
 		try
 		{
-			privilegedDao.update(PRIVATE_TRACE_OF_OTHER_USER, Visibility.PUBLIC, "test", null);
+			privilegedApi.update(PRIVATE_TRACE_OF_OTHER_USER, Visibility.PUBLIC, "test", null);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
@@ -76,42 +76,42 @@ public class GpsTracesApiTest
 	{
 		try
 		{
-			unprivilegedDao.create("bla", Visibility.PUBLIC, "desc", Collections.<GpsTrackpoint> emptyList());
+			unprivilegedApi.create("bla", Visibility.PUBLIC, "desc", Collections.<GpsTrackpoint> emptyList());
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 		
 		try
 		{
-			unprivilegedDao.get(PUBLIC_TRACE);
+			unprivilegedApi.get(PUBLIC_TRACE);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 
 		try
 		{
-			unprivilegedDao.delete(PUBLIC_TRACE);
+			unprivilegedApi.delete(PUBLIC_TRACE);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 
 		try
 		{
-			unprivilegedDao.getData(PUBLIC_TRACE, null);
+			unprivilegedApi.getData(PUBLIC_TRACE, null);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 
 		try
 		{
-			unprivilegedDao.update(PUBLIC_TRACE, Visibility.PUBLIC, "test", null);
+			unprivilegedApi.update(PUBLIC_TRACE, Visibility.PUBLIC, "test", null);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
 		
 		try
 		{
-			unprivilegedDao.getMine(new Handler<GpsTraceDetails>() { public void handle(GpsTraceDetails tea) {}} );
+			unprivilegedApi.getMine(new Handler<GpsTraceDetails>() { public void handle(GpsTraceDetails tea) {}} );
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) { }
@@ -122,14 +122,14 @@ public class GpsTracesApiTest
 	{
 		try
 		{
-			privilegedDao.getData(NONEXISTING_TRACE, null);
+			privilegedApi.getData(NONEXISTING_TRACE, null);
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
 		
 		try
 		{
-			privilegedDao.update(NONEXISTING_TRACE, Visibility.TRACKABLE, "desc", null);
+			privilegedApi.update(NONEXISTING_TRACE, Visibility.TRACKABLE, "desc", null);
 			fail();
 		}
 		catch(OsmNotFoundException ignore) {}
@@ -137,21 +137,21 @@ public class GpsTracesApiTest
 	
 	@Test public void getNonexistingTrace()
 	{
-		assertNull(privilegedDao.get(NONEXISTING_TRACE));
+		assertNull(privilegedApi.get(NONEXISTING_TRACE));
 	}
 	
 	@Test public void tooLongDescription()
 	{
 		try
 		{
-			privilegedDao.update(PUBLIC_TRACE, Visibility.TRACKABLE, tooLong(), null);
+			privilegedApi.update(PUBLIC_TRACE, Visibility.TRACKABLE, tooLong(), null);
 			fail();
 		}
 		catch(IllegalArgumentException ignore) { }
 		
 		try
 		{
-			privilegedDao.create("xxx", Visibility.TRACKABLE, tooLong(), null,
+			privilegedApi.create("xxx", Visibility.TRACKABLE, tooLong(), null,
 					Collections.<GpsTrackpoint> emptyList());
 			fail();
 		}
@@ -166,7 +166,7 @@ public class GpsTracesApiTest
 		
 		try
 		{
-			privilegedDao.create("abc", Visibility.TRACKABLE, "desc", tags,
+			privilegedApi.create("abc", Visibility.TRACKABLE, "desc", tags,
 					Collections.<GpsTrackpoint> emptyList());
 			fail();
 		}
@@ -174,7 +174,7 @@ public class GpsTracesApiTest
 		
 		try
 		{
-			privilegedDao.update(PUBLIC_TRACE, Visibility.TRACKABLE, "test", tags);
+			privilegedApi.update(PUBLIC_TRACE, Visibility.TRACKABLE, "test", tags);
 			fail();
 		}
 		catch(IllegalArgumentException ignore) { }
@@ -187,10 +187,10 @@ public class GpsTracesApiTest
 		List<GpsTrackpoint> points = new ArrayList<>();
 		points.add(new GpsTrackpoint(new OsmLatLon(1.23,3.45), Instant.now()));
 
-		long id = privilegedDao.create("test case", Visibility.PRIVATE, "test case desc", tags,
+		long id = privilegedApi.create("test case", Visibility.PRIVATE, "test case desc", tags,
 				points);
 
-		GpsTraceDetails trace = privilegedDao.get(id);
+		GpsTraceDetails trace = privilegedApi.get(id);
 		assertEquals("test_case", trace.name);
 		assertEquals(Visibility.PRIVATE, trace.visibility);
 		assertEquals("test case desc", trace.description);
@@ -199,14 +199,14 @@ public class GpsTracesApiTest
 		assertEquals("osmagent-test-allow-everything", trace.userName);
 		assertTrue(Math.abs(Instant.now().toEpochMilli() - trace.createdAt.toEpochMilli()) < TEN_MINUTES);
 
-		privilegedDao.update(id, Visibility.TRACKABLE, "desc", null);
-		trace = privilegedDao.get(id);
+		privilegedApi.update(id, Visibility.TRACKABLE, "desc", null);
+		trace = privilegedApi.get(id);
 		assertEquals(Visibility.TRACKABLE, trace.visibility);
 		assertEquals("desc",trace.description);
 		assertNull(trace.tags);
 
-		privilegedDao.delete(id);
-		trace = privilegedDao.get(id);
+		privilegedApi.delete(id);
+		trace = privilegedApi.get(id);
 		assertNull(trace);
 	}
 	

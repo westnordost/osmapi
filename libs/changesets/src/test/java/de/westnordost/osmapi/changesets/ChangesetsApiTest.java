@@ -13,7 +13,7 @@ import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.map.data.Element;
-import de.westnordost.osmapi.map.MapDataDao;
+import de.westnordost.osmapi.map.MapDataApi;
 import de.westnordost.osmapi.map.data.Node;
 import de.westnordost.osmapi.map.data.OsmLatLon;
 import de.westnordost.osmapi.map.data.OsmNode;
@@ -23,11 +23,11 @@ import static org.junit.Assert.*;
 
 public class ChangesetsApiTest
 {
-	private ChangesetsApi privilegedDao;
-	private ChangesetsApi anonymousDao;
-	private ChangesetsApi unprivilegedDao;
+	private ChangesetsApi privilegedApi;
+	private ChangesetsApi anonymousApi;
+	private ChangesetsApi unprivilegedApi;
 
-	private MapDataDao mapDataDao;
+	private MapDataApi mapDataApi;
 
 	private long changesetId = 1;
 
@@ -44,27 +44,27 @@ public class ChangesetsApiTest
 		OsmConnection userConnection = ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_EVERYTHING);
 
-		mapDataDao = new MapDataDao(userConnection);
+		mapDataApi = new MapDataApi(userConnection);
 
-		anonymousDao = new ChangesetsApi(ConnectionTestFactory.createConnection(null));
-		privilegedDao = new ChangesetsApi(userConnection);
-		unprivilegedDao = new ChangesetsApi(ConnectionTestFactory.createConnection(
+		anonymousApi = new ChangesetsApi(ConnectionTestFactory.createConnection(null));
+		privilegedApi = new ChangesetsApi(userConnection);
+		unprivilegedApi = new ChangesetsApi(ConnectionTestFactory.createConnection(
 				ConnectionTestFactory.User.ALLOW_NOTHING));
 	}
 
 	@Test public void subscribe()
 	{
-		ChangesetInfo info = privilegedDao.subscribe(changesetId);
-		privilegedDao.unsubscribe(changesetId);
+		ChangesetInfo info = privilegedApi.subscribe(changesetId);
+		privilegedApi.unsubscribe(changesetId);
 		assertEquals(changesetId, info.id);
 	}
 
 	@Test public void read()
 	{
 		List<Element> elements = new ArrayList<>();
-		long myChangesetId = mapDataDao.updateMap("unit test", "", elements, null);
+		long myChangesetId = mapDataApi.updateMap("unit test", "", elements, null);
 
-		ChangesetInfo infos = unprivilegedDao.get(myChangesetId);
+		ChangesetInfo infos = unprivilegedApi.get(myChangesetId);
 		assertEquals(myChangesetId, infos.id);
 		assertEquals(ConnectionTestFactory.USER_AGENT, infos.getGenerator());
 		assertEquals("unit test",infos.getChangesetComment());
@@ -78,18 +78,18 @@ public class ChangesetsApiTest
 
 	@Test public void readInvalidReturnsNull()
 	{
-		assertNull(unprivilegedDao.get(0));
+		assertNull(unprivilegedApi.get(0));
 	}
 
 	@Test public void comment()
 	{
 		List<Element> elements = new ArrayList<>();
-		long myChangesetId = mapDataDao.updateMap("unit test", "", elements, null);
+		long myChangesetId = mapDataApi.updateMap("unit test", "", elements, null);
 
-		ChangesetInfo infos = privilegedDao.comment(myChangesetId, "test comment");
+		ChangesetInfo infos = privilegedApi.comment(myChangesetId, "test comment");
 		assertEquals(1, infos.notesCount);
 
-		List<ChangesetNote> comments = privilegedDao.get(myChangesetId).discussion;
+		List<ChangesetNote> comments = privilegedApi.get(myChangesetId).discussion;
 		assertNotNull(comments);
 		long now = Instant.now().toEpochMilli();
 		assertTrue(Math.abs(now - comments.get(0).createdAt.toEpochMilli()) < TEN_MINUTES);
@@ -100,7 +100,7 @@ public class ChangesetsApiTest
 	{
 		try
 		{
-			privilegedDao.comment(changesetId, "");
+			privilegedApi.comment(changesetId, "");
 			fail();
 		}
 		catch(IllegalArgumentException ignore) {}
@@ -110,21 +110,21 @@ public class ChangesetsApiTest
 	{
 		try
 		{
-			unprivilegedDao.subscribe(changesetId);
+			unprivilegedApi.subscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
-			unprivilegedDao.unsubscribe(changesetId);
+			unprivilegedApi.unsubscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
-			unprivilegedDao.comment(changesetId, "test comment");
+			unprivilegedApi.comment(changesetId, "test comment");
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -134,36 +134,36 @@ public class ChangesetsApiTest
 	{
 		// ...which is different from the "raw" API response
 
-		assertNotNull(privilegedDao.subscribe(changesetId));
-		assertNotNull(privilegedDao.subscribe(changesetId));
+		assertNotNull(privilegedApi.subscribe(changesetId));
+		assertNotNull(privilegedApi.subscribe(changesetId));
 	}
 
 	@Test public void notSubscribedDoesNotFail()
 	{
 		// ...which is different from the "raw" API response
-		assertNotNull(privilegedDao.unsubscribe(changesetId));
+		assertNotNull(privilegedApi.unsubscribe(changesetId));
 	}
 
 	@Test public void subscribeNonExistingChangesetFails()
 	{
-		try { privilegedDao.subscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
-		try { privilegedDao.unsubscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedApi.subscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
+		try { privilegedApi.unsubscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
 	}
 
 	@Test public void getAsAnonymousDoesNotFail()
 	{
-		assertNotNull(anonymousDao.get(changesetId));
+		assertNotNull(anonymousApi.get(changesetId));
 	}
 
 
 	@Test public void getDataAsAnonymousDoesNotFail()
 	{
-		anonymousDao.getData(123, new SimpleMapDataChangesHandler());
+		anonymousApi.getData(123, new SimpleMapDataChangesHandler());
 	}
 
 	@Test public void findAsAnonymousDoesNotFail()
 	{
-		anonymousDao.find(new Handler<ChangesetInfo>()
+		anonymousApi.find(new Handler<ChangesetInfo>()
 		{
 			@Override
 			public void handle(ChangesetInfo tea)
@@ -177,21 +177,21 @@ public class ChangesetsApiTest
 	{
 		try
 		{
-			anonymousDao.subscribe(changesetId);
+			anonymousApi.subscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
-			anonymousDao.unsubscribe(changesetId);
+			anonymousApi.unsubscribe(changesetId);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
 
 		try
 		{
-			anonymousDao.comment(changesetId, "test comment");
+			anonymousApi.comment(changesetId, "test comment");
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}
@@ -199,7 +199,7 @@ public class ChangesetsApiTest
 
 	@Test public void getChangesets()
 	{
-		unprivilegedDao.find(new Handler<ChangesetInfo>()
+		unprivilegedApi.find(new Handler<ChangesetInfo>()
 		{
 			@Override
 			public void handle(ChangesetInfo tea)
@@ -214,7 +214,7 @@ public class ChangesetsApiTest
 
 	@Test public void getChangesetsEmptyDoesNotFail()
 	{
-		unprivilegedDao.find(new Handler<ChangesetInfo>()
+		unprivilegedApi.find(new Handler<ChangesetInfo>()
 		{
 			@Override
 			public void handle(ChangesetInfo tea)
@@ -229,10 +229,10 @@ public class ChangesetsApiTest
 		Node node = new OsmNode(-1, 1, new OsmLatLon(55.12313,50.13221), null);
 		List<Element> elements = new ArrayList<>();
 		elements.add(node);
-		long changesetId = mapDataDao.updateMap("test", "test", elements, null);
+		long changesetId = mapDataApi.updateMap("test", "test", elements, null);
 
 		SimpleMapDataChangesHandler handler = new SimpleMapDataChangesHandler();
-		unprivilegedDao.getData(changesetId, handler);
+		unprivilegedApi.getData(changesetId, handler);
 
 		List<Element> createdElements = handler.getCreations();
 
@@ -242,7 +242,7 @@ public class ChangesetsApiTest
 
 		// delete again... (clean up before asserting)
 		createdNode.setDeleted(true);
-		mapDataDao.updateMap("clean up test", "test", createdElements, null);
+		mapDataApi.updateMap("clean up test", "test", createdElements, null);
 
 		assertNotSame(node.getId(), createdNode.getId());
 		assertEquals(node.getVersion(), createdNode.getVersion());
