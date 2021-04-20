@@ -206,7 +206,7 @@ public class XmlParserTest
 			}
 		}
 
-		@Test public void testStream(InputStream is) throws IOException
+		public void testStream(InputStream is) throws IOException
 		{
 			doParse(is);
 		}
