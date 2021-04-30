@@ -7,7 +7,7 @@ There are several injection points where you can make the data your own:
 ## Option 1: Create own MapDataFactory
 If you have control over your map data classes, you can make them implement `Node`, `Way` and `Relation` or (if not) write a decorator/wrapper that implements those interfaces. Then, you simply implement a custom [MapDataFactory](https://github.com/westnordost/osmapi/blob/master/src/main/java/de/westnordost/osmapi/map/MapDataFactory.java) and pass it to the MapDataDao / MapDataHistoryDao.
 
-	new MapDataDao(osm, new MyMapDataFactory());
+	new MapDataApi(osm, new MyMapDataFactory());
 
 ## Option 2: Wrap the MapDataHandler
 If you want to avoid adding wrappers for the data classes, you can instead copy the osmapi data in a wrapper around [MapDataHandler](https://github.com/westnordost/osmapi/blob/master/src/main/java/de/westnordost/osmapi/map/handler/MapDataHandler.java) into your data. If you intend to upload changes using osmapi functionality, you need to convert the data back on upload of course. I.e.
