@@ -63,7 +63,7 @@ Everything revolves around the OsmConnection, this is the class that talks to th
 If you plan to make calls that can only be made by a logged in user, such as uploading map data, an [OAuthConsumer](https://github.com/mttkay/signpost) (third parameter) needs to be specified.
 
 ```java
-	OsmConnection osm = new OsmConnection(
+    OsmConnection osm = new OsmConnection(
         "https://api.openstreetmap.org/api/0.6/",
         "my user agent", null
     );
@@ -77,40 +77,40 @@ For example...
 ### Create a note
 
 ```java
-	Note myNote = new NotesApi(osm).create(position, "My first note");
+    Note myNote = new NotesApi(osm).create(position, "My first note");
 ```
 
 ### Comment a changeset
 
 ```java
-	ChangesetInfo changeset = new ChangesetsApi(osm).comment(id, "Nice work!");
+    ChangesetInfo changeset = new ChangesetsApi(osm).comment(id, "Nice work!");
 ```
 
 ### Get user info
 
 ```java
-	UserInfo user = new UserApi(osm).get(id);
+    UserInfo user = new UserApi(osm).get(id);
 ```
 
 ### Download map data
 
 ```java
-	MapDataApi mapApi = new MapDataApi(osm);
-	mapApi.getMap(boundingBox, myMapDataHandler);
+    MapDataApi mapApi = new MapDataApi(osm);
+    mapApi.getMap(boundingBox, myMapDataHandler);
 ```
 
 myMapDataHandler implements MapDataHandler whose methods are called as the elements are parsed, think SAX parser. I.e. if you download 10MB of data, then the elements start arriving at the handler as the data comes in so that you can process them on the fly.
 
 ```java
-	/** This class is fed the map data. */
-	public interface MapDataHandler
-	{
-		void handle(Bounds bounds);
+    /** This class is fed the map data. */
+    public interface MapDataHandler
+    {
+        void handle(Bounds bounds);
 
-		void handle(Node node);
-		void handle(Way way);
-		void handle(Relation relation);
-	}
+        void handle(Node node);
+        void handle(Way way);
+        void handle(Relation relation);
+    }
 ```
 
 ## Combine with data processing library
