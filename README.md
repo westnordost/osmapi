@@ -63,7 +63,7 @@ Everything revolves around the OsmConnection, this is the class that talks to th
 If you plan to make calls that can only be made by a logged in user, such as uploading map data, an [OAuthConsumer](https://github.com/mttkay/signpost) (third parameter) needs to be specified.
 
 ```java
-	OsmConnection osm = new OsmConnection(
+    OsmConnection osm = new OsmConnection(
         "https://api.openstreetmap.org/api/0.6/",
         "my user agent", null
     );
