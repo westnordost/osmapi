@@ -114,7 +114,7 @@ myMapDataHandler implements MapDataHandler whose methods are called as the eleme
 ```
 
 ## Combine with data processing library
-[Read this](https://github.com/westnordost/osmapi/wiki/Combine-With-Data-Processing-Libraries) if you want to use this library in conjunction with a data processing library like Osmosis, osm4j or have your own map data structures already.
+[Read this](Combine_With_Data_Processing_Libraries.md) if you want to use this library in conjunction with a data processing library like Osmosis, osm4j or have your own map data structures already.
 
 ## Troubleshooting
 
