@@ -16,6 +16,7 @@ public class Capabilities implements Serializable
 	public float maxNotesQueryAreaInSquareDegrees;
 	
 	public int maxNodesInWay;
+	public int maxMembersInRelation;
 	/** See http://wiki.openstreetmap.org/wiki/API_v0.6#Retrieving_GPS_points */
 	public int maxPointsInGpsTracePerPage;
 	public int maxElementsPerChangeset;

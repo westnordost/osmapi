@@ -19,6 +19,7 @@ public class CapabilitiesParserTest
 				"	<note_area maximum=\"25\"/>" +
 				"	<tracepoints per_page=\"5000\"/>" +
 				"	<waynodes maximum=\"2000\"/>" +
+				"	<relationmembers maximum=\"32000\"/>" +
 				"	<changesets maximum_elements=\"50000\"/>" +
 				"	<timeout seconds=\"300\"/>" +
 				"	<status database=\"online\" api=\"online\" gpx=\"online\"/>" +
@@ -31,6 +32,7 @@ public class CapabilitiesParserTest
 		assertEquals(25f, capabilities.maxNotesQueryAreaInSquareDegrees, 0.0);
 		assertEquals(5000, capabilities.maxPointsInGpsTracePerPage);
 		assertEquals(2000, capabilities.maxNodesInWay);
+		assertEquals(32000, capabilities.maxMembersInRelation);
 		assertEquals(50000, capabilities.maxElementsPerChangeset);
 		assertEquals(300, capabilities.timeoutInSeconds);
 	}

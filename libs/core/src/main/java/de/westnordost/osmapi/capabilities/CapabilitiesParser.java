@@ -72,6 +72,9 @@ public class CapabilitiesParser extends XmlParser implements ApiResponseReader<C
 			case "waynodes":
 				capabilities.maxNodesInWay = getIntAttribute("maximum");
 				break;
+			case "relationmembers":
+				capabilities.maxMembersInRelation = getIntAttribute("maximum");
+				break;
 			case "changesets":
 				capabilities.maxElementsPerChangeset = getIntAttribute("maximum_elements");
 				break;
