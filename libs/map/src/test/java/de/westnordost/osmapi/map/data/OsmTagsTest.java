@@ -14,7 +14,12 @@ public class OsmTagsTest
 			+ "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptu"
 			+ "a. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gube"
 			+ "rgren, no sea takimata ";
-	
+
+	@Test public void testStringIsExactly257CharactersLong()
+	{
+		assertEquals(257, TOO_LONG.length);
+	}
+
 	@Test public void initWithTooLongKeyFails()
 	{
 		Map<String,String> tooLong = new HashMap<>();
