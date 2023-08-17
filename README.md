@@ -8,7 +8,7 @@ Note, the OSM API, particularly the part to download the map data, is intended o
 
 ## Copyright and License
 
-© 2016-2021 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
+© 2016-2023 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
 
 ## Installation
 
@@ -18,16 +18,16 @@ Depending on which part of the API you use, you can only include what you need:
 <tr><th>Class</th><th>Dependency</th><th>Description</th></tr>
 <tr><td>CapabilitiesApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting server capabilities</td></tr>
 <tr><td>PermissionsApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting user permissions</td></tr>
-<tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:2.0</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
-<tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:2.0</pre></td><td>Getting the history and specific versions of elements</td></tr>
+<tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:2.1</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
+<tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:2.1</pre></td><td>Getting the history and specific versions of elements</td></tr>
 <tr><td>NotesApi</td><td><pre>de.westnordost:osmapi-notes:2.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
 <tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:2.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
-<tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:2.0</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
+<tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:2.1</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
 <tr><td>UserApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Getting user information</td></tr>
 <tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:4.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:4.1`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
 
 ### Android
 
