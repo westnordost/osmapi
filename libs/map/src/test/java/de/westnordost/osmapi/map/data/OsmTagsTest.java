@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class OsmTagsTest
@@ -13,11 +14,11 @@ public class OsmTagsTest
 			"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
 			+ "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptu"
 			+ "a. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gube"
-			+ "rgren, no sea takimata ";
+			+ "rgren, no sead takimata ";
 
 	@Test public void testStringIsExactly257CharactersLong()
 	{
-		assertEquals(257, TOO_LONG.length);
+		assertEquals(257, TOO_LONG.length());
 	}
 
 	@Test public void initWithTooLongKeyFails()
