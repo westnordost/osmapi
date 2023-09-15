@@ -14,11 +14,24 @@ public class OsmTagsTest
 			"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy "
 			+ "eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptu"
 			+ "a. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gube"
-			+ "rgren, no sead takimata ";
+			+ "rgren, no sea takimata ";
 
-	@Test public void testStringIsExactly257CharactersLong()
+	@Test public void testStringIsExactly256CharactersLong()
 	{
-		assertEquals(257, TOO_LONG.length());
+		assertEquals(256, TOO_LONG.length());
+	}
+
+	@Test public void initWithKeyOrValueBelow256CharactersIsFine()
+	{
+		StringBuilder cools = new StringBuilder();
+		while (cools.codePoints().count() < 255)
+		{
+			cools.append("\uD83D\uDE0E"); // 😎
+
+			Map<String, String> tags = new HashMap<>();
+			tags.put(cools.toString(), cools.toString());
+			new OsmTags(tags);
+		}
 	}
 
 	@Test public void initWithTooLongKeyFails()

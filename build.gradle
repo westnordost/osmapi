@@ -8,16 +8,16 @@ subprojects {
 
     group = "de.westnordost"
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 ext {
-    all_version = 4.1
+    all_version = 4.2
     core_version = 2.0
-    changesets_version = 2.1
+    changesets_version = 2.2
     user_version = 2.0
     traces_version = 2.0
     notes_version = 2.0
-    map_version = 2.1
+    map_version = 2.2
 }

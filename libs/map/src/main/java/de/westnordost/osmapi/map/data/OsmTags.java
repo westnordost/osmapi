@@ -37,15 +37,15 @@ public class OsmTags extends ModificationAwareMap<String, String> implements Ser
 
 	private static void checkKeyValueLength(String key, String value)
 	{
-		if(key.length() > 256)
+		if(key.codePoints().count() >= 256)
 		{
 			throw new IllegalArgumentException("For key \"" + key + "\": Key length is limited" +
-					"to less or equal 256 characters.");
+					" to less than 256 characters.");
 		}
-		if(value.length() > 256)
+		if(value.codePoints().count() >= 256)
 		{
 			throw new IllegalArgumentException("For value \"" + value + "\": Value length is " +
-					"limited to less or equal 256 characters.");
+					"limited to less than 256 characters.");
 		}
 	}
 }
