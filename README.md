@@ -47,6 +47,7 @@ configurations {
     compile.exclude group: 'org.jetbrains', module:'annotations'
     compile.exclude group: 'com.intellij', module:'annotations'
     compile.exclude group: 'org.intellij', module:'annotations'
+    compile.exclude group: 'xmlpull', module:'xmlpull'
 }
 ```
 
