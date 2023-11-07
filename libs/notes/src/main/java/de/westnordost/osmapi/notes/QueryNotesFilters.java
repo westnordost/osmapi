@@ -1,5 +1,7 @@
 package de.westnordost.osmapi.notes;
 
+import de.westnordost.osmapi.map.data.BoundingBox;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.Instant;
@@ -21,6 +23,15 @@ public class QueryNotesFilters
 	public QueryNotesFilters byTerm(String term)
 	{
 		params.put("q", term);
+		return this;
+	}
+
+	/**
+	 * @param bounds limit search to the given area
+	 */
+	public QueryNotesFilters byBoundingBox(BoundingBox bounds)
+	{
+		params.put("bbox", bounds.getAsLeftBottomRightTopString());
 		return this;
 	}
 
@@ -98,6 +109,18 @@ public class QueryNotesFilters
 		return this;
 	}
 
+
+	/**
+	 * @param property the note property to order the results
+	 * @param order whether to order the results in ascending or descending order
+	 */
+	public QueryNotesFilters orderBy(NoteProperty property, Order order)
+	{
+		params.put("sort", property.osm);
+		params.put("order", order.osm);
+		return this;
+	}
+
 	public String toParamString()
 	{
 		StringBuilder result = new StringBuilder();
@@ -112,5 +135,35 @@ public class QueryNotesFilters
 			result.append(entry.getValue());
 		}
 		return result.toString();
+	}
+
+	/** Specify by which property of notes to order the result */
+	public enum NoteProperty
+	{
+		/** order by date of creation */
+		CREATION_DATE("created_at"),
+		/** order by update date */
+		UPDATE_DATE("updated_at");
+
+		private final String osm;
+
+		private NoteProperty(String osm)
+		{
+			this.osm = osm;
+		}
+	}
+
+	public enum Order {
+		/** newest notes first */
+		DESCENDING("newest"),
+		/** oldest notes first */
+		ASCENDING("oldest");
+
+		private final String osm;
+
+		private Order(String osm)
+		{
+			this.osm = osm;
+		}
 	}
 }

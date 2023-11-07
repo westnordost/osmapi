@@ -1,5 +1,8 @@
 package de.westnordost.osmapi.notes;
 
+import de.westnordost.osmapi.map.data.BoundingBox;
+import de.westnordost.osmapi.notes.QueryNotesFilters.NoteProperty;
+import de.westnordost.osmapi.notes.QueryNotesFilters.Order;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -14,6 +17,14 @@ public class QueryNotesFiltersTest
 		filters.byTerm("hallo");
 
 		assertEquals("hallo", getParam(filters.toParamString(), "q"));
+	}
+
+	@Test public void byBoundingBox()
+	{
+		QueryNotesFilters filters = new QueryNotesFilters();
+		filters.byBoundingBox(new BoundingBox(-5.0, -10.0, 6.0, 7.0));
+
+		assertEquals("-10,-5,7,6", getParam(filters.toParamString(), "bbox"));
 	}
 
 	@Test public void byUserId()
@@ -104,6 +115,24 @@ public class QueryNotesFiltersTest
 		filters.hideClosedNotesAfter(4);
 
 		assertEquals("4", getParam(filters.toParamString(), "closed"));
+	}
+
+	@Test public void orderByAscending()
+	{
+		QueryNotesFilters filters = new QueryNotesFilters();
+		filters.orderBy(NoteProperty.CREATION_DATE, Order.ASCENDING);
+
+		assertEquals("created_at", getParam(filters.toParamString(), "sort"));
+		assertEquals("oldest", getParam(filters.toParamString(), "order"));
+	}
+
+	@Test public void orderByNewest()
+	{
+		QueryNotesFilters filters = new QueryNotesFilters();
+		filters.orderBy(NoteProperty.UPDATE_DATE, Order.DESCENDING);
+
+		assertEquals("updated_at", getParam(filters.toParamString(), "sort"));
+		assertEquals("newest", getParam(filters.toParamString(), "order"));
 	}
 
 	private String getParam(String params, String paramName)

@@ -229,14 +229,23 @@ public class NotesApi
 	 * Get a number of notes that match the given filters.
 	 *
 	 * @param handler The handler which is fed the incoming notes
-	 * @param filters what to search for. I.e.
+	 * @param filters what to search for. E.g.
 	 *                new QueryNotesFilters().byUser(123).limit(1000)
+	 *
+	 * @throws OsmQueryTooBigException if the bounds area is too large
 	 */
 	public void find(Handler<Note> handler, QueryNotesFilters filters)
 	{
 		String query = filters != null ? "?" + filters.toParamString() : "";
 		boolean authenticate = osm.getOAuth() != null;
-		osm.makeRequest(NOTES + "/search" + query, authenticate, new NotesParser(handler));
+		try {
+			osm.makeRequest(NOTES + "/search" + query, authenticate, new NotesParser(handler));
+		}
+		catch(OsmBadUserInputException e)
+		{
+			// we can be more specific here
+			throw new OsmQueryTooBigException(e);
+		}
 	}
 
 	private <T> T makeSingleNoteRequest(long id, String call, String text, ApiResponseReader<T> reader)
