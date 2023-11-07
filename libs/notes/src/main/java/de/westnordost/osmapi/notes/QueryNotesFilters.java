@@ -96,14 +96,14 @@ public class QueryNotesFilters
 	}
 
 	/**
-	 * @param count return at most this many notes. Default is 100. Must be within 1 and 10000.
-	 * @throws IllegalArgumentException if the given limit is not within 1 and 10000
+	 * @param count return at most this many notes. The default can be looked up with the capabilities api call.
+	 *              At the time of writing, the default is 100 and the maximum query limit is 10000.
 	 */
 	public QueryNotesFilters limit(int count)
 	{
-		if(count <= 0 || count > 10000)
+		if(count <= 0)
 		{
-			throw new IllegalArgumentException("limit must be within 1 and 10000");
+			throw new IllegalArgumentException("limit must be positive");
 		}
 		params.put("limit", String.valueOf(count));
 		return this;

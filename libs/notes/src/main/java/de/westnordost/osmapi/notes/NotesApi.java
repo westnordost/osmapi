@@ -184,20 +184,21 @@ public class NotesApi
 	 * @param bounds the area within the notes should be queried. This is usually limited at 25
 	 *               square degrees. Check the server capabilities.
 	 * @param search what to search for. Null to return everything.
-	 * @param limit number of entries returned at maximum. Any value between 1 and 10000
+	 * @param limit number of entries returned at maximum. The maximum allowed amount can be looked up with the
+	 *              capabilities api call. At the time of writing, the maximum query limit is 10000.
 	 * @param hideClosedNoteAfter number of days until a closed note should not be shown anymore.
 	 *                            -1 means that all notes should be returned, 0 that only open notes
 	 *                            are returned.
 	 *
-	 * @throws OsmQueryTooBigException if the bounds area is too large
+	 * @throws OsmQueryTooBigException if the bounds area is too large or the limit is too large
 	 * @throws IllegalArgumentException if the bounds cross the 180th meridian
 	 */
 	public void getAll(BoundingBox bounds, String search, Handler<Note> handler, int limit,
 					   int hideClosedNoteAfter)
 	{
-		if(limit <= 0 || limit > 10000)
+		if(limit <= 0)
 		{
-			throw new IllegalArgumentException("limit must be within 1 and 10000");
+			throw new IllegalArgumentException("limit must be positive");
 		}
 		if(bounds.crosses180thMeridian())
 		{
@@ -232,7 +233,7 @@ public class NotesApi
 	 * @param filters what to search for. E.g.
 	 *                new QueryNotesFilters().byUser(123).limit(1000)
 	 *
-	 * @throws OsmQueryTooBigException if the bounds area is too large
+	 * @throws OsmQueryTooBigException if the bounds area is too large or the limit is too large.
 	 */
 	public void find(Handler<Note> handler, QueryNotesFilters filters)
 	{

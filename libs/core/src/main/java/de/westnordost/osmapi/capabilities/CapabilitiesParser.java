@@ -86,6 +86,9 @@ public class CapabilitiesParser extends XmlParser implements ApiResponseReader<C
 				capabilities.mapDataStatus = Capabilities.parseApiStatus(getAttribute("api"));
 				capabilities.gpsTracesStatus = Capabilities.parseApiStatus(getAttribute("gpx"));
 				break;
+			case "notes":
+				capabilities.defaultNotesQueryLimit = getIntAttribute("default_query_limit");
+				capabilities.maximumNotesQueryLimit = getIntAttribute("maximum_query_limit");
 		}
 	}
 

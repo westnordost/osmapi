@@ -34,6 +34,9 @@ public class Capabilities implements Serializable
 	 *  Note that if the server did not send this information, this method returns null. */
 	public List<String> imageryBlacklistRegExes;
 
+	public int defaultNotesQueryLimit;
+	public int maximumNotesQueryLimit;
+
 	public enum ApiStatus
 	{
 		ONLINE,

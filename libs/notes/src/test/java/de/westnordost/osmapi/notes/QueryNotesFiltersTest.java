@@ -82,13 +82,6 @@ public class QueryNotesFiltersTest
 			fail();
 		}
 		catch (IllegalArgumentException ignore) {}
-
-		try
-		{
-			filters.limit(10001);
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
 	}
 
 	@Test public void createdBefore()
