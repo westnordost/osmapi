@@ -128,6 +128,20 @@ public class QueryNotesFiltersTest
 		assertEquals("newest", getParam(filters.toParamString(), "order"));
 	}
 
+	@Test public void itsABuilder()
+	{
+		new QueryNotesFilters()
+				.createdAfter(Instant.now())
+				.createdBefore(Instant.now())
+				.byTerm("hallo")
+				.byUser(123L)
+				.hideClosedNotesAfter(1)
+				.byBoundingBox(new BoundingBox(0.0,0.0,1.0,1.0))
+				.limit(100)
+				.orderBy(NoteProperty.CREATION_DATE, Order.ASCENDING)
+				.toParamString();
+	}
+
 	private String getParam(String params, String paramName)
 	{
 		int startsAt = params.indexOf(paramName);
