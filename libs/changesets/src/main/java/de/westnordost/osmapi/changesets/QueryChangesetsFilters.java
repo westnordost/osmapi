@@ -155,6 +155,20 @@ public class QueryChangesetsFilters
 		return this;
 	}
 
+	/**
+	 * @param count return at most this many changesets. The default can be looked up with the capabilities api call.
+	 *              In 2023-11, the default was 100 and the maximum query limit was 100, too.
+	 */
+	public QueryChangesetsFilters limit(int count)
+	{
+		if(count <= 0)
+		{
+			throw new IllegalArgumentException("limit must be positive");
+		}
+		params.put("limit", String.valueOf(count));
+		return this;
+	}
+
 	public String toParamString()
 	{
 		StringBuilder result = new StringBuilder();

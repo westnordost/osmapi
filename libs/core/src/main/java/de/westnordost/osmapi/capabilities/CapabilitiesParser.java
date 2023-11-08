@@ -77,6 +77,8 @@ public class CapabilitiesParser extends XmlParser implements ApiResponseReader<C
 				break;
 			case "changesets":
 				capabilities.maxElementsPerChangeset = getIntAttribute("maximum_elements");
+				capabilities.defaultChangesetsQueryLimit = getIntAttribute("default_query_limit");
+				capabilities.maximumChangesetsQueryLimit = getIntAttribute("maximum_query_limit");
 				break;
 			case "timeout":
 				capabilities.timeoutInSeconds = getIntAttribute("seconds");

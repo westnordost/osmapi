@@ -144,6 +144,25 @@ public class QueryChangesetsFiltersTest
 		catch(IllegalArgumentException ignore) {}
 	}
 
+	@Test public void limit()
+	{
+		QueryChangesetsFilters filters = new QueryChangesetsFilters();
+		filters.limit(10);
+
+		assertEquals("10", getParam(filters.toParamString(), "limit"));
+	}
+
+	@Test public void illegalLimit()
+	{
+		QueryChangesetsFilters filters = new QueryChangesetsFilters();
+		try
+		{
+			filters.limit(0);
+			fail();
+		}
+		catch (IllegalArgumentException ignore) {}
+	}
+
 	private String getParam(String params, String paramName)
 	{
 		int startsAt = params.indexOf(paramName);

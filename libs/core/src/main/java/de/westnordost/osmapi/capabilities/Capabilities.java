@@ -36,6 +36,8 @@ public class Capabilities implements Serializable
 
 	public int defaultNotesQueryLimit;
 	public int maximumNotesQueryLimit;
+	public int defaultChangesetsQueryLimit;
+	public int maximumChangesetsQueryLimit;
 
 	public enum ApiStatus
 	{

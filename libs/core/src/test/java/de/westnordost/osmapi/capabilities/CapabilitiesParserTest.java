@@ -20,7 +20,7 @@ public class CapabilitiesParserTest
 				"	<tracepoints per_page=\"5000\"/>" +
 				"	<waynodes maximum=\"2000\"/>" +
 				"	<relationmembers maximum=\"32000\"/>" +
-				"	<changesets maximum_elements=\"50000\"/>" +
+				"	<changesets maximum_elements=\"50000\" default_query_limit=\"100\" maximum_query_limit=\"200\"/>" +
 				"   <notes default_query_limit=\"100\" maximum_query_limit=\"10000\"/>" +
 				"	<timeout seconds=\"300\"/>" +
 				"	<status database=\"online\" api=\"online\" gpx=\"online\"/>" +
@@ -38,6 +38,8 @@ public class CapabilitiesParserTest
 		assertEquals(300, capabilities.timeoutInSeconds);
 		assertEquals(100, capabilities.defaultNotesQueryLimit);
 		assertEquals(10000, capabilities.maximumNotesQueryLimit);
+		assertEquals(100, capabilities.defaultChangesetsQueryLimit);
+		assertEquals(200, capabilities.maximumChangesetsQueryLimit);
 	}
 
 	@Test public void apiStatus() throws IOException
