@@ -97,7 +97,7 @@ public class QueryNotesFilters
 
 	/**
 	 * @param count return at most this many notes. The default can be looked up with the capabilities api call.
-	 *              At the time of writing, the default is 100 and the maximum query limit is 10000.
+	 *              In 2023-11, the default was 100 and the maximum query limit was 10000.
 	 */
 	public QueryNotesFilters limit(int count)
 	{

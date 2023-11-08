@@ -185,7 +185,7 @@ public class NotesApi
 	 *               square degrees. Check the server capabilities.
 	 * @param search what to search for. Null to return everything.
 	 * @param limit number of entries returned at maximum. The maximum allowed amount can be looked up with the
-	 *              capabilities api call. At the time of writing, the maximum query limit is 10000.
+	 *              capabilities api call. In 2023-11, the maximum query limit was 10000.
 	 * @param hideClosedNoteAfter number of days until a closed note should not be shown anymore.
 	 *                            -1 means that all notes should be returned, 0 that only open notes
 	 *                            are returned.
