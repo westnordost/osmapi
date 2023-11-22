@@ -16,18 +16,18 @@ Depending on which part of the API you use, you can only include what you need:
 
 <table>
 <tr><th>Class</th><th>Dependency</th><th>Description</th></tr>
-<tr><td>CapabilitiesApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting server capabilities</td></tr>
-<tr><td>PermissionsApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting user permissions</td></tr>
-<tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:2.3</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
-<tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:2.3</pre></td><td>Getting the history and specific versions of elements</td></tr>
-<tr><td>NotesApi</td><td><pre>de.westnordost:osmapi-notes:2.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
-<tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:2.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
-<tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:2.3</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
-<tr><td>UserApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Getting user information</td></tr>
-<tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Managing user preferences</td></tr>
+<tr><td>CapabilitiesApi</td><td><pre>de.westnordost:osmapi-core:3.0</pre></td><td>Getting server capabilities</td></tr>
+<tr><td>PermissionsApi</td><td><pre>de.westnordost:osmapi-core:3.0</pre></td><td>Getting user permissions</td></tr>
+<tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:3.0</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
+<tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:3.0</pre></td><td>Getting the history and specific versions of elements</td></tr>
+<tr><td>NotesApi</td><td><pre>de.westnordost:osmapi-notes:3.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
+<tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:3.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
+<tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:3.0</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
+<tr><td>UserApi</td><td><pre>de.westnordost:osmapi-user:3.0</pre></td><td>Getting user information</td></tr>
+<tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:3.0</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:4.3`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:5.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
 
 ### Android
 
@@ -35,7 +35,7 @@ On Android, you need to exclude kxml2 from the dependencies since it is already 
 
 ```gradle
 dependencies {
-    implementation 'de.westnordost:osmapi:4.3'
+    implementation 'de.westnordost:osmapi:5.0'
 }
 
 configurations {
