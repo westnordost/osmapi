@@ -213,7 +213,7 @@ public class MapDataApi
 		}
 
 		String request = "map?bbox=" + bounds.getAsLeftBottomRightTopString();
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 
 		try
 		{
@@ -235,7 +235,7 @@ public class MapDataApi
 	 *  @throws OsmNotFoundException if the way with the given id does not exist */
 	public void getWayComplete(long id, MapDataHandler handler)
 	{
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest(WAY + "/" + id + "/" + FULL, authenticate, new MapDataParser(handler, factory));
 	}
 
@@ -249,7 +249,7 @@ public class MapDataApi
 	 *  @throws OsmNotFoundException if the relation with the given id does not exist*/
 	public void getRelationComplete(long id, MapDataHandler handler)
 	{
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest(RELATION + "/" + id + "/" + FULL, authenticate, new MapDataParser(handler, factory));
 	}
 
@@ -285,7 +285,7 @@ public class MapDataApi
 		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
 		try
 		{
-			boolean authenticate = osm.getOAuth() != null;
+			boolean authenticate = osm.getOAuthAccessToken() != null;
 			osm.makeRequest(call, authenticate, new MapDataParser(handler, factory));
 		}
 		catch(OsmNotFoundException e)
@@ -382,7 +382,7 @@ public class MapDataApi
 	private <T extends Element> List<T> getSomeElements(String call, Class<T> tClass)
 	{
 		ListOsmElementHandler<T> handler = new ListOsmElementHandler<>(tClass);
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest(call, authenticate, new MapDataParser(handler, factory));
 		return handler.get();
 	}

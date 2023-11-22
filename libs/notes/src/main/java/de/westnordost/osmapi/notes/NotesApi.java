@@ -58,7 +58,7 @@ public class NotesApi
 				"&text=" + urlEncode(text);
 		String call = NOTES + "?" + data;
 
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
 		osm.makeRequest(call, "POST", authenticate, null, new NotesParser(noteHandler));
 		return noteHandler.get();
@@ -157,7 +157,7 @@ public class NotesApi
 		SingleElementHandler<Note> noteHandler = new SingleElementHandler<>();
 		try
 		{
-			boolean authenticate = osm.getOAuth() != null;
+			boolean authenticate = osm.getOAuthAccessToken() != null;
 			osm.makeRequest(NOTES + "/" + id, authenticate, new NotesParser(noteHandler));
 		}
 		catch (OsmNotFoundException e)
@@ -216,7 +216,7 @@ public class NotesApi
 
 		try
 		{
-			boolean authenticate = osm.getOAuth() != null;
+			boolean authenticate = osm.getOAuthAccessToken() != null;
 			osm.makeRequest(call, authenticate, new NotesParser(handler));
 		}
 		catch(OsmBadUserInputException e)
@@ -238,7 +238,7 @@ public class NotesApi
 	public void find(Handler<Note> handler, QueryNotesFilters filters)
 	{
 		String query = filters != null ? "?" + filters.toParamString() : "";
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		try {
 			osm.makeRequest(NOTES + "/search" + query, authenticate, new NotesParser(handler));
 		}

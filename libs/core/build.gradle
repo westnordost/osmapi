@@ -3,7 +3,6 @@ version = core_version
 description = 'Client for the OSM API 0.6 - Core functionality, getting server capabilities, getting user permissions'
 
 dependencies {
-    compile 'oauth.signpost:signpost-core:2.1.1'
     compile 'xmlpull:xmlpull:1.1.3.1'
     runtime 'net.sf.kxml:kxml2:2.3.0'
 }

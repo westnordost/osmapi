@@ -18,7 +18,7 @@ public class OsmConnectionTest
 		try
 		{
 			OsmConnection osm = ConnectionTestFactory.createConnection(null);
-			osm.makeAuthenticatedRequest("doesntMatter", "GET");
+			osm.makeAuthenticatedRequest("changeset/create", "PUT", null, null);
 			fail();
 		}
 		catch(OsmAuthorizationException ignore) {}

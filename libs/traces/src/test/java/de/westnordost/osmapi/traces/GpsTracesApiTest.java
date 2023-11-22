@@ -26,7 +26,7 @@ public class GpsTracesApiTest
 	
 	private static final int NONEXISTING_TRACE = 0;
 
-	private static final int PRIVATE_TRACE_OF_OTHER_USER = 928;
+	private static final int PRIVATE_TRACE_OF_OTHER_USER = 23;
 	private static final int PUBLIC_TRACE = 927;
 
 	
@@ -196,7 +196,7 @@ public class GpsTracesApiTest
 		assertEquals("test case desc", trace.description);
 		assertTrue(trace.tags.contains("a tag"));
 		assertTrue(trace.tags.contains("another"));
-		assertEquals("osmagent-test-allow-everything", trace.userName);
+		assertEquals("westnordost", trace.userName);
 		assertTrue(Math.abs(Instant.now().toEpochMilli() - trace.createdAt.toEpochMilli()) < TEN_MINUTES);
 
 		privilegedApi.update(id, Visibility.TRACKABLE, "desc", null);

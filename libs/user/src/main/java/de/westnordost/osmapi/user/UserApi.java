@@ -40,7 +40,7 @@ public class UserApi
 		try
 		{
 			SingleElementHandler<UserInfo> handler = new SingleElementHandler<>();
-			boolean authenticate = osm.getOAuth() != null;
+			boolean authenticate = osm.getOAuthAccessToken() != null;
 			osm.makeRequest("user/" + userId, authenticate, new UserInfoParser(handler));
 			return handler.get();
 		}
@@ -54,7 +54,7 @@ public class UserApi
 	{
 		if(userIds.isEmpty()) return Collections.emptyList();
 		ListHandler<UserInfo> handler = new ListHandler<>();
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest("users?users=" + toCommaList(userIds), authenticate, new UserInfoParser(handler));
 		return handler.get();
 	}
