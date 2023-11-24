@@ -2,14 +2,7 @@ package de.westnordost.osmapi;
 
 import java.net.HttpURLConnection;
 
-import de.westnordost.osmapi.common.errors.OsmApiException;
-import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
-import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
-import de.westnordost.osmapi.common.errors.OsmConflictException;
-import de.westnordost.osmapi.common.errors.OsmConnectionException;
-import de.westnordost.osmapi.common.errors.OsmNotFoundException;
-import de.westnordost.osmapi.common.errors.OsmPreconditionFailedException;
-import de.westnordost.osmapi.common.errors.OsmServiceUnavailableException;
+import de.westnordost.osmapi.common.errors.*;
 
 /** Static factory that creates the OsmApiExceptions from the HTTP response code and message */
 public class OsmApiErrorFactory
@@ -38,6 +31,8 @@ public class OsmApiErrorFactory
 				return new OsmConflictException(error, response, description);
 			case HttpURLConnection.HTTP_BAD_REQUEST:
 				return new OsmBadUserInputException(error, response, description);
+			case 429:
+				return new OsmTooManyRequestsException(error, response, description);
 
 			default:
 				return createGenericError(error, response, description);

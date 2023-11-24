@@ -114,6 +114,7 @@ public class MapDataApi
 	 *                                   map (Permission.MODIFY_MAP)
 	 * @throws OsmPreconditionFailedException if the deletion of an element was uploaded but that
 	 *                                        element is still referred to by another element
+	 * @throws OsmTooManyRequestsException if the request has been blocked due to rate limiting
 	 *  */
 	public void uploadChanges(long changesetId, Iterable<Element> elements, Handler<DiffElement> handler)
 	{
