@@ -90,12 +90,8 @@ public class NotesApiTest
 
 	@Test public void createNoteInsufficientPrivileges()
 	{
-		try
-		{
-			unprivilegedApi.create(POINT, TEXT);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		Note note = unprivilegedApi.create(POINT, TEXT);
+		assertTrue(note.comments.get(0).isAnonymous());
 	}
 
 	@Test public void createNoteAsAnonymousAllowed()
