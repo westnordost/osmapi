@@ -27,7 +27,7 @@ Depending on which part of the API you use, you can only include what you need:
 <tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:3.0</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:5.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:5.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/5.0) as a Maven dependency or download the jar from there.
 
 ### Android
 
@@ -48,7 +48,7 @@ This library uses classes from the Java 8 time API, like [`Instant`](https://dev
 ## Basic Usage
 
 Everything revolves around the OsmConnection, this is the class that talks to the Api. Specify where to reach the Api, how the client should identify itself towards the server etc.
-If you plan to make calls that can only be made by a logged in user, such as uploading map data, an [OAuthConsumer](https://github.com/mttkay/signpost) (third parameter) needs to be specified.
+If you plan to make calls that can only be made by a logged in user, such as uploading map data, the OAuth 2.0 access token (third parameter) needs to be specified.
 
 ```java
     OsmConnection osm = new OsmConnection(
