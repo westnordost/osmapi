@@ -49,7 +49,7 @@ public class MapDataHistoryApi
 	public void getNodeHistory(long id, Handler<Node> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Node.class, handler);
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest(NODE + "/" + id + "/" + HISTORY, authenticate,
 				new MapDataParser(mapDataHandler, factory));
 	}
@@ -65,7 +65,7 @@ public class MapDataHistoryApi
 	public void getWayHistory(long id, Handler<Way> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Way.class, handler);
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest(WAY + "/" + id + "/" + HISTORY, authenticate,
 				new MapDataParser(mapDataHandler, factory));
 	}
@@ -81,7 +81,7 @@ public class MapDataHistoryApi
 	public void getRelationHistory(long id, Handler<Relation> handler)
 	{
 		MapDataHandler mapDataHandler = new WrapperOsmElementHandler<>(Relation.class, handler);
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest(RELATION + "/" + id + "/" + HISTORY, authenticate,
 				new MapDataParser(mapDataHandler, factory));
 	}
@@ -127,7 +127,7 @@ public class MapDataHistoryApi
 		SingleOsmElementHandler<T> handler = new SingleOsmElementHandler<>(tClass);
 		try
 		{
-			boolean authenticate = osm.getOAuth() != null;
+			boolean authenticate = osm.getOAuthAccessToken() != null;
 			osm.makeRequest(call, authenticate, new MapDataParser(handler, factory));
 		}
 		catch(OsmApiException e)

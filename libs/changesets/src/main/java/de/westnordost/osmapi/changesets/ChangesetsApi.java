@@ -37,7 +37,7 @@ public class ChangesetsApi
 		String query = CHANGESET + "/" + id + "?include_discussion=true";
 		try
 		{
-			boolean authenticate = osm.getOAuth() != null;
+			boolean authenticate = osm.getOAuthAccessToken() != null;
 			osm.makeRequest(query, authenticate, new ChangesetParser(handler));
 		}
 		catch(OsmNotFoundException e)
@@ -59,7 +59,7 @@ public class ChangesetsApi
 		String query = filters != null ? "?" + filters.toParamString() : "";
 		try
 		{
-			boolean authenticate = osm.getOAuth() != null;
+			boolean authenticate = osm.getOAuthAccessToken() != null;
 			osm.makeRequest(CHANGESET + "s" + query, authenticate, new ChangesetParser(handler));
 		}
 		catch(OsmNotFoundException e)
@@ -196,7 +196,7 @@ public class ChangesetsApi
 	 */
 	public void getData(long id, MapDataChangesHandler handler, MapDataFactory factory)
 	{
-		boolean authenticate = osm.getOAuth() != null;
+		boolean authenticate = osm.getOAuthAccessToken() != null;
 		osm.makeRequest(CHANGESET + "/" + id + "/download", authenticate, new MapDataChangesParser(handler, factory));
 	}
 }

@@ -1,12 +1,24 @@
 package de.westnordost.osmapi;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthConsumer;
-
 public class ConnectionTestFactory
 {
-	private static final String CONSUMER_KEY = "CuPCn3sRc8FDiepAoSkH4a9n7w2QuqVCykStfVPG";
-	private static final String CONSUMER_SECRET = "D1nX6BF1NMAZtIq8ouGJJ7zGtSaTRDTz8QfZl5mo";
+	private static final String CLIENT_ID = "_RN0elf1uUxGvpdRQram0s_hfPpOkimHVXhlHN5Cx5I";
+	// actually not used anywhere. Only necessary to request a token if app was registered as "confidential"
+	private static final String CLIENT_SECRET = "UN8rnr9zSni1504KUeTi4iFwUnErW3YyhMEIaEg0Q-E";
+
+	// to request new token:
+	// 1. open in browser https://master.apis.dev.openstreetmap.org/oauth2/authorize?response_type=code&client_id=_RN0elf1uUxGvpdRQram0s_hfPpOkimHVXhlHN5Cx5I&redirect_uri=https://127.0.0.1/oauth&scope=read_prefs%20write_prefs%20write_diary%20write_api%20read_gpx%20write_gpx%20write_notes
+	// 2. get the CODE from the url
+	// 3. POST 'https://master.apis.dev.openstreetmap.org/oauth2/token?grant_type=authorization_code&code=<CODE>&client_id=_RN0elf1uUxGvpdRQram0s_hfPpOkimHVXhlHN5Cx5I&redirect_uri=https://127.0.0.1/oauth'
+	private static final String ALLOW_EVERYTHING_TOKEN = "qzaxWiG2tprF1IfEcwf4-mn7Al4f2lsM3CNrvGEaIL0";
+
+	// to request new token:
+	// 1. open in browser https://master.apis.dev.openstreetmap.org/oauth2/authorize?response_type=code&client_id=_RN0elf1uUxGvpdRQram0s_hfPpOkimHVXhlHN5Cx5I&redirect_uri=https://127.0.0.1/oauth&scope=read_prefs
+	// 2. get the CODE from the url
+	// 3. POST 'https://master.apis.dev.openstreetmap.org/oauth2/token?grant_type=authorization_code&code=<CODE>&client_id=_RN0elf1uUxGvpdRQram0s_hfPpOkimHVXhlHN5Cx5I&redirect_uri=https://127.0.0.1/oauth'
+	private static final String ALLOW_NOTHING_TOKEN = "fp2SjHKQ55rSdI2x4FN_s0wNUh67dgNbf9x3WdjCa5Y";
+
+	private static final String UNKNOWN_TOKEN = "unknown";
 
 	private static final String TEST_API_URL = "https://master.apis.dev.openstreetmap.org/api/0.6/";
 
@@ -26,39 +38,14 @@ public class ConnectionTestFactory
 
 	public static OsmConnection createConnection(User user)
 	{
-		OAuthConsumer consumer = null;
-
+		String accessToken = "";
 		if(user == User.ALLOW_EVERYTHING)
-			consumer = createConsumerThatAllowsEverything();
+			accessToken = ALLOW_EVERYTHING_TOKEN;
 		else if(user == User.ALLOW_NOTHING)
-			consumer = createConsumerThatProhibitsEverything();
+			accessToken = ALLOW_NOTHING_TOKEN;
 		else if(user == User.UNKNOWN)
-			consumer = createUnknownUser();
+			accessToken = UNKNOWN_TOKEN;
 
-		return new OsmConnection(TEST_API_URL, USER_AGENT, consumer);
-	}
-
-
-	private static OAuthConsumer createConsumerThatProhibitsEverything()
-	{
-		OAuthConsumer result = new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
-		result.setTokenWithSecret(
-				"RCamNf4TT7uNeFjmigvOUWhajp5ERFZmcN1qvi7a",
-				"72dzmAvuNBEOVKkif3JSYdzMlAq2dw5OnIG75dtX");
-		return result;
-	}
-
-	private static OAuthConsumer createConsumerThatAllowsEverything()
-	{
-		OAuthConsumer result = new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
-		result.setTokenWithSecret(
-				"2C4LiOQBOn96kXHyal7uzMJiqpCsiyDBvb8pomyX",
-				"1bFMIQpgmu5yjywt3kknopQpcRmwJ6snDDGF7kdr");
-		return result;
-	}
-	
-	private static OAuthConsumer createUnknownUser()
-	{
-		return new DefaultOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
+		return new OsmConnection(TEST_API_URL, USER_AGENT, accessToken);
 	}
 }

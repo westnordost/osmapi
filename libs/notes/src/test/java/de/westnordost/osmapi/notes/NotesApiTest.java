@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.time.Instant;
 import java.util.List;
 
-import oauth.signpost.exception.OAuthExpectationFailedException;
 import de.westnordost.osmapi.ConnectionTestFactory;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
@@ -149,10 +148,7 @@ public class NotesApiTest
 			anonymousApi.reopen(note.id, TEXT);
 			fail();
 		}
-		catch(OsmAuthorizationException e)
-		{
-			assertTrue(e.getCause() instanceof OAuthExpectationFailedException);
-		}
+		catch(OsmAuthorizationException ignore) { }
 	}
 
 	@Test public void closeNoteAsAnonymousFails()
@@ -162,10 +158,7 @@ public class NotesApiTest
 			anonymousApi.close(note.id, TEXT);
 			fail();
 		}
-		catch(OsmAuthorizationException e)
-		{
-			assertTrue(e.getCause() instanceof OAuthExpectationFailedException);
-		}
+		catch(OsmAuthorizationException ignore) { }
 	}
 
 	@Test public void createNoteWithoutTextFails()

@@ -10,12 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthConsumer;
-import oauth.signpost.exception.OAuthException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
 import de.westnordost.osmapi.common.errors.OsmApiReadResponseException;
-import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmConnectionException;
 import de.westnordost.osmapi.common.errors.RedirectedException;
 
@@ -54,36 +49,36 @@ public class OsmConnection
 	private int timeout;
 	private String apiUrl;
 	private String userAgent;
-	
-	private OAuthConsumer oauth;
+	private String oauthAccessToken;
+
 	private final Object oauthLock = new Object();
 
 	/**
 	 * Create a new OsmConnection with the given preferences
 	 * @param apiUrl the URL to the API
 	 * @param userAgent the user agent this application should identify as
-	 * @param oauth oauth consumer to use to authenticate this app. If this is null, any attempt to
-	 *              make an API call that requires authorization will throw an OsmAuthorizationException
+	 * @param oauthAccessToken OAuth 2.0 access token to use to authenticate this app. If this is null, any attempt
+	 *                         to make an API call that requires authorization will throw an OsmAuthorizationException
 	 * @param timeout for the server connection. Defaults to 45 seconds.
 	 */
-	public OsmConnection(String apiUrl, String userAgent, OAuthConsumer oauth, Integer timeout)
+	public OsmConnection(String apiUrl, String userAgent, String oauthAccessToken, Integer timeout)
 	{
 		this.apiUrl = apiUrl;
 		this.userAgent = userAgent;
-		this.oauth = oauth;
+		this.oauthAccessToken = oauthAccessToken;
 		this.timeout = timeout != null ? timeout : DEFAULT_TIMEOUT;
 	}
 
 	/**
-	 * @see #OsmConnection(String, String, OAuthConsumer, Integer)
+	 * @see #OsmConnection(String, String, String, Integer)
 	 */
-	public OsmConnection(String apiUrl, String userAgent, OAuthConsumer oauth)
+	public OsmConnection(String apiUrl, String userAgent, String oauth)
 	{
 		this(apiUrl, userAgent, oauth, null);
 	}
 
 	/**
-	 * @see #OsmConnection(String, String, OAuthConsumer, Integer)
+	 * @see #OsmConnection(String, String, String, Integer)
 	 */
 	public OsmConnection(String apiUrl, String userAgent)
 	{
@@ -95,11 +90,11 @@ public class OsmConnection
 		this.timeout = timeout;
 	}
 
-	public void setOAuth(OAuthConsumer oauth)
+	public void setOAuthAccessToken(String oauthAccessToken)
 	{
 		synchronized(oauthLock)
 		{
-			this.oauth = oauth;
+			this.oauthAccessToken = oauthAccessToken;
 		}
 	}
 
@@ -123,11 +118,11 @@ public class OsmConnection
 		return apiUrl;
 	}
 
-	public OAuthConsumer getOAuth()
+	public String getOAuthAccessToken()
 	{
 		synchronized(oauthLock)
 		{
-			return oauth;
+			return oauthAccessToken;
 		}
 	}
 	
@@ -201,21 +196,14 @@ public class OsmConnection
 		{
 			throw new OsmConnectionException(e);
 		}
-		catch(OAuthException e)
-		{
-			// because it was the user's fault that he did not supply an oauth consumer and the
-			// error is kinda related with the call he made
-			throw new OsmAuthorizationException(e);
-		}
 		finally
 		{
 			if(connection != null) connection.disconnect();
 		}
 	}
 
-	private HttpURLConnection sendRequest(
-			String call, String method, boolean authenticate, ApiRequestWriter writer)
-			throws IOException, OAuthException
+	private HttpURLConnection sendRequest(String call, String method, boolean authenticate, ApiRequestWriter writer)
+			throws IOException
 	{
 		HttpURLConnection connection = openConnection(call);
 		if(method != null)
@@ -231,7 +219,7 @@ public class OsmConnection
 
 		if(authenticate)
 		{
-			createOAuthConsumer().sign(connection);
+			connection.setRequestProperty("Authorization", "Bearer " + oauthAccessToken);
 		}
 
 		if(writer != null)
@@ -288,26 +276,6 @@ public class OsmConnection
 		// default is method=GET, doInput=true, doOutput=false
 
 		return connection;
-	}
-
-	private OAuthConsumer createOAuthConsumer() throws OAuthExpectationFailedException
-	{
-		synchronized(oauthLock)
-		{
-			if(oauth == null)
-			{
-				throw new OAuthExpectationFailedException(
-						"This class has been initialized without a OAuthConsumer. Only API calls " +
-						"that do not require authentication can be made.");
-			}
-	
-			// "clone" the original consumer every time because the consumer is documented to be not
-			// thread safe and maybe multiple threads are making calls to this class
-			OAuthConsumer consumer = new DefaultOAuthConsumer(
-					oauth.getConsumerKey(), oauth.getConsumerSecret());
-			consumer.setTokenWithSecret(oauth.getToken(), oauth.getTokenSecret());
-			return consumer;
-		}
 	}
 
 	private <T> T handleResponse(HttpURLConnection connection, ApiResponseReader<T> reader)

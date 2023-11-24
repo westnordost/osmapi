@@ -16,47 +16,34 @@ Depending on which part of the API you use, you can only include what you need:
 
 <table>
 <tr><th>Class</th><th>Dependency</th><th>Description</th></tr>
-<tr><td>CapabilitiesApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting server capabilities</td></tr>
-<tr><td>PermissionsApi</td><td><pre>de.westnordost:osmapi-core:2.0</pre></td><td>Getting user permissions</td></tr>
-<tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:2.3</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
-<tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:2.3</pre></td><td>Getting the history and specific versions of elements</td></tr>
-<tr><td>NotesApi</td><td><pre>de.westnordost:osmapi-notes:2.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
-<tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:2.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
-<tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:2.3</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
-<tr><td>UserApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Getting user information</td></tr>
-<tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:2.0</pre></td><td>Managing user preferences</td></tr>
+<tr><td>CapabilitiesApi</td><td><pre>de.westnordost:osmapi-core:3.0</pre></td><td>Getting server capabilities</td></tr>
+<tr><td>PermissionsApi</td><td><pre>de.westnordost:osmapi-core:3.0</pre></td><td>Getting user permissions</td></tr>
+<tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:3.0</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
+<tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:3.0</pre></td><td>Getting the history and specific versions of elements</td></tr>
+<tr><td>NotesApi</td><td><pre>de.westnordost:osmapi-notes:3.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
+<tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:3.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
+<tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:3.0</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
+<tr><td>UserApi</td><td><pre>de.westnordost:osmapi-user:3.0</pre></td><td>Getting user information</td></tr>
+<tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:3.0</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:4.3`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:5.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/4.0) as a Maven dependency or download the jar from there.
 
 ### Android
 
-On Android, you need to exclude kxml2 from the dependencies since it is already built-in, like so:
+On Android, you need to exclude kxml2 from the dependencies in your `gradle.kts` since it is already built-in, like so:
 
-```gradle
-dependencies {
-    implementation 'de.westnordost:osmapi:4.3'
-}
-
+```kotlin
 configurations {
-    // already included in Android
-    all*.exclude group: 'net.sf.kxml', module: 'kxml2'
-    
-    // @NonNull etc annotations are also already included in Android
-    cleanedAnnotations
-    compile.exclude group: 'org.jetbrains', module:'annotations'
-    compile.exclude group: 'com.intellij', module:'annotations'
-    compile.exclude group: 'org.intellij', module:'annotations'
-    compile.exclude group: 'xmlpull', module:'xmlpull'
+    all {
+        // it's already included in Android
+        exclude(group = "net.sf.kxml", module = "kxml2")
+        exclude(group = "xmlpull", module = "xmlpull")
+    }
 }
 ```
 
-Also, starting with v4.0 (or v2.0 of the modularized version respectively), this library uses the classes from the Java 8 time API, like [`Instant`](https://developer.android.com/reference/java/time/Instant) etc. instead of `Date` which [leads to about 50% faster parsing times](https://github.com/streetcomplete/StreetComplete/discussions/2740) when receiving a result.
-
-If your app supports Android API levels below 26, you have two options:
-
-1. Either stick to using version 3.x (or v1.x of the modularized version respectively) of this library...
-2. ...or enable [Java 8+ API desugaring support](https://developer.android.com/studio/write/java8-support#library-desugaring) for your app
+This library uses classes from the Java 8 time API, like [`Instant`](https://developer.android.com/reference/java/time/Instant) etc., so if your app supports Android API levels below 26, you need to enable [Java 8+ API desugaring support](https://developer.android.com/studio/write/java8-support#library-desugaring).
 
 ## Basic Usage
 
@@ -70,7 +57,7 @@ If you plan to make calls that can only be made by a logged in user, such as upl
     );
 ```
 
-You can call osm.makeRequest(...) yourself to talk with the RESTful Api and write your own ApiRequestWriter and ApiResponseReader to write/read the request.
+You can call `osm.makeRequest(...)` yourself to talk with the RESTful Api and write your own ApiRequestWriter and ApiResponseReader to write/read the request.
 It is more convenient however to use the appropriate class to do that for you and return the data you are interested in. See the table above for which classes are available.
 
 For example...
