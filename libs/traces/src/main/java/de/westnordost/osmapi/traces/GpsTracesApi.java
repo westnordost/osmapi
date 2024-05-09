@@ -1,6 +1,10 @@
 package de.westnordost.osmapi.traces;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -9,6 +13,7 @@ import de.westnordost.osmapi.OsmConnection;
 import de.westnordost.osmapi.common.FormDataWriter;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.IdResponseReader;
+import de.westnordost.osmapi.common.GpxInputStreamWriter;
 import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
@@ -77,6 +82,59 @@ public class GpsTracesApi
 			}
 		};
 		
+		return osm.makeAuthenticatedRequest(GPX + "/create", "POST", writer, new IdResponseReader());
+	}
+
+	/**
+	 * Upload a new trace from GPX file.
+	 *
+	 * @param name this is usually the "file name" of the GPX trace
+	 * @param visibility the visibility the trace should have
+	 * @param description short description of the trace. May not be null or empty.
+	 * @param tags keywords with which this trace can be found. May be null.
+	 * @param gpxFile The File to upload
+	 * @return trace id
+	 *
+	 * @throws IllegalArgumentException if either name, description or any single tag is longer than
+	 *                                  255 characters
+	 * @throws OsmBadUserInputException if the trace is invalid
+	 * @throws OsmAuthorizationException if this application is not authorized to write traces
+	 *                                   (Permission.WRITE_GPS_TRACES)
+	 */
+	public long create(
+			final String name, final GpsTraceDetails.Visibility visibility,
+			final String description, final List<String> tags,
+			final File gpxFile)
+	{
+		checkFieldLength("Name", name);
+		checkFieldLength("Description", description);
+		checkTagsLength(tags);
+
+		/*
+		 * uploading a new GPX trace works with a multipart/form-data HTML form, we need to cobble
+		 * together a valid request ourselves here which is why this is a little bit more complex
+		 * than specifying the parameters simply as URL parameters. But it is not so much more
+		 * complex, see FormDataWriter class and
+		 * http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.2
+		 */
+
+		FormDataWriter writer = new FormDataWriter()
+		{
+			@Override
+			protected void write() throws IOException
+			{
+				InputStream is = new FileInputStream(gpxFile);
+				ApiRequestWriter trackFileWriter = new GpxInputStreamWriter(is);
+				addFileField("file", name, trackFileWriter);
+
+				if(tags != null && !tags.isEmpty())
+					addField("tags", toCommaList(tags));
+
+				addField("description", description);
+				addField("visibility", visibility.toString().toLowerCase(Locale.UK));
+			}
+		};
+
 		return osm.makeAuthenticatedRequest(GPX + "/create", "POST", writer, new IdResponseReader());
 	}
 	

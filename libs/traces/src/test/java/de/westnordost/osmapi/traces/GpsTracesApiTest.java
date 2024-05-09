@@ -3,6 +3,7 @@ package de.westnordost.osmapi.traces;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -194,6 +195,36 @@ public class GpsTracesApiTest
 		assertEquals("test_case", trace.name);
 		assertEquals(Visibility.PRIVATE, trace.visibility);
 		assertEquals("test case desc", trace.description);
+		assertTrue(trace.tags.contains("a tag"));
+		assertTrue(trace.tags.contains("another"));
+		assertEquals("westnordost", trace.userName);
+		assertTrue(Math.abs(Instant.now().toEpochMilli() - trace.createdAt.toEpochMilli()) < TEN_MINUTES);
+
+		privilegedApi.update(id, Visibility.TRACKABLE, "desc", null);
+		trace = privilegedApi.get(id);
+		assertEquals(Visibility.TRACKABLE, trace.visibility);
+		assertEquals("desc",trace.description);
+		assertNull(trace.tags);
+
+		privilegedApi.delete(id);
+		trace = privilegedApi.get(id);
+		assertNull(trace);
+	}
+
+	@Test public void createFromGpxFileGetUpdateDelete()
+	{
+		List<String> tags = new ArrayList<>();
+		tags.add("a tag, another");
+		ClassLoader classLoader = getClass().getClassLoader();
+		File gpxFile = new File(classLoader.getResource("track.gpx").getFile());
+
+		long id = privilegedApi.create("gpx file test case", Visibility.PRIVATE, "test case from gpx file desc",
+				tags, gpxFile);
+
+		GpsTraceDetails trace = privilegedApi.get(id);
+		assertEquals("gpx_file_test_case", trace.name);
+		assertEquals(Visibility.PRIVATE, trace.visibility);
+		assertEquals("test case from gpx file desc", trace.description);
 		assertTrue(trace.tags.contains("a tag"));
 		assertTrue(trace.tags.contains("another"));
 		assertEquals("westnordost", trace.userName);
