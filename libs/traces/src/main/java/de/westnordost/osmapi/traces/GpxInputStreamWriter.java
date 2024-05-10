@@ -1,9 +1,7 @@
-package de.westnordost.osmapi.common;
+package de.westnordost.osmapi.traces;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import de.westnordost.osmapi.ApiRequestWriter;
@@ -22,16 +20,14 @@ public class GpxInputStreamWriter implements ApiRequestWriter
 	@Override
 	public String getContentType()
 	{
-		return "text/plain";
+		return "application/gpx+xml";
 	}
 
 	public void write(OutputStream out) throws IOException
 	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(gpx));
-		String line;
-		while ((line = br.readLine()) != null)
-		{
-			out.write((line + System.lineSeparator()).getBytes(CHARSET));
-		}
+		byte[] buffer = new byte[8192];
+		int length;
+		while ((length = gpx.read(buffer)) != -1)
+            out.write(buffer, 0, length);
 	}
 }

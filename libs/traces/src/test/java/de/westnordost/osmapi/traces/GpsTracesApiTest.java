@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -211,15 +214,16 @@ public class GpsTracesApiTest
 		assertNull(trace);
 	}
 
-	@Test public void createFromGpxFileGetUpdateDelete()
+	@Test public void createFromGpxFileGetUpdateDelete() throws IOException
 	{
 		List<String> tags = new ArrayList<>();
 		tags.add("a tag, another");
 		ClassLoader classLoader = getClass().getClassLoader();
 		File gpxFile = new File(classLoader.getResource("track.gpx").getFile());
+		InputStream is = new FileInputStream(gpxFile);
 
 		long id = privilegedApi.create("gpx file test case", Visibility.PRIVATE, "test case from gpx file desc",
-				tags, gpxFile);
+				tags, is);
 
 		GpsTraceDetails trace = privilegedApi.get(id);
 		assertEquals("gpx_file_test_case", trace.name);
