@@ -25,7 +25,6 @@ public class GpxInputStreamWriter implements ApiRequestWriter
 	{
 		byte[] buffer = new byte[8192];
 		int length;
-		while ((length = gpx.read(buffer)) != -1)
-            out.write(buffer, 0, length);
+		while ((length = gpx.read(buffer)) != -1) out.write(buffer, 0, length);
 	}
 }
