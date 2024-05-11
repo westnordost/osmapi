@@ -8,8 +8,6 @@ import de.westnordost.osmapi.ApiRequestWriter;
 
 public class GpxInputStreamWriter implements ApiRequestWriter
 {
-	private static final String CHARSET = "UTF-8";
-
 	private InputStream gpx;
 
 	public GpxInputStreamWriter(InputStream in)
