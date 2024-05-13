@@ -60,7 +60,7 @@ public class GpsTracesApi
 	 * @param visibility the visibility the trace should have
 	 * @param description short description of the trace. May not be null or empty.
 	 * @param tags keywords with which this trace can be found. May be null.
-	 * @param gpx The GPX to upload.
+	 * @param gpx The GPX to upload. It is responsibility of the caller to close the stream.
 	 * @return trace id
 	 *
 	 * @throws IllegalArgumentException if either name, description or any single tag is longer than
