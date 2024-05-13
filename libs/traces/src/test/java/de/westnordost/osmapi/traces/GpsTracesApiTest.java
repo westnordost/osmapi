@@ -218,12 +218,11 @@ public class GpsTracesApiTest
 	{
 		List<String> tags = new ArrayList<>();
 		tags.add("a tag, another");
-		ClassLoader classLoader = getClass().getClassLoader();
-		File gpxFile = new File(classLoader.getResource("track.gpx").getFile());
-		InputStream is = new FileInputStream(gpxFile);
+		InputStream is = getClass().getClassLoader().getResourceAsStream("track.gpx");
 
 		long id = privilegedApi.create("gpx file test case", Visibility.PRIVATE, "test case from gpx file desc",
 				tags, is);
+		is.close();
 
 		GpsTraceDetails trace = privilegedApi.get(id);
 		assertEquals("gpx_file_test_case", trace.name);
