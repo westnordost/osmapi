@@ -1,6 +1,7 @@
 package de.westnordost.osmapi.traces;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,35 +50,31 @@ public class GpsTracesApi
 			final String description, final List<String> tags,
 			final Iterable<GpsTrackpoint> trackpoints)
 	{
-		checkFieldLength("Name", name);
-		checkFieldLength("Description", description);
-		checkTagsLength(tags);
-		
-		/*
-		 * uploading a new GPX trace works with a multipart/form-data HTML form, we need to cobble 
-		 * together a valid request ourselves here which is why this is a little bit more complex 
-		 * than specifying the parameters simply as URL parameters. But it is not so much more 
-		 * complex, see FormDataWriter class and
-		 * http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.2
-		 */
-		
-		FormDataWriter writer = new FormDataWriter()
-		{
-			@Override
-			protected void write() throws IOException
-			{
-				ApiRequestWriter trackWriter = new GpxTrackWriter(osm.getUserAgent(), trackpoints);
-				addFileField("file", name, trackWriter);
-				
-				if(tags != null && !tags.isEmpty())
-					addField("tags", toCommaList(tags));
+		return create(name, visibility, description, tags, new GpxTrackWriter(osm.getUserAgent(), trackpoints));
+	}
 
-				addField("description", description);
-				addField("visibility", visibility.toString().toLowerCase(Locale.UK));
-			}
-		};
-		
-		return osm.makeAuthenticatedRequest(GPX + "/create", "POST", writer, new IdResponseReader());
+	/**
+	 * Upload a new trace from GPX input stream.
+	 *
+	 * @param name this is usually the "file name" of the GPX trace
+	 * @param visibility the visibility the trace should have
+	 * @param description short description of the trace. May not be null or empty.
+	 * @param tags keywords with which this trace can be found. May be null.
+	 * @param gpx The GPX to upload. It is responsibility of the caller to close the stream.
+	 * @return trace id
+	 *
+	 * @throws IllegalArgumentException if either name, description or any single tag is longer than
+	 *                                  255 characters
+	 * @throws OsmBadUserInputException if the trace is invalid
+	 * @throws OsmAuthorizationException if this application is not authorized to write traces
+	 *                                   (Permission.WRITE_GPS_TRACES)
+	 */
+	public long create(
+			final String name, final GpsTraceDetails.Visibility visibility,
+			final String description, final List<String> tags,
+			final InputStream gpx)
+	{
+		return create(name, visibility, description, tags, new GpxInputStreamWriter(gpx));
 	}
 	
 	/** Upload a new trace with no tags
@@ -87,6 +84,41 @@ public class GpsTracesApi
 			final Iterable<GpsTrackpoint> trackpoints)
 	{
 		return create(name, visibility, description, null, trackpoints);
+	}
+
+	private long create(
+			final String name, final GpsTraceDetails.Visibility visibility,
+			final String description, final List<String> tags,
+			final ApiRequestWriter writer)
+	{
+		checkFieldLength("Name", name);
+		checkFieldLength("Description", description);
+		checkTagsLength(tags);
+
+		/*
+		 * uploading a new GPX trace works with a multipart/form-data HTML form, we need to cobble
+		 * together a valid request ourselves here which is why this is a little bit more complex
+		 * than specifying the parameters simply as URL parameters. But it is not so much more
+		 * complex, see FormDataWriter class and
+		 * http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.2
+		 */
+
+		FormDataWriter formDataWriter = new FormDataWriter()
+		{
+			@Override
+			protected void write() throws IOException
+			{
+				addFileField("file", name, writer);
+
+				if(tags != null && !tags.isEmpty())
+					addField("tags", toCommaList(tags));
+
+				addField("description", description);
+				addField("visibility", visibility.toString().toLowerCase(Locale.UK));
+			}
+		};
+
+		return osm.makeAuthenticatedRequest(GPX + "/create", "POST", formDataWriter, new IdResponseReader());
 	}
 	
 	private static String toCommaList(List<String> vals)
