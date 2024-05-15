@@ -20,12 +20,12 @@ public class PermissionsApiTest
 		List<String> unprivilegedPermissions = unprivilegedApi.get();
 		assertFalse(unprivilegedPermissions.contains(Permission.CHANGE_PREFERENCES));
 		assertFalse(unprivilegedPermissions.contains(Permission.MODIFY_MAP));
-		assertFalse(unprivilegedPermissions.contains(Permission.READ_PREFERENCES_AND_USER_DETAILS));
-		assertFalse(unprivilegedPermissions.contains(Permission.READ_GPS_TRACES));
-		assertFalse(unprivilegedPermissions.contains(Permission.WRITE_GPS_TRACES));
 		// the unprivileged api has this one permission because an authorized App cannot have no
 		// permissions at all (because then it is not authorized, see?)
-		//assertFalse(unprivilegedPermissions.contains(Permission.WRITE_DIARY));
+		//assertFalse(unprivilegedPermissions.contains(Permission.READ_PREFERENCES_AND_USER_DETAILS));
+		assertFalse(unprivilegedPermissions.contains(Permission.READ_GPS_TRACES));
+		assertFalse(unprivilegedPermissions.contains(Permission.WRITE_GPS_TRACES));
+		assertFalse(unprivilegedPermissions.contains(Permission.WRITE_DIARY));
 		assertFalse(unprivilegedPermissions.contains(Permission.WRITE_NOTES));
 
 		List<String> privilegedPermissions = privilegedApi.get();
