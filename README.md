@@ -2,7 +2,7 @@
 
 osmapi is a client for the [OSM API 0.6](http://wiki.openstreetmap.org/wiki/API_v0.6).
 
-It is well tested (test coverage over 90%) and being used by [StreetComplete](https://github.com/westnordost/StreetComplete), thus actively maintained.
+It is well tested (test coverage over 90%) and being used by [StreetComplete](https://github.com/westnordost/StreetComplete), thus actively maintained. It does not have any dependencies.
 
 Note, the OSM API, particularly the part to download the map data, is intended only for editing the map. It's not made for pulling larger amounts of data or data analysis of certain map features. If this is what you intend to do, the [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API) is what you will want to use. I created a basic Java client for the Overpass API here, it builts upon this library: [osmapi-overpass](https://github.com/westnordost/osmapi-overpass).
 
@@ -21,13 +21,13 @@ Depending on which part of the API you use, you can only include what you need:
 <tr><td>MapDataApi</td><td><pre>de.westnordost:osmapi-map:3.0</pre></td><td>Getting map data, querying single elements and their relations toward each other and uploading changes in changesets</td></tr>
 <tr><td>MapDataHistoryApi</td><td><pre>de.westnordost:osmapi-map:3.0</pre></td><td>Getting the history and specific versions of elements</td></tr>
 <tr><td>NotesApi</td><td><pre>de.westnordost:osmapi-notes:3.0</pre></td><td>Getting finding, creating, commenting on and solving notes</td></tr>
-<tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:3.0</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
+<tr><td>GpsTracesApi</td><td><pre>de.westnordost:osmapi-traces:3.1</pre></td><td>Getting, uploading, updating and deleting GPS traces and trackpoints</td></tr>
 <tr><td>ChangesetsApi</td><td><pre>de.westnordost:osmapi-changesets:3.0</pre></td><td>Finding changesets, changeset discussion, subscription and data</td></tr>
 <tr><td>UserApi</td><td><pre>de.westnordost:osmapi-user:3.0</pre></td><td>Getting user information</td></tr>
 <tr><td>UserPreferencesApi</td><td><pre>de.westnordost:osmapi-user:3.0</pre></td><td>Managing user preferences</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:5.0`](https://mvnrepository.com/artifact/de.westnordost/osmapi/5.0) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:5.1`](https://mvnrepository.com/artifact/de.westnordost/osmapi/5.1) as a Maven dependency or download the jar from there.
 
 ### Android
 
