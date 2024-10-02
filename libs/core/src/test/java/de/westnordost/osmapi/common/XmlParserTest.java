@@ -61,6 +61,30 @@ public class XmlParserTest
 		parser.test(xml);
 	}
 
+	@Test public void getTextWithEntityRefs()
+	{
+		new TestXmlParser()
+		{
+			@Override
+			protected void onEndElement()
+			{
+				assertEquals("hello & <goodbye>", getText());
+			}
+		}.test("<a>hello &amp; &lt;goodbye&gt;</a>");
+	}
+
+	@Test public void getTextWithCdata()
+	{
+		new TestXmlParser()
+		{
+			@Override
+			protected void onEndElement()
+			{
+				assertEquals("hello & <good> bye", getText());
+			}
+		}.test("<a>hello <![CDATA[& <good>]]> bye</a>");
+	}
+
 	@Test public void getName()
 	{
 		String xml = "<a><b><c></c></b><d></d></a>";
