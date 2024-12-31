@@ -118,7 +118,7 @@ public class GpsTracesApi
 			}
 		};
 
-		return osm.makeAuthenticatedRequest(GPX + "/create", "POST", formDataWriter, new IdResponseReader());
+		return osm.makeAuthenticatedRequest(GPX, "POST", formDataWriter, new IdResponseReader());
 	}
 	
 	private static String toCommaList(List<String> vals)
