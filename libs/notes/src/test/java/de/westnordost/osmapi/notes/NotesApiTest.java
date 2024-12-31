@@ -317,6 +317,73 @@ public class NotesApiTest
 		catch(OsmConflictException ignore) {}
 	}
 
+	@Test public void subscribeAsAnonymousFails() {
+		Note note = privilegedApi.create(POINT, "subscribe as anonymous");
+		try {
+			anonymousApi.subscribe(note.id);
+			fail();
+		} catch (OsmAuthorizationException ignored) {
+		} finally {
+			privilegedApi.close(note.id);
+		}
+	}
+
+	@Test public void subscribeTwiceFails() {
+		Note note = privilegedApi.create(POINT, "subscribe twice");
+		try {
+			// user is already subscribed automatically by creating the note
+			privilegedApi.subscribe(note.id);
+			fail();
+		} catch (OsmConflictException ignored) {
+		} finally {
+			privilegedApi.close(note.id);
+		}
+	}
+
+	@Test public void subscribeNonExistingNoteFails() {
+		try {
+			privilegedApi.subscribe(0);
+			fail();
+		} catch (OsmNotFoundException ignored) {
+		}
+	}
+
+	@Test public void unsubscribeNonExistingNoteFails() {
+		try {
+			privilegedApi.unsubscribe(0);
+			fail();
+		} catch (OsmNotFoundException ignored) {
+		}
+	}
+
+	@Test public void unsubscribeNotSubscribedNoteFails() {
+		Note note = privilegedApi.create(POINT, "unsubscribe twice");
+		// user is already subscribed by creating the note
+		privilegedApi.unsubscribe(note.id);
+		try {
+			privilegedApi.unsubscribe(note.id);
+			fail();
+		} catch (OsmNotFoundException ignored) {
+		} finally {
+			privilegedApi.close(note.id);
+		}
+	}
+
+	@Test public void unsubscribeAsAnonymousFails() {
+		try {
+			anonymousApi.unsubscribe(0);
+			fail();
+		} catch (OsmAuthorizationException ignored) {
+		}
+	}
+
+	@Test public void subscribeAndUnsubscribe() {
+		Note note = privilegedApi.create(POINT, "subscribe and unsubscribe");
+		privilegedApi.unsubscribe(note.id);
+		privilegedApi.subscribe(note.id);
+		privilegedApi.unsubscribe(note.id);
+	}
+
 	@Test public void getNote()
 	{
 		Note note2 = unprivilegedApi.get(note.id);

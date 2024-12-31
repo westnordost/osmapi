@@ -148,6 +148,36 @@ public class NotesApi
 	}
 
 	/**
+	 * Subscribes the user to the given note.
+	 *
+	 * @param id id of the note
+	 *
+	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore)
+	 * @throws OsmAuthorizationException if this application is not authorized to write notes
+	 * 	 *                               (Permission.WRITE_NOTES)
+	 * @throws OsmConflictException if the user is already subscribed to the note
+	 */
+	public void subscribe(long id)
+	{
+		osm.makeAuthenticatedRequest(NOTES + "/" + id + "/subscription", "POST");
+	}
+
+	/**
+	 * Unsubscribes the user to the given note.
+	 *
+	 * @param id id of the note
+	 *
+	 * @throws OsmNotFoundException if the note with the given id does not exist (anymore) or the
+	 *                              user wasn't subscribed to this note.
+	 * @throws OsmAuthorizationException if this application is not authorized to write notes
+	 * 	 * 	 *                           (Permission.WRITE_NOTES)
+	 */
+	public void unsubscribe(long id)
+	{
+		osm.makeAuthenticatedRequest(NOTES + "/" + id + "/subscription", "DELETE");
+	}
+
+	/**
 	 * @param id id of the note
 	 *
 	 * @return the note with the given id. null if the note with that id does not exist (anymore).

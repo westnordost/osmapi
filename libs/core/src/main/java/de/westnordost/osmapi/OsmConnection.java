@@ -307,9 +307,7 @@ public class OsmConnection
 	private void handleResponseCode(HttpURLConnection connection) throws IOException
 	{
 		int httpResponseCode = connection.getResponseCode();
-		// actually any response code between 200 and 299 is a "success" but may need additional
-		// handling. Since the Osm Api only returns 200 on success curently, this check is fine
-		if(httpResponseCode != HttpURLConnection.HTTP_OK)
+		if(httpResponseCode >= 200 && httpResponseCode <= 299)
 		{
 			String responseMessage = connection.getResponseMessage();
 			String errorDescription = getErrorDescription(connection.getErrorStream());
