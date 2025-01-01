@@ -1,0 +1,8 @@
+archivesBaseName = "osmapi-messages"
+version = messages_version
+description = 'Client for the OSM API 0.6 - Sending and reading messages'
+
+dependencies {
+    compile "de.westnordost:osmapi-core:$core_version"
+    compile "de.westnordost:osmapi-user:$user_version"
+}

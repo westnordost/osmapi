@@ -11,7 +11,10 @@ public final class Permission
 		MODIFY_MAP = "allow_write_api",
 		READ_GPS_TRACES = "allow_read_gpx",
 		WRITE_GPS_TRACES = "allow_write_gpx",
-		WRITE_NOTES = "allow_write_notes";
+		WRITE_NOTES = "allow_write_notes",
+		CONSUME_MESSAGES = "allow_consume_messages",
+		SEND_MESSAGES = "allow_send_messages",
+		WRITE_REDACTIONS = "allow_write_redactions";
 
 	private Permission()
 	{

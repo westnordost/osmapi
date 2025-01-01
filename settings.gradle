@@ -4,6 +4,7 @@ include ':libs:map'
 include ':libs:notes'
 include ':libs:traces'
 include ':libs:user'
+include ':libs:messages'
 include ':libs:all'
 include ':testutils'
 
