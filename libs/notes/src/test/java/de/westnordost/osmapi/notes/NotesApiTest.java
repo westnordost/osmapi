@@ -89,10 +89,7 @@ public class NotesApiTest
 
 	@Test public void createNoteInsufficientPrivileges()
 	{
-		try {
-			unprivilegedApi.create(POINT, TEXT);
-			fail();
-		} catch (OsmAuthorizationException e) {}
+		assertThrows(OsmAuthorizationException.class, () -> unprivilegedApi.create(POINT, TEXT));
 	}
 
 	@Test public void createNoteAsAnonymousAllowed()
@@ -105,92 +102,47 @@ public class NotesApiTest
 
 	@Test public void commentNoteInsufficientPrivileges()
 	{
-		try
-		{
-			unprivilegedApi.comment(note.id, TEXT);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(OsmAuthorizationException.class, () -> unprivilegedApi.comment(note.id, TEXT));
 	}
 
 	@Test public void commentNoteAsAnonymousFails()
 	{
-		try
-		{
-			anonymousApi.comment(note.id, TEXT);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(OsmAuthorizationException.class, () -> anonymousApi.comment(note.id, TEXT));
 	}
 
 	@Test public void reopenNoteInsufficientPrivileges()
 	{
-		try
-		{
-			unprivilegedApi.reopen(note.id, TEXT);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(OsmAuthorizationException.class, () -> unprivilegedApi.reopen(note.id, TEXT));
 	}
 
 	@Test public void closeNoteInsufficientPrivileges()
 	{
-		try
-		{
-			unprivilegedApi.close(note.id, TEXT);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(OsmAuthorizationException.class, () -> unprivilegedApi.close(note.id, TEXT));
 	}
 
 	@Test public void reopenNoteAsAnonymousFails()
 	{
-		try
-		{
-			anonymousApi.reopen(note.id, TEXT);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
+		assertThrows(OsmAuthorizationException.class, () -> anonymousApi.reopen(note.id, TEXT));
 	}
 
 	@Test public void closeNoteAsAnonymousFails()
 	{
-		try
-		{
-			anonymousApi.close(note.id, TEXT);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
+		assertThrows(OsmAuthorizationException.class, () -> anonymousApi.close(note.id, TEXT));
 	}
 
 	@Test public void createNoteWithoutTextFails()
 	{
-		try
-		{
-			privilegedApi.create(POINT, "");
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> privilegedApi.create(POINT, ""));
 	}
 
 	@Test public void commentNoteWithoutTextFails()
 	{
-		try
-		{
-			privilegedApi.comment(note.id, "");
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> privilegedApi.comment(note.id, ""));
 	}
 
 	@Test public void commentNoteWithNullTextFails()
 	{
-		try
-		{
-			privilegedApi.comment(note.id, null);
-			fail();
-		}
-		catch(NullPointerException ignore) {}
+		assertThrows(NullPointerException.class, () -> privilegedApi.comment(note.id, null));
 	}
 
 	@Test public void closeAndReopenNoteWithoutTextDoesNotFail()
@@ -284,37 +236,22 @@ public class NotesApiTest
 
 	@Test public void noteNotFound()
 	{
-		try { privilegedApi.comment(0, TEXT); fail(); } catch(OsmNotFoundException ignore) {}
-		try { privilegedApi.reopen(0); fail(); } catch(OsmNotFoundException ignore) {}
-		try { privilegedApi.close(0); fail(); } catch(OsmNotFoundException ignore) {}
+		assertThrows(OsmNotFoundException.class, () -> privilegedApi.comment(0, TEXT));
+		assertThrows(OsmNotFoundException.class, () -> privilegedApi.reopen(0));
+		assertThrows(OsmNotFoundException.class, () -> privilegedApi.close(0));
 	}
 
 	@Test public void conflict()
 	{
 		Note myNote = privilegedApi.create(POINT6, TEXT);
 
-		try
-		{
-			privilegedApi.reopen(myNote.id);
-			fail();
-		}
-		catch(OsmConflictException ignore) {}
+		assertThrows(OsmConflictException.class, () -> privilegedApi.reopen(myNote.id));
 
 		privilegedApi.close(myNote.id);
 
-		try
-		{
-			privilegedApi.close(myNote.id);
-			fail();
-		}
-		catch(OsmConflictException ignore) {}
+		assertThrows(OsmConflictException.class, () -> privilegedApi.close(myNote.id));
 
-		try
-		{
-			privilegedApi.comment(myNote.id, TEXT);
-			fail();
-		}
-		catch(OsmConflictException ignore) {}
+		assertThrows(OsmConflictException.class, () -> privilegedApi.comment(myNote.id, TEXT));
 	}
 
 	@Test public void subscribeAsAnonymousFails() {
@@ -341,19 +278,11 @@ public class NotesApiTest
 	}
 
 	@Test public void subscribeNonExistingNoteFails() {
-		try {
-			privilegedApi.subscribe(0);
-			fail();
-		} catch (OsmNotFoundException ignored) {
-		}
+		assertThrows(OsmNotFoundException.class, () -> privilegedApi.subscribe(0));
 	}
 
 	@Test public void unsubscribeNonExistingNoteFails() {
-		try {
-			privilegedApi.unsubscribe(0);
-			fail();
-		} catch (OsmNotFoundException ignored) {
-		}
+		assertThrows(OsmNotFoundException.class, () -> privilegedApi.unsubscribe(0));
 	}
 
 	@Test public void unsubscribeNotSubscribedNoteFails() {
@@ -370,11 +299,7 @@ public class NotesApiTest
 	}
 
 	@Test public void unsubscribeAsAnonymousFails() {
-		try {
-			anonymousApi.unsubscribe(0);
-			fail();
-		} catch (OsmAuthorizationException ignored) {
-		}
+		assertThrows(OsmAuthorizationException.class, () -> anonymousApi.unsubscribe(0));
 	}
 
 	@Test public void subscribeAndUnsubscribe() {
@@ -406,40 +331,32 @@ public class NotesApiTest
 
 	@Test public void queryTooBig()
 	{
-		try
-		{
-			// try to download the whole world...
-			unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 10000, -1);
-			fail();
-		}
-		catch (OsmQueryTooBigException ignore) {}
+		// try to download the whole world...
+		assertThrows(
+				OsmQueryTooBigException.class,
+				() -> unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 10000, -1)
+		);
 	}
 
 	@Test public void wrongLimit()
 	{
-		try
-		{
-			unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 0, -1);
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 0, -1)
+		);
 
-		try
-		{
-			unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 0, 10001);
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> unprivilegedApi.getAll(WHOLE_WORLD, new FailIfCalled(), 0, 10001)
+		);
 	}
 
 	@Test public void crosses180thMeridian()
 	{
-		try
-		{
-			unprivilegedApi.getAll(CROSS_180TH_MERIDIAN, new FailIfCalled(), 10000, -1);
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> unprivilegedApi.getAll(CROSS_180TH_MERIDIAN, new FailIfCalled(), 10000, -1)
+		);
 	}
 
 	@Test public void getNotes()

@@ -2,8 +2,6 @@ package de.westnordost.osmapi;
 
 import org.junit.Test;
 
-import java.io.InputStream;
-
 import de.westnordost.osmapi.ConnectionTestFactory.User;
 import de.westnordost.osmapi.common.errors.OsmApiReadResponseException;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
@@ -15,53 +13,47 @@ public class OsmConnectionTest
 {
 	@Test public void authorizationException()
 	{
-		try
-		{
-			OsmConnection osm = ConnectionTestFactory.createConnection(null);
-			osm.makeAuthenticatedRequest("changeset/create", "PUT", null, null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(
+				OsmAuthorizationException.class,
+				() -> {
+					OsmConnection osm = ConnectionTestFactory.createConnection(null);
+					osm.makeAuthenticatedRequest("changeset/create", "PUT", null, null);
+				}
+		);
 	}
 	
 	@Test public void authorizationException2()
 	{
-		try
-		{
-			OsmConnection osm = ConnectionTestFactory.createConnection(User.UNKNOWN);
-			osm.makeAuthenticatedRequest("changeset/create", "PUT", null, null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(
+				OsmAuthorizationException.class,
+				() -> {
+					OsmConnection osm = ConnectionTestFactory.createConnection(User.UNKNOWN);
+					osm.makeAuthenticatedRequest("changeset/create", "PUT", null, null);
+				}
+		);
 	}
 	
 	@Test public void connectionException()
 	{
-		try
-		{
-			OsmConnection osm = new OsmConnection("http://cant.connect.to.this.server.hm", "blub", null);
-			osm.makeRequest("doesntMatter", null);
-			fail();
-		}
-		catch(OsmConnectionException ignore) {}
+		assertThrows(
+				OsmConnectionException.class,
+				() -> {
+					OsmConnection osm = new OsmConnection("http://cant.connect.to.this.server.hm", "blub", null);
+					osm.makeRequest("doesntMatter", null);
+				}
+		);
 	}
 	
 	@Test public void errorParsingApiResponse()
 	{
-		try
-		{
-			OsmConnection osm = ConnectionTestFactory.createConnection(null);
-			osm.makeRequest("capabilities", new ApiResponseReader<Void>()
-			{
-				@Override
-				public Void parse(InputStream in) throws Exception
-				{
-					throw new Exception();
+		assertThrows(
+				OsmApiReadResponseException.class,
+				() -> {
+					OsmConnection osm = ConnectionTestFactory.createConnection(null);
+					osm.makeRequest("capabilities", (ApiResponseReader<Void>) in -> {
+                        throw new Exception();
+                    });
 				}
-			});
-			fail();
-		}
-		catch(OsmApiReadResponseException ignore) {}
+		);
 	}
-
 }

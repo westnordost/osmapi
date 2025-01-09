@@ -45,24 +45,23 @@ public class QueryNotesFiltersTest
 
 	@Test public void illegalUserSelection()
 	{
-		QueryNotesFilters filters = new QueryNotesFilters();
-		try
-		{
-			filters.byUser(1);
-			filters.byUser("hans");
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
-		
-		QueryNotesFilters filters2 = new QueryNotesFilters();
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> {
+					QueryNotesFilters filters = new QueryNotesFilters();
+					filters.byUser(1);
+					filters.byUser("hans");
+				}
+		);
 
-		try
-		{
-			filters2.byUser("hans");
-			filters2.byUser(1);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> {
+					QueryNotesFilters filters = new QueryNotesFilters();
+					filters.byUser("hans");
+					filters.byUser(1);
+				}
+		);
 	}
 
 	@Test public void limit()
@@ -75,13 +74,13 @@ public class QueryNotesFiltersTest
 
 	@Test public void illegalLimit()
 	{
-		QueryNotesFilters filters = new QueryNotesFilters();
-		try
-		{
-			filters.limit(0);
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> {
+					QueryNotesFilters filters = new QueryNotesFilters();
+					filters.limit(0);
+				}
+		);
 	}
 
 	@Test public void createdBefore()

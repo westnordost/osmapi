@@ -3,8 +3,6 @@ package de.westnordost.osmapi.traces;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
@@ -47,119 +45,52 @@ public class GpsTracesApiTest
 	
 	@Test public void accessPrivateTraceOfOtherUserResultsInFailure()
 	{
-		try
-		{
-			privilegedApi.get(PRIVATE_TRACE_OF_OTHER_USER);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-
-		try
-		{
-			privilegedApi.delete(PRIVATE_TRACE_OF_OTHER_USER);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-
-		try
-		{
-			privilegedApi.getData(PRIVATE_TRACE_OF_OTHER_USER, null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-
-		try
-		{
-			privilegedApi.update(PRIVATE_TRACE_OF_OTHER_USER, Visibility.PUBLIC, "test", null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
+		Class<OsmAuthorizationException> e = OsmAuthorizationException.class;
+		assertThrows(e, () -> privilegedApi.get(PRIVATE_TRACE_OF_OTHER_USER));
+		assertThrows(e, () -> privilegedApi.delete(PRIVATE_TRACE_OF_OTHER_USER));
+		assertThrows(e, () -> privilegedApi.getData(PRIVATE_TRACE_OF_OTHER_USER, null));
+		assertThrows(e, () -> privilegedApi.update(PRIVATE_TRACE_OF_OTHER_USER, Visibility.PUBLIC, "test", null));
 	}
 
 	@Test public void accessTraceWithoutPrivilegesResultsInFailure()
 	{
-		try
-		{
-			unprivilegedApi.create("bla", Visibility.PUBLIC, "desc", Collections.<GpsTrackpoint> emptyList());
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-		
-		try
-		{
-			unprivilegedApi.get(PUBLIC_TRACE);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-
-		try
-		{
-			unprivilegedApi.delete(PUBLIC_TRACE);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-
-		try
-		{
-			unprivilegedApi.getData(PUBLIC_TRACE, null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-
-		try
-		{
-			unprivilegedApi.update(PUBLIC_TRACE, Visibility.PUBLIC, "test", null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
-		
-		try
-		{
-			unprivilegedApi.getMine(new Handler<GpsTraceDetails>() { public void handle(GpsTraceDetails tea) {}} );
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
+		Class<OsmAuthorizationException> e = OsmAuthorizationException.class;
+		assertThrows(e, () -> unprivilegedApi.create("bla", Visibility.PUBLIC, "desc", Collections.emptyList()));
+		assertThrows(e, () -> unprivilegedApi.get(PUBLIC_TRACE));
+		assertThrows(e, () -> unprivilegedApi.delete(PUBLIC_TRACE));
+		assertThrows(e, () -> unprivilegedApi.getData(PUBLIC_TRACE, null));
+		assertThrows(e, () -> unprivilegedApi.update(PUBLIC_TRACE, Visibility.PUBLIC, "test", null));
+		assertThrows(e, () -> unprivilegedApi.getMine(tea -> {}));
 	}
 	
 	
-	@Test public void accessNonexistingTraceFails()
+	@Test public void accessNonExistingTraceFails()
 	{
-		try
-		{
-			privilegedApi.getData(NONEXISTING_TRACE, null);
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
-		
-		try
-		{
-			privilegedApi.update(NONEXISTING_TRACE, Visibility.TRACKABLE, "desc", null);
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> privilegedApi.getData(NONEXISTING_TRACE, null)
+		);
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> privilegedApi.update(NONEXISTING_TRACE, Visibility.TRACKABLE, "desc", null)
+		);
 	}
 	
-	@Test public void getNonexistingTrace()
+	@Test public void getNonExistingTrace()
 	{
 		assertNull(privilegedApi.get(NONEXISTING_TRACE));
 	}
 	
 	@Test public void tooLongDescription()
 	{
-		try
-		{
-			privilegedApi.update(PUBLIC_TRACE, Visibility.TRACKABLE, tooLong(), null);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) { }
-		
-		try
-		{
-			privilegedApi.create("xxx", Visibility.TRACKABLE, tooLong(), null,
-					Collections.<GpsTrackpoint> emptyList());
-			fail();
-		}
-		catch(IllegalArgumentException ignore) { }
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> privilegedApi.update(PUBLIC_TRACE, Visibility.TRACKABLE, tooLong(), null)
+		);
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> privilegedApi.create("xxx", Visibility.TRACKABLE, tooLong(), null, Collections.emptyList())
+		);
 	}
 	
 	@Test public void tooLongTags()
@@ -167,21 +98,16 @@ public class GpsTracesApiTest
 		List<String> tags = new ArrayList<>();
 		tags.add("abc");
 		tags.add(tooLong());
-		
-		try
-		{
-			privilegedApi.create("abc", Visibility.TRACKABLE, "desc", tags,
-					Collections.<GpsTrackpoint> emptyList());
-			fail();
-		}
-		catch(IllegalArgumentException ignore) { }
-		
-		try
-		{
-			privilegedApi.update(PUBLIC_TRACE, Visibility.TRACKABLE, "test", tags);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) { }
+
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> privilegedApi.create("abc", Visibility.TRACKABLE, "desc", tags, Collections.emptyList())
+		);
+
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> privilegedApi.update(PUBLIC_TRACE, Visibility.TRACKABLE, "test", tags)
+		);
 	}
 	
 	@Test public void createGetUpdateDelete()

@@ -150,14 +150,15 @@ public class MapDataChangesWriterTest
 		assertFalse(writer.hasChanges());
 	}
 
-    @Test public void writeNodeWithoutPosition() throws Exception {
-        try {
-            OsmNode element = createNode(-1);
-            element.setPosition(null);
-            writeXml(1, element);
-            fail();
-        } catch (NullPointerException ignore) {
-        }
+    @Test public void writeNodeWithoutPosition() {
+		assertThrows(
+				NullPointerException.class,
+				() -> {
+					OsmNode element = createNode(-1);
+					element.setPosition(null);
+					writeXml(1, element);
+				}
+		);
     }
 
 	private static String writeXml(long changesetId, Element singleElement) throws IOException

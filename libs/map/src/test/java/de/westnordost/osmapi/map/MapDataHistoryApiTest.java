@@ -25,35 +25,28 @@ public class MapDataHistoryApiTest
 
 	@Test public void getUnknownNodeHistory()
 	{
-		try
-		{
-			api.getNodeHistory(Long.MAX_VALUE, new NullHandler<Node>());
-			fail();
-		}
-		catch(OsmNotFoundException ignore) { }
-
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> api.getNodeHistory(Long.MAX_VALUE, new NullHandler<>())
+		);
 		assertNull(api.getNodeVersion(Long.MAX_VALUE,1));
 	}
 
 	@Test public void getUnknownWayHistory()
 	{
-		try
-		{
-			api.getWayHistory(Long.MAX_VALUE, new NullHandler<Way>());
-			fail();
-		}
-		catch(OsmNotFoundException ignore) { }
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> api.getWayHistory(Long.MAX_VALUE, new NullHandler<>())
+		);
 		assertNull(api.getWayVersion(Long.MAX_VALUE, 1));
 	}
 
 	@Test public void getUnknownRelationHistory()
 	{
-		try
-		{
-			api.getRelationHistory(Long.MAX_VALUE, new NullHandler<Relation>());
-			fail();
-		}
-		catch(OsmNotFoundException ignore) { }
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> api.getRelationHistory(Long.MAX_VALUE, new NullHandler<>())
+		);
 		assertNull(api.getRelationVersion(Long.MAX_VALUE, 1));
 	}
 

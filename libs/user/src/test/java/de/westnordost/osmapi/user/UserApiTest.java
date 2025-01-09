@@ -27,12 +27,7 @@ public class UserApiTest
 
 	@Test public void getUserDetailsUnprivilegedFails()
 	{
-		try
-		{
-			unprivilegedApi.getMine();
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) { }
+		assertThrows(OsmAuthorizationException.class, () -> unprivilegedApi.getMine());
 	}
 
 	@Test public void getUserDetailsPrivilegedWorks()

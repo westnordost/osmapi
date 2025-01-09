@@ -36,58 +36,63 @@ import static org.junit.Assert.*;
 
 public class MapDataApiTest
 {
-	private OsmConnection privilegedConnection;
-	private OsmConnection unprivilegedConnection;
-	private OsmConnection connection;
-	private OsmConnection liveConnection;
+	private MapDataApi privilegedApi;
+	private MapDataApi anonymousApi;
+	private MapDataApi unprivilegedApi;
+	private ChangesetsApi privilegedChangesetApi;
+
+	private MapDataApi liveApi;
 
 	@Before public void setUp()
 	{
+		OsmConnection privilegedConnection =
+				ConnectionTestFactory.createConnection(ConnectionTestFactory.User.ALLOW_EVERYTHING);
 		// Create the different connections...
-		connection = ConnectionTestFactory.createConnection(null);
-		privilegedConnection = ConnectionTestFactory
-				.createConnection(ConnectionTestFactory.User.ALLOW_EVERYTHING);
-		unprivilegedConnection = ConnectionTestFactory
-				.createConnection(ConnectionTestFactory.User.ALLOW_NOTHING);
+		anonymousApi = new MapDataApi(ConnectionTestFactory.createConnection(null));
+		privilegedApi = new MapDataApi(privilegedConnection);
+		unprivilegedApi = new MapDataApi(
+				ConnectionTestFactory.createConnection(ConnectionTestFactory.User.ALLOW_NOTHING)
+		);
+		privilegedChangesetApi = new ChangesetsApi(privilegedConnection);
 
 		// we need to test a few things with live data, because we have no clue
 		// how the test data looks like :-(
 		// i.e. where to expect data
-		liveConnection = ConnectionTestFactory.createLiveConnection();
+		liveApi = new MapDataApi(ConnectionTestFactory.createLiveConnection());
 	}
 
 	@Test public void getMapTooBigBounds()
 	{
-		try
-		{
-			// this must surely be too big, regardless of the server preferences
-			// - it's the whole world!
-			new MapDataApi(connection).getMap(
-					new BoundingBox(LatLons.MIN_VALUE, LatLons.MAX_VALUE),
-					new DefaultMapDataHandler());
-			fail();
-		}
-		catch(OsmQueryTooBigException ignore) {}
+		assertThrows(
+				OsmQueryTooBigException.class,
+				() -> {
+					// this must surely be too big, regardless of the server preferences
+					// - it's the whole world!
+					anonymousApi.getMap(
+							new BoundingBox(LatLons.MIN_VALUE, LatLons.MAX_VALUE),
+							new DefaultMapDataHandler());
+				}
+		);
 	}
 
 	@Test public void getMapBoundsCross180thMeridian()
 	{
-		try
-		{
-			// using here the smallest possible query area, so it cannot be too
-			// big
-			new MapDataApi(connection).getMap(new BoundingBox(0, 180, 0.0000001, -179.9999999),
-					new DefaultMapDataHandler());
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> {
+					// using here the smallest possible query area, so it cannot be too
+					// big
+					anonymousApi.getMap(new BoundingBox(0, 180, 0.0000001, -179.9999999),
+							new DefaultMapDataHandler());
+				}
+		);
 	}
 
 	@Test public void getMapBounds()
 	{
 		final BoundingBox verySmallBounds = new BoundingBox(31, 31, 31.0000001, 31.0000001);
 
-		new MapDataApi(connection).getMap(verySmallBounds, new DefaultMapDataHandler()
+		anonymousApi.getMap(verySmallBounds, new DefaultMapDataHandler()
 		{
 			@Override
 			public void handle(BoundingBox bounds)
@@ -107,7 +112,7 @@ public class MapDataApiTest
 		final BoundingBox hamburg = new BoundingBox(53.579, 9.939, 53.580, 9.940);
 
 		CountMapDataHandler counter = new CountMapDataHandler();
-		new MapDataApi(liveConnection).getMap(hamburg, counter);
+		liveApi.getMap(hamburg, counter);
 
 		assertEquals(1, counter.bounds);
 		assertTrue(counter.ways > 0);
@@ -123,7 +128,7 @@ public class MapDataApiTest
 		CheckFirstHandleCallHandler handler = new CheckFirstHandleCallHandler();
 
 		long startTime = System.currentTimeMillis();
-		new MapDataApi(liveConnection).getMap(bigHamburg, handler);
+		liveApi.getMap(bigHamburg, handler);
 		long timeToFirstData = handler.firstCallTime - startTime;
 		long totalTime = System.currentTimeMillis() - startTime;
 
@@ -141,36 +146,28 @@ public class MapDataApiTest
 
 	@Test public void uploadAsAnonymousFails()
 	{
-		try
-		{
-			new MapDataApi(connection).updateMap("test", "test", Collections.<Element> emptyList(),
-					null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(
+				OsmAuthorizationException.class,
+				() -> anonymousApi.updateMap("test", "test", Collections.emptyList(), null)
+		);
 	}
 
 	@Test public void uploadAsUnprivilegedUserFails()
 	{
-		try
-		{
-			new MapDataApi(unprivilegedConnection).updateMap("test", "test",
-					Collections.<Element> emptyList(), null);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		assertThrows(
+				OsmAuthorizationException.class,
+				() -> unprivilegedApi.updateMap("test", "test", Collections.emptyList(), null)
+		);
 	}
 
 	@Test public void readDiff()
 	{
-		MapDataApi mapDataApi = new MapDataApi(privilegedConnection);
-
 		final LatLon POS = new OsmLatLon(55.42313, 50.13221);
 		final long PLACEHOLDER_ID = -33;
 
 		Element node = new OsmNode(PLACEHOLDER_ID, 1, POS, null);
 		SingleElementHandler<DiffElement> handlerCreated = new SingleElementHandler<>();
-		mapDataApi.updateMap("test", "test", Arrays.asList(node), handlerCreated);
+		privilegedApi.updateMap("test", "test", Arrays.asList(node), handlerCreated);
 		DiffElement diffCreated = handlerCreated.get();
 
 		// update id and delete again... (clean up before asserting)
@@ -178,8 +175,7 @@ public class MapDataApiTest
 				null);
 		deleteNode.setDeleted(true);
 		SingleElementHandler<DiffElement> handlerDeleted = new SingleElementHandler<>();
-		mapDataApi.updateMap("clean up test", "test", Arrays.asList((Element) deleteNode),
-				handlerDeleted);
+		privilegedApi.updateMap("clean up test", "test", Arrays.asList(deleteNode), handlerDeleted);
 
 		DiffElement diffDeleted = handlerDeleted.get();
 
@@ -196,22 +192,8 @@ public class MapDataApiTest
 
 	@Test public void notFound()
 	{
-		MapDataApi api = new MapDataApi(connection);
-		MapDataHandler h = new DefaultMapDataHandler();
-
-		try
-		{
-			api.getWayComplete(Long.MAX_VALUE, h);
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
-
-		try
-		{
-			api.getRelationComplete(Long.MAX_VALUE, h);
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
+		assertThrows(OsmNotFoundException.class, () -> anonymousApi.getWayComplete(Long.MAX_VALUE, new DefaultMapDataHandler()));
+		assertThrows(OsmNotFoundException.class, () -> anonymousApi.getRelationComplete(Long.MAX_VALUE, new DefaultMapDataHandler()));
 	}
 
 	// we do not test the validity of the data here, just they should not throw
@@ -219,60 +201,58 @@ public class MapDataApiTest
 
 	@Test public void wayComplete()
 	{
-		new MapDataApi(liveConnection).getWayComplete(27308882, new DefaultMapDataHandler());
+		liveApi.getWayComplete(27308882, new DefaultMapDataHandler());
 	}
 
 	@Test public void relationComplete()
 	{
-		new MapDataApi(liveConnection).getRelationComplete(3301989, new DefaultMapDataHandler());
+		liveApi.getRelationComplete(3301989, new DefaultMapDataHandler());
 	}
 
 	@Test public void relationsForRelation()
 	{
-		new MapDataApi(liveConnection).getRelationsForRelation(3218689);
+		liveApi.getRelationsForRelation(3218689);
 	}
 
 	@Test public void relationsForWay()
 	{
-		new MapDataApi(liveConnection).getRelationsForWay(244179625);
+		liveApi.getRelationsForWay(244179625);
 	}
 
 	@Test public void relationsForNode()
 	{
-		new MapDataApi(liveConnection).getRelationsForNode(3375377736L);
+		liveApi.getRelationsForNode(3375377736L);
 	}
 
 	@Test public void waysForNode()
 	{
-		new MapDataApi(liveConnection).getWaysForNode(3668931466L);
+		liveApi.getWaysForNode(3668931466L);
 	}
 
 	@Test public void emptySomeElementsForX()
 	{
-		MapDataApi api = new MapDataApi(connection);
-
-		assertEquals(0, api.getRelationsForRelation(Long.MAX_VALUE).size());
-		assertEquals(0, api.getRelationsForNode(Long.MAX_VALUE).size());
-		assertEquals(0, api.getRelationsForWay(Long.MAX_VALUE).size());
-		assertEquals(0, api.getWaysForNode(Long.MAX_VALUE).size());
+		assertTrue(anonymousApi.getRelationsForRelation(Long.MAX_VALUE).isEmpty());
+		assertTrue(anonymousApi.getRelationsForNode(Long.MAX_VALUE).isEmpty());
+		assertTrue(anonymousApi.getRelationsForWay(Long.MAX_VALUE).isEmpty());
+		assertTrue(anonymousApi.getWaysForNode(Long.MAX_VALUE).isEmpty());
 	}
 
 	@Test public void getNode()
 	{
-		new MapDataApi(liveConnection).getNode(ElementShouldExist.NODE);
-		assertNull(new MapDataApi(connection).getNode(Long.MAX_VALUE));
+		assertNotNull(liveApi.getNode(ElementShouldExist.NODE));
+		assertNull(anonymousApi.getNode(Long.MAX_VALUE));
 	}
 
 	@Test public void getWay()
 	{
-		new MapDataApi(liveConnection).getWay(ElementShouldExist.WAY);
-		assertNull(new MapDataApi(connection).getWay(Long.MAX_VALUE));
+		assertNotNull(liveApi.getWay(ElementShouldExist.WAY));
+		assertNull(anonymousApi.getWay(Long.MAX_VALUE));
 	}
 
 	@Test public void getRelation()
 	{
-		new MapDataApi(liveConnection).getRelation(ElementShouldExist.RELATION);
-		assertNull(new MapDataApi(connection).getRelation(Long.MAX_VALUE));
+		assertNotNull(liveApi.getRelation(ElementShouldExist.RELATION));
+		assertNull(anonymousApi.getRelation(Long.MAX_VALUE));
 	}
 
 	@Test public void getNodes()
@@ -280,32 +260,32 @@ public class MapDataApiTest
 		// test if a non-existing element does "poison the well"
 		// this test will fail if both Yangon and New York place=city nodes do
 		// not exist anymore ;-)
-		try
-		{
-			List<Long> places = Arrays.asList(ElementShouldExist.NODE, Long.MAX_VALUE);
-			new MapDataApi(liveConnection).getNodes(places);
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> {
+					List<Long> places = Arrays.asList(ElementShouldExist.NODE, Long.MAX_VALUE);
+					liveApi.getNodes(places);
+				}
+		);
 
 		List<Long> place = Arrays.asList(ElementShouldExist.NODE);
-		assertFalse(new MapDataApi(liveConnection).getNodes(place).isEmpty());
+		assertFalse(liveApi.getNodes(place).isEmpty());
 	}
 
 	@Test public void getRelations()
 	{
 		// test if a non-existing element does "poison the well"
 		// this test will fail if Germany type=boundary does not exist anymore
-		try
-		{
-			List<Long> places = Arrays.asList(ElementShouldExist.RELATION, Long.MAX_VALUE);
-			new MapDataApi(liveConnection).getRelations(places);
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> {
+					List<Long> places = Arrays.asList(ElementShouldExist.RELATION, Long.MAX_VALUE);
+					liveApi.getRelations(places);
+				}
+		);
 
 		List<Long> place = Arrays.asList(ElementShouldExist.RELATION);
-		assertFalse(new MapDataApi(liveConnection).getRelations(place).isEmpty());
+		assertFalse(liveApi.getRelations(place).isEmpty());
 	}
 
 	@Test public void getWays()
@@ -313,163 +293,130 @@ public class MapDataApiTest
 		// test if a non-existing element does "poison the well"
 		// this test will fail if some harbor in Hamburg does not exist
 		// anymore...
-		try
-		{
-			List<Long> places = Arrays.asList(ElementShouldExist.WAY, Long.MAX_VALUE);
-			List<Way> ways = new MapDataApi(liveConnection).getWays(places);
-			ways.isEmpty();
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> {
+					List<Long> places = Arrays.asList(ElementShouldExist.WAY, Long.MAX_VALUE);
+					liveApi.getWays(places);
+				}
+		);
 
 		List<Long> place = Arrays.asList(ElementShouldExist.WAY);
-		assertFalse(new MapDataApi(liveConnection).getWays(place).isEmpty());
+		assertFalse(liveApi.getWays(place).isEmpty());
 	}
 
 	@Test public void getElementsEmpty()
 	{
-		MapDataApi api = new MapDataApi(connection);
-		assertTrue(api.getWays(Collections.<Long> emptyList()).isEmpty());
-		assertTrue(api.getNodes(Collections.<Long> emptyList()).isEmpty());
-		assertTrue(api.getRelations(Collections.<Long> emptyList()).isEmpty());
+		MapDataApi api = anonymousApi;
+		assertTrue(api.getWays(Collections.emptyList()).isEmpty());
+		assertTrue(api.getNodes(Collections.emptyList()).isEmpty());
+		assertTrue(api.getRelations(Collections.emptyList()).isEmpty());
 	}
 
 	@Test public void closeUnopenedChangesetFails()
 	{
-		try
-		{
-			new MapDataApi(privilegedConnection).closeChangeset(Long.MAX_VALUE-1);
-			fail();
-		}
-		catch(OsmNotFoundException ignore) {}
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> privilegedApi.closeChangeset(Long.MAX_VALUE-1)
+		);
 	}
 	
 	@Test public void closeClosedChangesetFails()
 	{
-		MapDataApi api = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
-		long changesetId = api.openChangeset(tags);
-		api.closeChangeset(changesetId);
-		
-		try
-		{
-			api.closeChangeset(changesetId);
-			fail();
-		}
-		catch(OsmConflictException ignore) { }
+		long changesetId = privilegedApi.openChangeset(tags);
+		privilegedApi.closeChangeset(changesetId);
+
+		assertThrows(OsmConflictException.class, () -> privilegedApi.closeChangeset(changesetId));
 	}
 	
 	@Test public void multipleChangesInChangeset()
 	{
-		MapDataApi mapDataApi = new MapDataApi(privilegedConnection);
-		ChangesetsApi changesetApi = new ChangesetsApi(privilegedConnection);
-
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
 
-		long changesetId = mapDataApi.openChangeset(tags);
+		long changesetId = privilegedApi.openChangeset(tags);
 		try
 		{
-			assertEquals(true, changesetApi.get(changesetId).isOpen);
+            assertTrue(privilegedChangesetApi.get(changesetId).isOpen);
 			assertChangesetHasElementCount(changesetId, 0,0,0);
 
-			try
-			{
-				changesetApi.comment(changesetId, "Trying to comment on a non-closed changeset");
-				fail();
-			}
-			catch(OsmConflictException ignore) {}
+			assertThrows(
+					OsmConflictException.class,
+					() -> privilegedChangesetApi.comment(changesetId, "Trying to comment on a non-closed changeset")
+			);
 
 			// upload first change
 			Element node1 = new OsmNode(-33, 1, new OsmLatLon(10.42313, 65.13221), null);
-			mapDataApi.uploadChanges(changesetId, Arrays.asList(node1), null);
+			privilegedApi.uploadChanges(changesetId, Arrays.asList(node1), null);
 
 			assertChangesetHasElementCount(changesetId,1,0,0);
 
 			// delete a non-existing element: -> not found
-			try
-			{
-				OsmNode delNode = new OsmNode(Long.MAX_VALUE-1, 1, new OsmLatLon(0.11111, 1.565467), null);
-				delNode.setDeleted(true);
-				Element delElement = delNode;
-				mapDataApi.uploadChanges(changesetId, Arrays.asList(delElement), null);
-				fail();
-			}
-			catch(OsmNotFoundException ignore) {}
+			OsmNode delNode = new OsmNode(Long.MAX_VALUE-1, 1, new OsmLatLon(0.11111, 1.565467), null);
+			delNode.setDeleted(true);
+			assertThrows(
+					OsmNotFoundException.class,
+					() -> privilegedApi.uploadChanges(changesetId, Arrays.asList(delNode), null)
+			);
 
 			assertChangesetHasElementCount(changesetId,1,0,0);
 
 			Element node2 = new OsmNode(-34, 1, new OsmLatLon(10.42314, 65.13220), null);
-			mapDataApi.uploadChanges(changesetId, Arrays.asList(node2), null);
+			privilegedApi.uploadChanges(changesetId, Arrays.asList(node2), null);
 			assertChangesetHasElementCount(changesetId,2,0,0);
 		}
 		finally
 		{
-			mapDataApi.closeChangeset(changesetId);
-			assertEquals(false, changesetApi.get(changesetId).isOpen);
+			privilegedApi.closeChangeset(changesetId);
+            assertFalse(privilegedChangesetApi.get(changesetId).isOpen);
 		}
 	}
 	
 	@Test public void updateClosedChangesetFails()
 	{
-		MapDataApi api = new MapDataApi(privilegedConnection);
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
-		long changesetId = api.openChangeset(tags);
-		api.closeChangeset(changesetId);
-		
-		try
-		{
-			api.updateChangeset(changesetId, tags);
-			fail();
-		}
-		catch(OsmConflictException ignore)
-		{
-		}
+		long changesetId = privilegedApi.openChangeset(tags);
+		privilegedApi.closeChangeset(changesetId);
+
+		assertThrows(OsmConflictException.class, () -> privilegedApi.updateChangeset(changesetId, tags));
 	}
 	
 	@Test public void updateUnopenedChangesetFails()
 	{
 		Map<String,String> tags = new HashMap<>();
 		tags.put("comment", "test case");
-		try
-		{
-			new MapDataApi(privilegedConnection).updateChangeset(Long.MAX_VALUE-1, tags);
-			fail();
-		}
-		catch(OsmNotFoundException ignore)
-		{
-		}
+		assertThrows(
+				OsmNotFoundException.class,
+				() -> privilegedApi.updateChangeset(Long.MAX_VALUE-1, tags)
+		);
 	}
 
 	@Test public void updateChangesetOverwritesOldTags()
 	{
-		MapDataApi api = new MapDataApi(privilegedConnection);
-		ChangesetsApi changesetApi = new ChangesetsApi(privilegedConnection);
-
 		Map<String,String> tags1 = new HashMap<>();
 		tags1.put("comment", "test case");
-		long changesetId = api.openChangeset(tags1);
+		long changesetId = privilegedApi.openChangeset(tags1);
 
-		assertEquals(tags1, changesetApi.get(changesetId).tags);
+		assertEquals(tags1, privilegedChangesetApi.get(changesetId).tags);
 
 		Map<String,String> tags2 = new HashMap<>();
 		tags2.put("comment2", "test case2");
 
-		api.updateChangeset(changesetId, tags2);
+		privilegedApi.updateChangeset(changesetId, tags2);
 
-		assertEquals(tags2, changesetApi.get(changesetId).tags);
+		assertEquals(tags2, privilegedChangesetApi.get(changesetId).tags);
 
 		// just cleaning up
-		api.closeChangeset(changesetId);
+		privilegedApi.closeChangeset(changesetId);
 	}
 
 	private void assertChangesetHasElementCount(long changesetId, int creations, int modifications, int deletions)
 	{
-		ChangesetsApi changesetApi = new ChangesetsApi(unprivilegedConnection);
 		SimpleMapDataChangesHandler h = new SimpleMapDataChangesHandler();
-		changesetApi.getData(changesetId, h);
+		privilegedChangesetApi.getData(changesetId, h);
 		assertEquals(creations, h.getCreations().size());
 		assertEquals(modifications, h.getModifications().size());
 		assertEquals(deletions, h.getDeletions().size());
@@ -522,6 +469,5 @@ public class MapDataApiTest
 			if(firstCallTime == -1)
 				firstCallTime = System.currentTimeMillis();
 		}
-
 	}
 }
