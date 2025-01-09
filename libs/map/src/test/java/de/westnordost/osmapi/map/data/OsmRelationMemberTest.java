@@ -16,21 +16,17 @@ public class OsmRelationMemberTest
 	
 	@Test public void setTooLongRoleFails()
 	{
-		try
-		{
-			new OsmRelationMember(1,"jo", Type.NODE).setRole(TOO_LONG);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> new OsmRelationMember(1,"jo", Type.NODE).setRole(TOO_LONG)
+		);
 	}
 	
 	@Test public void initWithTooLongRoleFails()
 	{
-		try
-		{
-			new OsmRelationMember(1,TOO_LONG, Type.NODE);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> new OsmRelationMember(1,TOO_LONG, Type.NODE)
+		);
 	}
 }

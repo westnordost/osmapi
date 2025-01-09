@@ -13,40 +13,34 @@ public class XmlWriterTest
 {
 	private static final String xmlBlob = "<?xml version='1.0' encoding='UTF-8' ?>";
 
-	@Test public void didNotCloseTag() throws IOException
+	@Test public void didNotCloseTag()
 	{
-		try
-		{
-			new TestXmlWriter()
-			{
-				@Override
-				protected void write() throws IOException
+		assertThrows(
+				IllegalStateException.class,
+				() -> new TestXmlWriter()
 				{
-					begin("test");
-				}
-			}.test();
-			fail();
-		}
-		catch (IllegalStateException ignore) { }
+					@Override
+					protected void write() throws IOException
+					{
+						begin("test");
+					}
+				}.test()
+		);
 	}
 
-	@Test public void didCloseOneTagTooMany() throws IOException
+	@Test public void didCloseOneTagTooMany()
 	{
-		try
-		{
-			new TestXmlWriter()
-			{
-				@Override
-				protected void write() throws IOException
-				{
-					begin("test");
-					end();
-					end();
-				}
-			}.test();
-			fail();
-		}
-		catch (IllegalStateException ignore) {}
+		assertThrows(
+				IllegalStateException.class,
+				() -> new TestXmlWriter() {
+                    @Override protected void write() throws IOException
+                    {
+                        begin("test");
+                        end();
+                        end();
+                    }
+                }.test()
+		);
 	}
 
 	@Test public void simple() throws IOException
@@ -97,7 +91,7 @@ public class XmlWriterTest
 		assertEquals(xmlBlob + "<test key='value' />", result);
 	}
 
-	@Test public void doubleAttributeIsNotInScienfiticNotation() throws IOException
+	@Test public void doubleAttributeIsNotInScientificNotation() throws IOException
 	{
 		String result = new TestXmlWriter()
 		{

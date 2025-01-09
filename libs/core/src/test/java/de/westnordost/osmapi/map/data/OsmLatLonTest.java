@@ -58,13 +58,13 @@ public class OsmLatLonTest
 	@Test public void equalsNull()
 	{
 		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
-		assertFalse(pos1.equals(null));
+        assertNotEquals(null, pos1);
 	}
 	
 	@Test public void equalsOtherObject()
 	{
 		LatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
-		assertFalse(pos1.equals(new Object()));
+        assertNotEquals(pos1, new Object());
 	}
 	
 	@Test public void testHashCode()
@@ -78,56 +78,31 @@ public class OsmLatLonTest
 	{
 		OsmLatLon pos1 = new OsmLatLon(VALID_LAT, VALID_LON);
 		OsmLatLon pos2 = new OsmLatLon(VALID_LON, VALID_LAT);
-		assertFalse(pos1.hashCode() == pos2.hashCode());
+        assertNotEquals(pos1.hashCode(), pos2.hashCode());
 	}
 	
 	@Test public void invalidPositiveLatitude()
 	{
-		try
-		{
-			new OsmLatLon(90.0000001, 0);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> new OsmLatLon(90.0000001, 0));
 	}
 
 	@Test public void invalidNegativeLatitude()
 	{
-		try
-		{
-			new OsmLatLon(-90.0000001, 0);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> new OsmLatLon(-90.0000001, 0));
 	}
 
 	@Test public void invalidPositiveLongitude()
 	{
-		try
-		{
-			new OsmLatLon(0, 180.0000001);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> new OsmLatLon(0, 180.0000001));
 	}
 
 	@Test public void invalidNegativeLongitude()
 	{
-		try
-		{
-			new OsmLatLon(0, -180.0000001);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> new OsmLatLon(0, -180.0000001));
 	}
 	
 	@Test public void invalidNegative360Longitude()
 	{
-		try
-		{
-			new OsmLatLon(0, -350.0);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> new OsmLatLon(0, -350.0));
 	}
 }

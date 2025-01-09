@@ -97,51 +97,44 @@ public class QueryChangesetsFiltersTest
 
 	@Test public void illegalBounds()
 	{
-		try
-		{
-			new QueryChangesetsFilters().byBounds(new BoundingBox(0, 15, 10, 5));
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> new QueryChangesetsFilters().byBounds(new BoundingBox(0, 15, 10, 5))
+		);
 	}
 
 	@Test public void illegalUserSelection()
 	{
-		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		try
-		{
-			filters.byUser(1);
-			filters.byUser("hans");
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
-		
-		QueryChangesetsFilters filters2 = new QueryChangesetsFilters();
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> {
+					QueryChangesetsFilters filters = new QueryChangesetsFilters();
+					filters.byUser(1);
+					filters.byUser("hans");
+				}
+		);
 
-		try
-		{
-			filters2.byUser("hans");
-			filters2.byUser(1);
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> {
+					QueryChangesetsFilters filters = new QueryChangesetsFilters();
+					filters.byUser("hans");
+					filters.byUser(1);
+				}
+		);
 	}
 	
 	@Test public void illegalChangesetCount()
 	{
-		try
-		{
-			new QueryChangesetsFilters().byChangesets();
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
-		
-		try
-		{
-			new QueryChangesetsFilters().byChangesets(new ArrayList<Long>());
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> new QueryChangesetsFilters().byChangesets()
+		);
+
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> new QueryChangesetsFilters().byChangesets(new ArrayList<>())
+		);
 	}
 
 	@Test public void limit()
@@ -154,13 +147,13 @@ public class QueryChangesetsFiltersTest
 
 	@Test public void illegalLimit()
 	{
-		QueryChangesetsFilters filters = new QueryChangesetsFilters();
-		try
-		{
-			filters.limit(0);
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> {
+					QueryChangesetsFilters filters = new QueryChangesetsFilters();
+					filters.limit(0);
+				}
+		);
 	}
 
 	private String getParam(String params, String paramName)

@@ -49,7 +49,7 @@ public class XmlParserTest
 			@Override
 			protected void onStartElement()
 			{
-				assertEquals(null, getText());
+                assertNull(getText());
 			}
 
 			@Override
@@ -128,14 +128,14 @@ public class XmlParserTest
 				{
 					assertEquals("hi", getAttribute("x"));
 					assertEquals("ho", getAttribute("y"));
-					assertEquals(null, getAttribute("z"));
+                    assertNull(getAttribute("z"));
 				}
 				// but not anymore for element b
 				else if(getName().equals("b"))
 				{
-					assertEquals(null, getAttribute("x"));
-					assertEquals(null, getAttribute("y"));
-					assertEquals(null, getAttribute("z"));
+                    assertNull(getAttribute("x"));
+                    assertNull(getAttribute("y"));
+                    assertNull(getAttribute("z"));
 				}
 			}
 		};
@@ -183,37 +183,19 @@ public class XmlParserTest
 			}
 		};
 
-		try
-		{
-			parser.test(xml);
-			fail();
-		}
-		catch(XmlParserException e1)
-		{
-			// test passed
-		}
+		assertThrows(XmlParserException.class, () -> parser.test(xml));
 	}
 	
 	@Test public void ioExceptionIsNotWrappedIntoXmlParserException()
 	{
 		InputStream exceptionStream = new InputStream() {
-
-			@Override
-			public int read() throws IOException
+			@Override public int read() throws IOException
 			{
 				throw new IOException();
 			}
 		};
-		
-		try
-		{
-			new TestXmlParser().testStream(exceptionStream);
-			fail();
-		}
-		catch(IOException e1)
-		{
-			// test passed
-		}
+
+		assertThrows(IOException.class, () -> new TestXmlParser().testStream(exceptionStream));
 	}
 
 	private static class TestXmlParser extends XmlParser

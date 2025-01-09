@@ -12,25 +12,17 @@ public class BoundingBoxTest
 	
 	@Test public void validation4Doubles()
 	{
-		try
-		{
-			new BoundingBox(0, 0, -1, 0);
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> new BoundingBox(0, 0, -1, 0));
 	}
 
 	@Test public void validationLatLon()
 	{
-		try
-		{
-			new BoundingBox(new OsmLatLon(0, 0), new OsmLatLon(-1, 0));
-			fail();
-		}
-		catch (IllegalArgumentException ignore) {}
+		assertThrows(
+				IllegalArgumentException.class,
+				() -> new BoundingBox(new OsmLatLon(0, 0), new OsmLatLon(-1, 0))
+		);
 	}
 
-	
 	@Test public void cross180thMeridian()
 	{
 		BoundingBox bounds = new BoundingBox(
@@ -73,13 +65,13 @@ public class BoundingBoxTest
 	@Test public void equalsNull()
 	{
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
-		assertFalse(bounds1.equals(null));
+        assertNotEquals(null, bounds1);
 	}
 	
 	@Test public void equalsOtherObject()
 	{
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
-		assertFalse(bounds1.equals(new Object()));
+        assertNotEquals(bounds1, new Object());
 	}
 
 	@Test public void doesNotUseScientificNotation()
@@ -100,6 +92,6 @@ public class BoundingBoxTest
 		BoundingBox bounds1 = new BoundingBox(A,B,C,D);
 		BoundingBox bounds2 = new BoundingBox(B,A,D,C);
 
-		assertFalse(bounds1.hashCode() == bounds2.hashCode());
+        assertNotEquals(bounds1.hashCode(), bounds2.hashCode());
 	}
 }

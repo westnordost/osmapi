@@ -98,36 +98,15 @@ public class ChangesetsApiTest
 
 	@Test public void emptyComment()
 	{
-		try
-		{
-			privilegedApi.comment(changesetId, "");
-			fail();
-		}
-		catch(IllegalArgumentException ignore) {}
+		assertThrows(IllegalArgumentException.class, () -> privilegedApi.comment(changesetId, ""));
 	}
 
 	@Test public void authFail()
 	{
-		try
-		{
-			unprivilegedApi.subscribe(changesetId);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-
-		try
-		{
-			unprivilegedApi.unsubscribe(changesetId);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-
-		try
-		{
-			unprivilegedApi.comment(changesetId, "test comment");
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		Class<OsmAuthorizationException> e = OsmAuthorizationException.class;
+		assertThrows(e, () -> unprivilegedApi.subscribe(changesetId));
+		assertThrows(e, () -> unprivilegedApi.unsubscribe(changesetId));
+		assertThrows(e, () -> unprivilegedApi.comment(changesetId, "test comment"));
 	}
 
 	@Test public void alreadySubscribedDoesNotFail()
@@ -146,8 +125,8 @@ public class ChangesetsApiTest
 
 	@Test public void subscribeNonExistingChangesetFails()
 	{
-		try { privilegedApi.subscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
-		try { privilegedApi.unsubscribe(0); fail(); } catch(OsmNotFoundException ignore) {}
+		assertThrows(OsmNotFoundException.class, () -> privilegedApi.subscribe(0));
+		assertThrows(OsmNotFoundException.class, () -> privilegedApi.unsubscribe(0));
 	}
 
 	@Test public void getAsAnonymousDoesNotFail()
@@ -175,26 +154,10 @@ public class ChangesetsApiTest
 
 	@Test public void anonymousFail()
 	{
-		try
-		{
-			anonymousApi.subscribe(changesetId);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-
-		try
-		{
-			anonymousApi.unsubscribe(changesetId);
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
-
-		try
-		{
-			anonymousApi.comment(changesetId, "test comment");
-			fail();
-		}
-		catch(OsmAuthorizationException ignore) {}
+		Class<OsmAuthorizationException> e = OsmAuthorizationException.class;
+		assertThrows(e, () -> anonymousApi.subscribe(changesetId));
+		assertThrows(e, () -> anonymousApi.unsubscribe(changesetId));
+		assertThrows(e, () -> anonymousApi.comment(changesetId, "test comment"));
 	}
 
 	@Test public void getChangesets()

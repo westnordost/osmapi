@@ -26,37 +26,18 @@ public class UserPreferencesApiTest
 
 	@Test public void unprivileged()
 	{
+		Class<OsmAuthorizationException> e = OsmAuthorizationException.class;
 		// the unprivileged api may do nothing here, so lets just do it in one test case...
-
-		try {
-			unprivilegedApi.delete("A");
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) { }
-
-		try {
-			unprivilegedApi.get("A");
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) { }
-
-		try {
-			unprivilegedApi.getAll();
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) { }
-
-		try {
-			unprivilegedApi.set("A","a");
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) { }
-
-		try {
-			unprivilegedApi.setAll(new HashMap<String, String>());
-			fail();
-		}
-		catch (OsmAuthorizationException ignore) { }
+		assertThrows(e, () -> unprivilegedApi.delete("A"));
+		assertThrows(e, () -> unprivilegedApi.get("A"));
+		assertThrows(e, () -> unprivilegedApi.getAll());
+		assertThrows(e, () -> unprivilegedApi.set("A","a"));
+		assertThrows(e, () -> unprivilegedApi.setAll(new HashMap<>()));
+		assertThrows(e, () -> unprivilegedApi.delete("A"));
+		assertThrows(e, () -> unprivilegedApi.delete("A"));
+		assertThrows(e, () -> unprivilegedApi.delete("A"));
+		assertThrows(e, () -> unprivilegedApi.delete("A"));
+		assertThrows(e, () -> unprivilegedApi.delete("A"));
 	}
 
 	@Test public void setGetAndDeleteUserPreference()
@@ -69,22 +50,12 @@ public class UserPreferencesApiTest
 	
 	@Test public void keyTooLong()
 	{
-		try
-		{
-			privilegedApi.set(tooLong(), "jo");
-			fail();
-		}
-		catch(IllegalArgumentException ignore) { }
+		assertThrows(IllegalArgumentException.class, () -> privilegedApi.set(tooLong(), "jo"));
 	}
 
 	@Test public void valueTooLong()
 	{
-		try
-		{
-			privilegedApi.set("jo", tooLong());
-			fail();
-		}
-		catch(IllegalArgumentException ignore) { }
+		assertThrows(IllegalArgumentException.class, () -> privilegedApi.set("jo", tooLong()));
 	}
 	
 	private static String tooLong()
