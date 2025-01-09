@@ -307,7 +307,7 @@ public class OsmConnection
 	private void handleResponseCode(HttpURLConnection connection) throws IOException
 	{
 		int httpResponseCode = connection.getResponseCode();
-		if(httpResponseCode >= 200 && httpResponseCode <= 299)
+		if(httpResponseCode < 200 || httpResponseCode > 299)
 		{
 			String responseMessage = connection.getResponseMessage();
 			String errorDescription = getErrorDescription(connection.getErrorStream());
