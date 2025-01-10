@@ -28,7 +28,7 @@ Depending on which part of the API you use, you can only include what you need:
 <tr><td>MessagesApi</td><td><pre>de.westnordost:osmapi-messages:1.0</pre></td><td>Send and receive messages</td></tr>
 </table>
 
-To include everything, add [`de.westnordost:osmapi:5.2`](https://mvnrepository.com/artifact/de.westnordost/osmapi/5.1) as a Maven dependency or download the jar from there.
+To include everything, add [`de.westnordost:osmapi:5.2`](https://mvnrepository.com/artifact/de.westnordost/osmapi/5.2) as a Maven dependency or download the jar from there.
 
 ### Android
 
