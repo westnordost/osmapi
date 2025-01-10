@@ -78,9 +78,10 @@ public class MessagesParser extends XmlParser implements ApiResponseReader<Void>
         Message message = new Message();
         message.id = getLongAttribute("id");
         message.sentOn = Instant.parse(getAttribute("sent_on"));
-        message.messageRead = getBooleanAttribute("message_read");
+        message.read = getBooleanAttribute("message_read");
         message.deleted = getBooleanAttribute("deleted");
         String bodyFormat = getAttribute("body_format");
+        if (bodyFormat == null) bodyFormat = "markdown";
         message.bodyFormat = Message.BodyFormat.valueOf(bodyFormat.toUpperCase(Locale.UK));
         message.fromUser = parseUser("from_user_id", "from_display_name");
         message.toUser = parseUser("to_user_id", "to_display_name");

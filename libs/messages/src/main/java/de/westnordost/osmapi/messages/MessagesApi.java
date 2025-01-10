@@ -5,12 +5,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.westnordost.osmapi.OsmConnection;
+import de.westnordost.osmapi.common.FormDataWriter;
 import de.westnordost.osmapi.common.Handler;
 import de.westnordost.osmapi.common.SingleElementHandler;
 import de.westnordost.osmapi.common.errors.OsmAuthorizationException;
 import de.westnordost.osmapi.common.errors.OsmBadUserInputException;
 import de.westnordost.osmapi.common.errors.OsmNotFoundException;
 import de.westnordost.osmapi.common.errors.OsmQueryTooBigException;
+import de.westnordost.osmapi.common.errors.OsmTooManyRequestsException;
 
 /** Send and receive messages */
 public class MessagesApi {
@@ -27,7 +29,8 @@ public class MessagesApi {
     /**
      * Retrieve messages from the user's inbox.
      *
-     * @param handler The handler which is fed the incoming messages
+     * @param handler The handler which is fed the incoming messages. The `body` field is not
+     *                included in the messages from this call.
      * @param limit number of messages returned at maximum. A number between 1 and 100 or null for
      *              server default.
      * @param order Messages are ordered by id in specified order. MessageOrder.NEWEST is used if
@@ -79,7 +82,8 @@ public class MessagesApi {
     /**
      * Retrieve messages from the user's outbox (i.e. sent messages).
      *
-     * @param handler The handler which is fed the incoming messages
+     * @param handler The handler which is fed the incoming messages. The `body` field is not
+     *                included in the messages from this call.
      * @param limit number of messages returned at maximum. A number between 1 and 100 or null for
      *              server default.
      * @param order Messages are ordered by id in specified order. MessageOrder.NEWEST is used if
@@ -155,38 +159,44 @@ public class MessagesApi {
      *
      * @param id message id
      * @param read whether the message should be marked as read
+     * @return updated message.
      *
      * @throws OsmAuthorizationException if this application is not authorized to read the user's
      *                                   messages (Permission.CONSUME_MESSAGES) or the message with
      *                                   the given id was not received by the user.
      * @throws OsmNotFoundException if the message with the given id does not exist.
      * */
-    public void update(long id, boolean read)
+    public Message update(long id, boolean read)
     {
-        osm.makeAuthenticatedRequest(MESSAGES + "/" + id + "?read_status=" + read, "PUT");
+        SingleElementHandler<Message> handler = new SingleElementHandler<>();
+        osm.makeAuthenticatedRequest(MESSAGES + "/" + id + "?read_status=" + read, "PUT", new MessagesParser(handler));
+        return handler.get();
     }
 
     /** Delete the message with the given id.
      *
      * @param id message id
+     * @return updated message.
      *
-     * @throws OsmAuthorizationException if this application is not authorized to send the user
-     *                                   messages (Permission.SEND_MESSAGES) or the message with
-     *                                   the given id was neither sent by or received by the user.
+     * @throws OsmAuthorizationException if this application is not authorized to read the user's
+     *                                   messages (Permission.CONSUME_MESSAGES) or the message with
+     *                                   the given id was not received by the user.
      * @throws OsmNotFoundException if the message with the given id does not exist.
      * */
-    public void delete(long id)
+    public Message delete(long id)
     {
-        osm.makeAuthenticatedRequest(MESSAGES + "/" + id, "DELETE");
+        SingleElementHandler<Message> handler = new SingleElementHandler<>();
+        osm.makeAuthenticatedRequest(MESSAGES + "/" + id, "DELETE", new MessagesParser(handler));
+        return handler.get();
     }
 
     /** Send a message to the given recipient
      *
      * @see #send(long, String, String, Message.BodyFormat)
      * */
-    public void send(long recipientId, String title, String body)
+    public Message send(long recipientId, String title, String body)
     {
-        send(recipientId, title, body, null);
+        return send(recipientId, title, body, null);
     }
 
     /** Send a message to the given recipient
@@ -195,73 +205,91 @@ public class MessagesApi {
      * @param title title of the message
      * @param body body of the message
      * @param format format of the body. May be null.
+     * @return the sent message
      *
      * @throws OsmAuthorizationException if this application is not authorized to send the user
      *                                   messages (Permission.SEND_MESSAGES) or the message with
      *                                   the given id was neither sent by or received by the user.
      * @throws OsmTooManyRequestsException when throttling was applied
+     * @throws OsmNotFoundException if the recipient doesn't exist
      * */
-    public void send(long recipientId, String title, String body, Message.BodyFormat format)
+    public Message send(long recipientId, String title, String body, Message.BodyFormat format)
     {
-        Map<String, String> params = new HashMap<>();
-        params.put("recipient_id", "" + recipientId);
-        params.put("title", title);
-        params.put("body", body);
-        if (format != null) params.put("format", format.name().toLowerCase(Locale.UK));
+        FormDataWriter formDataWriter = new FormDataWriter()
+        {
+            @Override
+            protected void write()
+            {
+                addField("recipient_id", "" + recipientId);
+                addField("title", title);
+                addField("body", body);
+                if (format != null) addField("format", format.name().toLowerCase(Locale.UK));
+            }
+        };
 
-        osm.makeAuthenticatedRequest(MESSAGES + createQueryString(params), "POST");
+        SingleElementHandler<Message> handler = new SingleElementHandler<>();
+        osm.makeAuthenticatedRequest(MESSAGES, "POST", formDataWriter, new MessagesParser(handler));
+        return handler.get();
     }
 
     /** Send a message to the given recipient
      *
      * @see #send(String, String, String, Message.BodyFormat)
      * */
-    public void send(String recipientName, String title, String body)
+    public Message send(String recipientName, String title, String body)
     {
-        send(recipientName, title, body, null);
+        return send(recipientName, title, body, null);
     }
 
     /** Send a message to the given recipient
      *
-     * @param recipientId user id of the recipient
+     * @param recipientName user name of the recipient
      * @param title title of the message
      * @param body body of the message
      * @param format format of the body. May be null.
+     * @return the sent message
      *
      * @throws OsmAuthorizationException if this application is not authorized to send the user
      *                                   messages (Permission.SEND_MESSAGES) or the message with
      *                                   the given id was neither sent by or received by the user.
      * @throws OsmTooManyRequestsException when throttling was applied
+     * @throws OsmBadUserInputException if the recipient with the given name doesn't exist
      * */
-    public void send(String recipientName, String title, String body, Message.BodyFormat format)
+    public Message send(String recipientName, String title, String body, Message.BodyFormat format)
     {
-        Map<String, String> params = new HashMap<>();
-        params.put("recipient", recipientName);
-        params.put("title", title);
-        params.put("body", body);
-        if (format != null) params.put("format", format.name().toLowerCase(Locale.UK));
+        FormDataWriter formDataWriter = new FormDataWriter()
+        {
+            @Override
+            protected void write()
+            {
+                addField("recipient", recipientName);
+                addField("title", title);
+                addField("body", body);
+                if (format != null) addField("format", format.name().toLowerCase(Locale.UK));
+            }
+        };
 
-        osm.makeAuthenticatedRequest(MESSAGES + createQueryString(params), "POST");
+        SingleElementHandler<Message> handler = new SingleElementHandler<>();
+        osm.makeAuthenticatedRequest(MESSAGES, "POST", formDataWriter, new MessagesParser(handler));
+        return handler.get();
     }
 
     private String createQueryString(Map<String, String> params)
     {
         StringBuilder query = new StringBuilder();
         boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet())
+        for (Map.Entry<String, String> entry : params.entrySet())
         {
-            if(first)
+            if (first)
             {
                 first = false;
                 query.append("?");
-            }
-            else
-            {
+            } else {
                 query.append("&");
             }
-
             query.append(entry.getKey());
             query.append("=");
+            query.append(entry.getValue());
         }
         return query.toString();
     }
