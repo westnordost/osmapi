@@ -36,5 +36,7 @@ public class PermissionsApiTest
 		assertTrue(privilegedPermissions.contains(Permission.WRITE_GPS_TRACES));
 		assertTrue(privilegedPermissions.contains(Permission.WRITE_DIARY));
 		assertTrue(privilegedPermissions.contains(Permission.WRITE_NOTES));
+		assertTrue(privilegedPermissions.contains(Permission.CONSUME_MESSAGES));
+		assertTrue(privilegedPermissions.contains(Permission.SEND_MESSAGES));
 	}
 }

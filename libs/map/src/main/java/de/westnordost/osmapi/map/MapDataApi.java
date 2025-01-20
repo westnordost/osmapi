@@ -157,7 +157,7 @@ public class MapDataApi
 	 *                                   map (Permission.MODIFY_MAP) */
 	public void updateChangeset(long changesetId, final Map<String, String> tags)
 	{
-		osm.makeAuthenticatedRequest("changeset/"+changesetId, "PUT",
+		osm.makeAuthenticatedRequest("changeset/" + changesetId, "PUT",
 				createOsmChangesetTagsWriter(tags), null);
 	}
 	
