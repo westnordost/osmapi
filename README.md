@@ -8,7 +8,7 @@ Note, the OSM API, particularly the part to download the map data, is intended o
 
 ## Copyright and License
 
-© 2016-2023 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
+© 2016-2025 Tobias Zwick. This library is released under the terms of the [GNU Lesser General Public License](http://www.gnu.org/licenses/lgpl-3.0.html) (LGPL).
 
 ## Installation
 
