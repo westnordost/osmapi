@@ -19,9 +19,11 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<Void>
 {
 	private static final String USER = "user",
 	                            ROLES = "roles",
-	                            BLOCKS = "blocks";
+	                            BLOCKS = "blocks",
+                                SOCIAL_LINKS = "social-links";
 
 	private List<String> roles;
+    private UserSocialLink link;
 
 	protected Handler<UserInfo> handler;
 	protected UserInfo user;
@@ -84,6 +86,14 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<Void>
 				   if you think otherwise. */
 			}
 		}
+        else if (SOCIAL_LINKS.equals(parent))
+        {
+            if ("links".equals(name))
+            {
+                link = UserSocialLink();
+                link.platform = getAttribute("platform");
+            }
+        }
 	}
 
 	@Override
@@ -109,6 +119,10 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<Void>
 			{
 				user.profileDescription = getText();
 			}
+            else if ("company").equals(name))
+            {
+                user.company = getText();
+            }
 		}
 		else if(ROLES.equals(parent))
 		{
@@ -123,5 +137,18 @@ public class UserInfoParser extends XmlParser implements ApiResponseReader<Void>
 				roles.add(getText());
 			}
 		}
+        else if (SOCIAL_LINKS.equals(parent))
+        {
+            if ("link".equals(name))
+            {
+                link.url = getText();
+                if (user.socialLinks == null)
+                {
+                    user.socialLinks = ArrayList<>();
+                }
+                user.socialLinks.add(link);
+                link = null
+            }
+        }
 	}
 }

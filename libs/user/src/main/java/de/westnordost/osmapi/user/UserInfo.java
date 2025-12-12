@@ -7,7 +7,7 @@ import java.util.List;
 /** Non-private info of a user queried through the user-API */
 public class UserInfo extends User implements Serializable
 {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 
 	public UserInfo(long id, String displayName)
 	{
@@ -33,7 +33,13 @@ public class UserInfo extends User implements Serializable
 	
 	/** whether the user is currently blocked (=cannot make any modifications on the map). */
 	public boolean isBlocked;
-	
+
+    /** The company the user is associated with or null if none */
+    public String company;
+
+    /** The social network(s) the user is reachable over. May be empty or null. */
+    public List<UserSocialLink> socialLinks;
+
 	/** whether this user holds the given role. See UserRole for constants for known roles
 	 *  and the methods isModerator and isAdministrator */
 	public boolean hasRole(String roleName)

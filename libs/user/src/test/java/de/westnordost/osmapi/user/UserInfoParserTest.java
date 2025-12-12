@@ -48,18 +48,20 @@ public class UserInfoParserTest
 		assertFalse(user.isBlocked);
 		assertFalse(user.hasAgreedToContributorTerms);
 		assertNull(user.profileImageUrl);
+        assertNull(user.company);
+        assertNull(user.socialLinks);
 	}
 
 	@Test public void roles()
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
-						"	<roles>" +
-						"		<role>administrator</role>" +
-						"		<role>moderator</role>" +
-						"		<role>stuntman</role>" +
-						"	</roles>" +
-						"</user>";
+                "	<roles>" +
+                "		<role>administrator</role>" +
+                "		<role>moderator</role>" +
+                "		<role>stuntman</role>" +
+                "	</roles>" +
+                "</user>";
 
 		UserInfo user = parseOne(xml);
 
@@ -73,10 +75,10 @@ public class UserInfoParserTest
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
-						"	<blocks>" +
-						"		<received count=\"12\" active=\"13\" />" +
-						"	</blocks>" +
-						"</user>";
+                "	<blocks>" +
+                "		<received count=\"12\" active=\"13\" />" +
+                "	</blocks>" +
+                "</user>";
 
 		UserInfo user = parseOne(xml);
 		assertTrue(user.isBlocked);
@@ -86,14 +88,42 @@ public class UserInfoParserTest
 	{
 		String xml =
 				"<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
-						"	<blocks>" +
-						"		<received count=\"12\" active=\"0\" />" +
-						"	</blocks>" +
-						"</user>";
+                "	<blocks>" +
+                "		<received count=\"12\" active=\"0\" />" +
+                "	</blocks>" +
+                "</user>";
 
 		UserInfo user = parseOne(xml);
 		assertFalse(user.isBlocked);
 	}
+
+    @Test public void company()
+    {
+        String xml =
+                "<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
+                "	<company>Geofabrik</company>" +
+                "</user>";
+
+        UserInfo user = parseOne(xml);
+        assertEquals("Geofabrik", user.company);
+    }
+
+    @Test public void socialLinks()
+    {
+        String xml =
+                "<user id=\"0\" display_name=\"\" account_created=\"2013-01-20T17:16:23Z\">" +
+                "	<social-links>" +
+                "	<link platform=\"mastodon\">https://mastodon.social/@12345</link>" +
+                "	<link>https://myownwebsite.com</link>" +
+                "   </social-links>" +
+                "</user>";
+
+        UserInfo user = parseOne(xml);
+        assertEquals("mastodon", user.socialLinks.get(0).platform);
+        assertEquals("https://mastodon.social/@12345", user.socialLinks.get(0).url);
+        assertNull(user.socialLinks.get(1).platform);
+        assertEquals("https://myownwebsite.com", user.socialLinks.get(1).url);
+    }
 
 	@Test public void basicElements()
 	{
