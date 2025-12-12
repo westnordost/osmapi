@@ -111,6 +111,7 @@ public class ChangesetParser extends XmlParser implements ApiResponseReader<Void
 	private ChangesetNote parseChangesetComment() throws ParseException
 	{
 		ChangesetNote comment = new ChangesetNote();
+        comment.id = getLongAttribute("id");
 		comment.user = parseUser();
 		comment.createdAt = Instant.parse(getAttribute("date"));
 		return comment;

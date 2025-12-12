@@ -105,10 +105,10 @@ public class ChangesetParserTest
 				"<changeset id=\"1654\" user=\"blub\" uid=\"123\" changes_count=\"0\" " +
 						"created_at=\"2011-03-05T20:29:56Z\" open=\"true\" comments_count=\"2\" >" +
 						"<discussion>" +
-						"     <comment date=\"2015-01-01T18:56:48Z\">" +
+						"     <comment id=\"123\" date=\"2015-01-01T18:56:48Z\">" +
 						"       <text>Did you verify those street names?</text>" +
 						"     </comment>" +
-						"     <comment date=\"2015-01-01T18:58:03Z\" uid=\"234\" user=\"fred\">" +
+						"     <comment id=\"345\" date=\"2015-01-01T18:58:03Z\" uid=\"234\" user=\"fred\">" +
 						"       <text>sure!</text>" +
 						"     </comment>" +
 						"</discussion>" +
@@ -123,11 +123,13 @@ public class ChangesetParserTest
 
 		ChangesetNote a = changeset.discussion.get(0);
 		assertNull(a.user);
+        assertEquals(123, a.id);
 		assertEquals(Instant.parse("2015-01-01T18:56:48Z"), a.createdAt);
 
 		ChangesetNote b = changeset.discussion.get(1);
 
 		assertNotNull(b.user);
+        assertEquals(345, b.id);
 		assertEquals(234, b.user.id);
 		assertEquals("fred", b.user.displayName);
 		assertEquals(Instant.parse("2015-01-01T18:58:03Z"), b.createdAt);

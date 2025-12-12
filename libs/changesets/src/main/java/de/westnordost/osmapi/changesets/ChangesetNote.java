@@ -10,8 +10,9 @@ import de.westnordost.osmapi.user.User;
  *  is already what the "commit message" is called in editors */
 public class ChangesetNote implements Serializable
 {
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 
+    public Long id;
 	public Instant createdAt;
 	public User user;
 	public String text;
